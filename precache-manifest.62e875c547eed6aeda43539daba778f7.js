@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b629a072804335eba732506ed715e696",
+    "revision": "12d0b64a234cf87b7506c88685e88205",
     "url": "/fractal-explorer/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/fractal-explorer/static/css/2.de167b80.chunk.css"
   },
   {
-    "revision": "e3a815e60f19a3673e97",
+    "revision": "7d642e03894a626eb0ca",
     "url": "/fractal-explorer/static/css/main.226b9d72.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/fractal-explorer/static/js/2.93a85a9d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e3a815e60f19a3673e97",
-    "url": "/fractal-explorer/static/js/main.a0fca8db.chunk.js"
+    "revision": "7d642e03894a626eb0ca",
+    "url": "/fractal-explorer/static/js/main.3a3b7c44.chunk.js"
   },
   {
     "revision": "0779f115e9f0f45c15a1",

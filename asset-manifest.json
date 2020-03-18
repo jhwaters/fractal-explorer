@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fractal-explorer/static/css/main.226b9d72.chunk.css",
-    "main.js": "/fractal-explorer/static/js/main.a0fca8db.chunk.js",
-    "main.js.map": "/fractal-explorer/static/js/main.a0fca8db.chunk.js.map",
+    "main.js": "/fractal-explorer/static/js/main.3a3b7c44.chunk.js",
+    "main.js.map": "/fractal-explorer/static/js/main.3a3b7c44.chunk.js.map",
     "runtime-main.js": "/fractal-explorer/static/js/runtime-main.98a64640.js",
     "runtime-main.js.map": "/fractal-explorer/static/js/runtime-main.98a64640.js.map",
     "static/css/2.de167b80.chunk.css": "/fractal-explorer/static/css/2.de167b80.chunk.css",
     "static/js/2.93a85a9d.chunk.js": "/fractal-explorer/static/js/2.93a85a9d.chunk.js",
     "static/js/2.93a85a9d.chunk.js.map": "/fractal-explorer/static/js/2.93a85a9d.chunk.js.map",
     "index.html": "/fractal-explorer/index.html",
-    "precache-manifest.08e4b9f1ce22b3f90d82a49daaf43035.js": "/fractal-explorer/precache-manifest.08e4b9f1ce22b3f90d82a49daaf43035.js",
+    "precache-manifest.62e875c547eed6aeda43539daba778f7.js": "/fractal-explorer/precache-manifest.62e875c547eed6aeda43539daba778f7.js",
     "service-worker.js": "/fractal-explorer/service-worker.js",
     "static/css/2.de167b80.chunk.css.map": "/fractal-explorer/static/css/2.de167b80.chunk.css.map",
     "static/css/main.226b9d72.chunk.css.map": "/fractal-explorer/static/css/main.226b9d72.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.de167b80.chunk.css",
     "static/js/2.93a85a9d.chunk.js",
     "static/css/main.226b9d72.chunk.css",
-    "static/js/main.a0fca8db.chunk.js"
+    "static/js/main.3a3b7c44.chunk.js"
   ]
 }

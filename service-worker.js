@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/fractal-explorer/precache-manifest.08e4b9f1ce22b3f90d82a49daaf43035.js"
+  "/fractal-explorer/precache-manifest.62e875c547eed6aeda43539daba778f7.js"
 );
 
 self.addEventListener('message', (event) => {
