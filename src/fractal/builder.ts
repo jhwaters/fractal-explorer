@@ -1,82 +1,21 @@
-import juliaQuadratic from './juliaQuadratic';
-import julia from './julia';
-import mandelbrot from './mandelbrot';
-import burningship from './burningship';
 import {
   State as AlgState,
-  JuliaParams,
-  JuliaQuadraticParams,
-  MandelbrotParams,
-  BurningShipParams,
 } from '../store/algorithm/types';
+import {burningship, mandelbrot, juliaSimple, escapeTime} from './fractal';
 
-
-type Julia = {
-  method: 'julia',
-  params: JuliaParams,
-}
-
-type JQ = {
-  method: 'julia-quadratic',
-  params: JuliaQuadraticParams,
-}
-
-type Mand = {
-  method: 'mandelbrot',
-  params: MandelbrotParams,
-}
-
-type Burn = {
-  method: 'burningship',
-  params: BurningShipParams
-}
-
-type Alg = Julia | JQ | Mand | Burn
-
-type F = {
-  f: (x: number, y: number) => number,
-  range: [number, number],
-}
-
-function makeJulia(params: JuliaParams): F {
-  return {
-    f: julia(params),
-    range: [0, params.iterations],
-  }
-}
-
-function makeJuliaQuadratic(params: JuliaQuadraticParams): F {
-  return {
-    f: juliaQuadratic(params),
-    range: [0, params.iterations]
-  }
-}
-
-function makeMandelbrot(params: MandelbrotParams): F {
-  return {
-    f: mandelbrot(params),
-    range: [0, params.iterations],
-  }
-}
-
-function makeBurningShip(params: BurningShipParams): F {
-  return {
-    f: burningship(params),
-    range: [0, params.iterations],
-  }
-}
-
-export default function(alg: AlgState): F | undefined {
-  if (alg.method === 'julia') {
-    return makeJulia(alg['julia']);
-  }
-  if (alg.method === 'julia-quadratic') {
-    return makeJuliaQuadratic(alg['julia-quadratic'])
-  }
-  if (alg.method === 'mandelbrot') {
-    return makeMandelbrot(alg['mandelbrot']);
-  }
-  if (alg.method === 'burningship') {
-    return makeBurningShip(alg['burningship']);
+export default function(alg: AlgState) {
+  const {method} = alg;
+  const {bound, iterations} = alg[method];
+  const esc = escapeTime({bound, iterations});
+  const {z0, f} = 
+    alg.method === 'julia-quadratic' ? juliaSimple(alg['julia-quadratic'])
+    : alg.method === 'mandelbrot' ? mandelbrot(alg.mandelbrot)
+    : alg.method === 'burningship' ? burningship(alg.burningship) 
+    //: alg.method === 'julia' ? julia(alg.julia)
+    : {z0: null, f: null};
+  if (f && z0)  {
+    return (x: number, y: number) => {
+      return esc({z0: z0(x, y), f: f(x, y)})
+    }
   }
 }
