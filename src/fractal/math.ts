@@ -83,6 +83,10 @@ function exp(z: Complex): Complex {
 }
 
 function pow(a: Complex, b: number): Complex {
+  if (b === 0) return complex(1, 0)
+  if (b === 1) return a
+  if (b === 2) return multiply(a, a)
+  if (b === 3) return multiply(multiply(a, a), a)
   const r2 = abs2(a);
   const ang = angle(a);
   return fromPolar(ang * b, Math.pow(r2, b/2))
