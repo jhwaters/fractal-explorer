@@ -12,7 +12,7 @@ export const Select = withStyles((theme: Theme) => ({
 
 export const Option = withStyles((theme: Theme) => ({
   root: {
-    margin: 0,
+    padding: '0.5em',
   }
 }))(MenuItem)
 
