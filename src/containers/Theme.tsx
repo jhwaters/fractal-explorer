@@ -36,28 +36,13 @@ class Theme extends React.Component<Props> {
         MuiBackdrop: {
           invisible: true
         },
-        MuiButton: {
-          variant: 'outlined',
-          color: 'primary',
-        },
-        MuiButtonGroup: {
-          variant: 'outlined',
-          color: 'inherit',
-        },
-        MuiIconButton: {color: 'inherit'},
         MuiTextField: {
           variant: 'outlined',
           size: 'small',
           fullWidth: true,
           margin: 'normal',
         },
-        MuiTypography: {color: 'inherit'},
       },
-      style: {
-        MuiButton: {
-          margin: '0.5em',
-        },
-      }
     }
   }
 
