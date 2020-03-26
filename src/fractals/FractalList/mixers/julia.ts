@@ -6,7 +6,7 @@ import { EscapeParams, description as _description, formula, create } from './es
 
 
 export function label<T>(f: string): Pick<FractalInterface<T>,'label'> {
-  return ({label: ['Julia (', {math: f}, ')']})
+  return ({label: ['Julia: ', {math: f}]})
 }
 
 export function pixel<T extends EscapeParams>(
