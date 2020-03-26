@@ -15,19 +15,19 @@ const RenderStringOrMath = (data: StringOrMath) => {
 
 export type StringWithMath = StringOrMath | StringOrMath[]
 
-export type TextWithMathProps = {
+export interface TypographyWithMathProps extends TypographyProps {
   data: StringWithMath
-  typographyProps?: TypographyProps
+  className?: string
 }
 
-const TextWithMath = ({data, typographyProps}: TextWithMathProps) => {
+const TextWithMath = ({data, ...props}: TypographyWithMathProps) => {
   if (Array.isArray(data)) {
-    return React.createElement(Typography, typographyProps, ...data.map(RenderStringOrMath))
+    return React.createElement(Typography, props, ...data.map(RenderStringOrMath))
   }
   if (typeof data === 'string') {
-    return React.createElement(Typography, typographyProps, data);
+    return React.createElement(Typography, props, data);
   }
-  return React.createElement(Katex, data);
+  return React.createElement(Typography, props, React.createElement(Katex, data));
 }
 
 export default TextWithMath

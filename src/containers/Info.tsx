@@ -5,7 +5,7 @@ import { State as AppState, Dispatch } from '../store/types';
 import { setModal } from '../store/ui/actions';
 import { Modal } from '../store/ui/types';
 import { State as AlgState } from '../store/algorithm/types';
-import { TextWithMath } from '../components';
+import { TypographyWithMath } from '../components';
 import Box from '@material-ui/core/Box';
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';

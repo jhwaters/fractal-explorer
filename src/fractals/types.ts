@@ -1,5 +1,5 @@
 import { Complex as _Complex } from './math/types';
-import { StringWithMath } from '../components/TextWithMath';
+import { StringWithMath } from '../components/TypographyWithMath';
 
 export type Complex = _Complex
 

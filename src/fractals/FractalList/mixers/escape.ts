@@ -1,5 +1,5 @@
 import { FractalInterface, Complex, ControlProps } from '../../types'
-import { StringOrMath } from '../../../components/TextWithMath';
+import { StringOrMath } from '../../../components/TypographyWithMath';
 import { complex } from '../../math/complex';
 import escapeTime from '../../escapeTime';
 import { num } from '../../formatting';
