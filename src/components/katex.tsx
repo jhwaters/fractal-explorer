@@ -13,6 +13,7 @@ const styles = createStyles({
 export interface KatexProps {
   math: string
   displayMode?: boolean
+  className?: string
   style?: React.CSSProperties
 }
 
@@ -43,10 +44,10 @@ class Katex extends React.PureComponent<Props> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, className } = this.props;
     return React.createElement('span', {
       ref: this.ref,
-      className: classes.root,
+      className: className ? classes.root + ' ' + className : classes.root,
     })
   }
 }
