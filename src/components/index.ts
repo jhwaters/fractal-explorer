@@ -1,5 +1,6 @@
 import * as Icon from './icons';
 
+export { Select, Option, OptionLabel } from './StyledSelect';
 export { default as NumberIncrementer } from './NumberIncrementer';
 export { default as ComplexIncrementer } from './ComplexIncrementer';
 export { default as TextWithMath } from './TextWithMath';
