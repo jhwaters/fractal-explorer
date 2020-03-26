@@ -17,7 +17,7 @@ const initialState: State = {
 }
 
 function recenter({w, h}: {w: number, h: number}) {
-  return {cx: 0, cy: 0, ppu: Math.round(Math.min(h,w)/3)}
+  return {cx: 0, cy: 0, ppu: Math.round(Math.min(h,w)/4)}
 }
 
 export default function(state: State={...initialState, ...recenter(initialState)}, action: Action) {
