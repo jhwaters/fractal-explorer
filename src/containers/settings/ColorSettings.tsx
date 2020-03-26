@@ -3,35 +3,39 @@ import { connect } from 'react-redux';
 import { State as AppState } from '../../store/types';
 import * as ColorTypes from '../../store/color/types';
 import { update as updateColor, addScheme } from '../../store/color/actions';
-import { setRecolor } from '../../store/draw/actions';
-import { ColorPreview } from '../../components';
+import { setCanvasAction } from '../../store/ui/actions';
+import { CanvasAction } from '../../store/ui/types';
+import { ColorPreview, SettingsContainer } from '../../components';
 import CustomColor from './CustomColor';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Popover,
-  Slider,
-  Switch,
-  TextField,
-} from '../../components'
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popover from '@material-ui/core/Popover';
+import Slider from '@material-ui/core/Slider';
+import Switch from '@material-ui/core/Switch';
+import TextField from '@material-ui/core/TextField';
+
+
 
 type Props = {
   current: ColorTypes.State,
-  onClose: () => void,
-  updateColor: (update: Partial<ColorTypes.State>) => void;
-  addScheme: (k: string, colors: string[]) => void;
+  updateColor: (update: Partial<ColorTypes.State>) => void
+  addScheme: (k: string, colors: string[]) => void
 }
+
+
+type Evt = any
 
 class ColorSettings extends React.Component<Props> {
   state: {
     scheme: ColorTypes.SchemeName,
     reverse: boolean,
     skew: number,
+    adaptiveScale: boolean,
     customPopup: boolean,
   }
 
@@ -41,6 +45,7 @@ class ColorSettings extends React.Component<Props> {
       scheme: props.current.scheme,
       reverse: props.current.reverse,
       skew: props.current.skew,
+      adaptiveScale: props.current.adaptiveScale,
       customPopup: false,
     }
   }
@@ -52,8 +57,10 @@ class ColorSettings extends React.Component<Props> {
     this.setState({scheme});
   }
 
-  changeReverse = (evt: any) => this.setState({reverse: evt.target.checked});
-  changeSkew = (evt: any, skew: number | number[]) => this.setState({skew});
+  changeReverse = (evt: Evt) => this.setState({reverse: evt.target.checked});
+  changeSkew = (evt: Evt, skew: number | number[]) => this.setState({skew});
+
+  changeAdaptiveScale = (evt: Evt) => this.setState({adaptiveScale: evt.target.checked})
 
   selectScheme = (evt: any) => {
     const scheme = evt.target.value;
@@ -65,9 +72,12 @@ class ColorSettings extends React.Component<Props> {
   }
 
   hasChanged = () => {
-    if (this.state.scheme !== this.props.current.scheme) return true;
-    if (this.state.reverse !== this.props.current.reverse) return true;
-    if (this.state.skew !== this.props.current.skew) return true;
+    if (this.state.scheme !== this.props.current.scheme
+      || this.state.reverse !== this.props.current.reverse
+      || this.state.adaptiveScale !== this.props.current.adaptiveScale
+      || this.state.skew !== this.props.current.skew) {
+      return true;
+    }
     return false;
   }
 
@@ -81,90 +91,122 @@ class ColorSettings extends React.Component<Props> {
       scheme: this.state.scheme,
       reverse: this.state.reverse,
       skew: this.state.skew,
+      adaptiveScale: this.state.adaptiveScale,
     });
+  }
+
+  revert = () => {
+    this.setState({
+      scheme: this.props.current.scheme,
+      reverse: this.props.current.reverse,
+      skew: this.props.current.skew,
+    })
   }
 
   render() {
     return (
       <>
-        <Box>
-          <TextField select
-            size="small"
-            label="Scheme"
-            value={this.state.scheme}
-            onChange={this.selectScheme}
-          >
-            <MenuItem value="CUSTOM">CREATE NEW SCHEME</MenuItem>
-            {this.props.current.schemeList.map(k => (
-              <MenuItem key={k} value={k}>{k}</MenuItem>
-            ))}
-            {Object.keys(this.props.current.customSchemes).map(k => (
-              <MenuItem key={k} value={k}>{k}</MenuItem>
-            ))}
-          </TextField>
-          <FormControlLabel
-            label="Reversed"
-            control={
-              <Switch checked={this.state.reverse}
-                onChange={this.changeReverse}
-                edge="end"
+        <SettingsContainer>
+          <Box m={1}>
+            <Box m={1}>
+              <TextField select
+                size="small"
+                label="Scheme"
+                value={this.state.scheme}
+                onChange={this.selectScheme}
+              >
+                <MenuItem value="CUSTOM">CREATE NEW SCHEME</MenuItem>
+                {this.props.current.schemeList.sort().map(k => (
+                  <MenuItem key={k} value={k}>{k}</MenuItem>
+                ))}
+                {Object.keys(this.props.current.customSchemes).sort().map(k => (
+                  <MenuItem key={k} value={k}>{k}</MenuItem>
+                ))}
+              </TextField>
+            </Box>
+            <Box m={2}>
+              <FormControlLabel
+                label="Reversed"
+                control={
+                  <Switch checked={this.state.reverse}
+                    onChange={this.changeReverse}
+                    edge="end"
+                  />
+                }
               />
-            }
-          />
-        </Box>
+            </Box>
 
-        <Box>
-          <FormControl fullWidth>
-            <InputLabel shrink>Skew</InputLabel>
-            <Slider
-              color="secondary"
-              value={this.state.skew}
-              onChange={this.changeSkew}
-              min={-5}
-              max={5}
-              step={0.1}
-            />
-          </FormControl>
-        </Box>
+            <Box m={2}>
+              <FormControlLabel
+                label="Adaptive Scale"
+                control={
+                  <Switch checked={this.state.adaptiveScale}
+                    onChange={this.changeAdaptiveScale}
+                    edge="end"
+                  />
+                }
+              />
+            </Box>
 
-        <Box>
-          <ColorPreview 
-            style={{width: '100%', height: '4mm'}}
-            scheme={this.state.scheme}
-            customSchemes={this.props.current.customSchemes}
-            reverse={this.state.reverse}
-            skew={this.state.skew}
-            width={100}
-            height={10}
-          />
-        </Box>
+            <Box m={2} style={this.state.adaptiveScale ? {display: 'none'} : {}}>
+              <FormControl fullWidth>
+                <InputLabel shrink>Skew</InputLabel>
+                <Slider
+                  color="secondary"
+                  value={this.state.skew}
+                  onChange={this.changeSkew}
+                  min={-5}
+                  max={5}
+                  step={0.1}
+                />
+              </FormControl>
+            </Box>
 
-        <Box>
-          <ColorPreview 
-            style={{width: '100%', height: '4mm'}}
-            scheme={this.props.current.scheme}
-            customSchemes={this.props.current.customSchemes}
-            reverse={this.props.current.reverse}
-            skew={this.props.current.skew}
-            width={100}
-            height={10}
-          />
-          <InputLabel>Current</InputLabel>
-        </Box>
+            <Box m={1}>
+              <ColorPreview 
+                style={{width: '100%', height: '4mm'}}
+                scheme={this.state.scheme}
+                customSchemes={this.props.current.customSchemes}
+                reverse={this.state.reverse}
+                skew={this.state.skew}
+                width={100}
+                height={10}
+              />
+            </Box>
 
-        <ButtonGroup fullWidth color="primary" variant="text">
-        <Button 
-          onClick={this.apply}
-          disabled={!this.hasChanged()}
-        >Apply</Button>
-        </ButtonGroup>
+            <Box m={1}>
+              <ColorPreview 
+                style={{width: '100%', height: '4mm'}}
+                scheme={this.props.current.scheme}
+                customSchemes={this.props.current.customSchemes}
+                reverse={this.props.current.reverse}
+                skew={this.props.current.skew}
+                width={100}
+                height={10}
+              />
+              <InputLabel>Current</InputLabel>
+            </Box>
+
+            
+            <ButtonGroup fullWidth color="primary">
+              <Button
+                onClick={this.revert}
+                disabled={!this.hasChanged()}
+              >Reset</Button>
+              <Button 
+                onClick={this.apply}
+                disabled={!this.hasChanged()}
+              >Apply</Button>
+            </ButtonGroup>
+
+          </Box>
+        </SettingsContainer>
 
         <Popover
           open={this.state.customPopup}
           onClose={this.closeCustomPopup}
         >
-          <Box>
-            <InputLabel>New Colorscheme</InputLabel>
+          <Box m={2}>
             <CustomColor
               onSave={this.saveScheme}
               onClose={this.closeCustomPopup}
@@ -181,14 +223,16 @@ class ColorSettings extends React.Component<Props> {
 }
 
 export default connect(
-  (state: AppState) => ({current: state.color}),
+  (state: AppState) => ({
+    current: {...state.color},
+  }),
   (dispatch) => ({
     updateColor: (updates: Partial<ColorTypes.State>) => {
       dispatch(updateColor(updates));
-      dispatch(setRecolor(true));
+      dispatch(setCanvasAction(CanvasAction.Color));
     },
     addScheme: (k: string, colors: string[]) => {
       dispatch(addScheme(k, colors));
-    }
+    },
   }),
 )(ColorSettings);

@@ -7,6 +7,7 @@ export type State = {
   scheme: SchemeName,
   reverse: boolean,
   skew: number,
+  adaptiveScale: boolean,
   schemeList: string[],
   customSchemes: {[k: string]: string[]}
 }

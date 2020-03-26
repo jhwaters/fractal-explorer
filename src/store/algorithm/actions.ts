@@ -1,22 +1,18 @@
 import {
-  MethodName,
-  MethodParams,
-  SetMethod,
-  Update,
-  UPDATE,
-  SET_METHOD,
+  UpdateParams,
+  UPDATE_PARAMS,
+  SetFractal,
+  SET_FRACTAL,
+  Params,
+  FractalKey,
 } from './types';
 
-
-export const setMethod = (method: MethodName): SetMethod => ({
-  type: SET_METHOD,
-  payload: method,
+export const updateParams = (params: Params): UpdateParams => ({
+  type: UPDATE_PARAMS,
+  payload: params
 })
 
-export const update = (
-  method: MethodName,
-  params: Partial<MethodParams>,
-): Update => ({
-  type: UPDATE,
-  payload: {method, params}
+export const setFractal = (current: FractalKey, params?: Params): SetFractal => ({
+  type: SET_FRACTAL,
+  payload: {current, params}
 })

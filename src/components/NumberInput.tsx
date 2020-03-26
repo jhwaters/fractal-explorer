@@ -1,38 +1,45 @@
 import React from 'react';
-import { TextField } from './material';
+import TextField, { 
+  StandardTextFieldProps,
+  FilledTextFieldProps,
+  OutlinedTextFieldProps,
+} from '@material-ui/core/TextField';
 
 
-function checkNumber(s: string) {
-  if (s === '') {
-    return true
-  }
-  if (!isNaN(+s)) {
-    return true
-  }
-  return false
+interface NewProps {
+  value?: number
+  step?: number
+  min?: number
+  max?: number
+  emptyValue?: number
 }
 
-type Props = {
-  [k: string]: any,
-  step?: number,
-  min?: number,
-  max?: number,
-  inputProps?: any,
-  value?: number | string,
-  onChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void,
-}
+interface StandardNumberInputProps
+  extends NewProps, Omit<StandardTextFieldProps, 'value' | 'type'> {}
 
-class NumberInput extends React.Component<Props> {
+interface FilledNumberInputProps
+  extends NewProps, Omit<FilledTextFieldProps, 'value' | 'type'> {}
+
+interface OutlinedNumberInputProps
+  extends NewProps, Omit<OutlinedTextFieldProps, 'value' | 'type'> {}
+
+type NumberInputProps = 
+  StandardNumberInputProps | 
+  FilledNumberInputProps | 
+  OutlinedNumberInputProps;
+
+
+class NumberInput extends React.Component<NumberInputProps> {
   state: {isEmpty: boolean}
 
-  constructor(props: Props) {
+  constructor(props: NumberInputProps) {
     super(props);
     this.state = {
       isEmpty: false
     }
   }
 
-  onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  onChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const s = evt.target.value;
     if (s === '') {
       this.setState({isEmpty: true})
@@ -46,13 +53,22 @@ class NumberInput extends React.Component<Props> {
     }
   }
 
+  onBlur = (evt: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (this.props.onBlur) {
+      this.props.onBlur(evt);
+    }
+    this.setState({isEmpty: false});
+  }
+
+
   render() {
-    const {step, min, max, inputProps, onChange, value, ...rest} = this.props;
+    const {step, min, max, inputProps, onChange, onBlur, value='', emptyValue=0, ...rest} = this.props;
     return React.createElement(TextField, {
       type: 'number',
-      value: value ? value : this.state.isEmpty ? '' : value,
+      value: value ? +value : this.state.isEmpty ? '' : emptyValue,
       inputProps: {step, min, max, ...inputProps},
       onChange: this.onChange,
+      onBlur: this.onBlur,
       ...rest, 
     })
   }

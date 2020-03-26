@@ -1,11 +1,11 @@
 import React from 'react';
-import ColorPreview from '../../components/ColorPreview';
-import {
-  Box,
-  Button,
-  TextField,
-  DownUpButtons,
-} from '../../components';
+import { ColorPreview, DownUpButtons } from '../../components';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+
 
 type Props = {
   takenNames: string[],
@@ -87,10 +87,13 @@ class CustomColor extends React.Component<Props> {
   renderColorInput(i: number) {
     if (i < this.state.colors.length) {
       return (
-        <input type="color"
-          value={this.state.colors[i]}
-          onChange={this.changeColor(i)}
-        />
+        <Grid item xs={1}>
+          <input type="color"
+            value={this.state.colors[i]}
+            onChange={this.changeColor(i)}
+            style={{width: '40px', borderRadius: 0, padding: 0}}
+          />
+        </Grid>
       )
     }
     return null;
@@ -99,16 +102,19 @@ class CustomColor extends React.Component<Props> {
   render() {
     return (
       <>
+
+        <InputLabel>New Colorscheme</InputLabel>
+
         <Box>
-          <TextField
-            label="Name"
-            variant="filled"
-            value={this.state.name}
-            onChange={this.changeName}
-            inputProps={{type: 'text'}}
-          />
+        <TextField
+              label="Name"
+              variant="filled"
+              value={this.state.name}
+              onChange={this.changeName}
+              inputProps={{type: 'text'}}
+            />
         </Box>
-        <Box>
+        <Box p={1}>
           <ColorPreview
             style={{width: '100%', height: '4mm'}}
             scheme="CUSTOM"
@@ -119,30 +125,28 @@ class CustomColor extends React.Component<Props> {
             height={10}
           />
         </Box>
-        <Button 
-          fullWidth color="primary"
-          disabled={!this.validName()}
-          onClick={this.save}
-        >Save</Button>
         <Box>
-          <div style={{display: 'flex', 'flexDirection': 'column'}}>
-          {this.state.colors.map((color: string, i: number) => {
-            if (i < this.state.colors.length-1) {
-              return <Box>{this.renderColorInput(i)}</Box>;
-            } else {
-              return (
-              <Box>
-                {this.renderColorInput(i)}
-                <DownUpButtons
-                  onDown={this.removeColor}
-                  disableDown={this.state.colors.length < 3}
-                  onUp={this.addColor}
-                />
-              </Box>
-              )
-            }
-          })}
-          </div>
+          <Grid container>
+            {this.state.colors.map((color: string, i: number) => (
+              <Box m={0.5}>{this.renderColorInput(i)}</Box>
+            ))}
+          </Grid>
+          <Box m={1}>
+            <DownUpButtons
+              variant="contained"
+              style={{alignSelf: 'center'}}
+              onDown={this.removeColor}
+              disableDown={this.state.colors.length < 3}
+              onUp={this.addColor}
+            />
+          </Box>
+          <Box>
+          <Button 
+              fullWidth color="primary"
+              disabled={!this.validName()}
+              onClick={this.save}
+            >Save</Button>
+          </Box>
         </Box>
       </>
     )

@@ -1,40 +1,20 @@
-
-
-@media (min-width: 801px) {
-  .OpenMenuButton {
-    display: none ! important;
-  }
-}
-
-@media (max-width: 800px) {
-  .SettingsButton {
-    display: none !important;
-  }
-}
-
-canvas.Canvas {
-  all: unset;
-  user-select: none;
-  box-shadow: 1px 1px 10px rgba(0,0,0,0.4);
-}
-
-canvas.Canvas.Stretch {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-}
-
-div.CanvasContainer {
+.App {
+  top: 0;
+  bottom: 0;
   position: absolute;
-  height: 100vh;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: scroll;
+  height: 100vh;
+  overflow: hidden;
 }
 
-div.CanvasContainer.FullResolution {
-  overflow: scroll;
-  display: block;
+.SettingsDrawer button {
+  padding: 1em;
+}
+
+.SettingsMenu button {
+  padding: 1.5em 2.5em;
+}
+
+.KatexButton {
+  text-transform: none !important;
 }

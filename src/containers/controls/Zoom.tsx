@@ -1,23 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { zoomIn, zoomOut } from '../../store/view/actions';
-import { setDrawing } from '../../store/draw/actions';
-import { DownUpButtons } from '../../components';
+import { startDrawing } from '../../store/ui/actions';
+import DownUpButtons, { DownUpButtonsProps } from '../../components/DownUpButtons';
+import { Icon } from '../../components';
 
-type Props = {
-  factor: number
+interface NewProps {
+  factor?: number
+  label?: string
+  fontSize?: 'small' | 'default' | 'large' | 'inherit'
   zoomIn: (n: number) => void
   zoomOut: (n: number) => void
 }
 
-const Zoom = ({factor, zoomIn, zoomOut}: Props) => {
+interface Props extends NewProps, Omit<DownUpButtonsProps, 'onUp' | 'onDown'> {}
+
+const Zoom = ({factor=2, zoomIn, zoomOut, ...rest}: Props) => {
   const zin = () => zoomIn(factor);
   const zout = () => zoomOut(factor);
+  
   return (
-    <DownUpButtons
-      label="zoom"
-      onDown={zout}
-      onUp={zin}
+    <DownUpButtons 
+      {...rest}
+      onUp={zin} 
+      onDown={zout} 
+      downIcon={Icon.ZoomOut} 
+      upIcon={Icon.ZoomIn}
     />
   )
 }
@@ -29,11 +37,11 @@ export default connect(
   (dispatch: any) => ({
     zoomIn: (n: number) => {
       dispatch(zoomIn(n));
-      dispatch(setDrawing(true));
+      dispatch(startDrawing());
     },
     zoomOut: (n: number) => {
       dispatch(zoomOut(n));
-      dispatch(setDrawing(true));
+      dispatch(startDrawing());
     }
   })
 )(Zoom)

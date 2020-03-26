@@ -1,61 +1,41 @@
-export const SET_METHOD = 'ALGORITHM_SET_METHOD';
-export const UPDATE = 'ALGORITHM_UPDATE';
-//export const UPDATE_PARAMS = 'ALGORITHM_UPDATE_PARAMS';
+import {
+  FractalInterface,
+  Params as FractalParams,
+  ControlProps,
+  ControlType
+} from '../../fractals/types';
 
-export type CartesianCoord = {x: number, y: number}
+export type Fractal = FractalInterface<FractalParams>
+export type Params = FractalParams
 
-export type PolarCoord = {radius: number, angle: number}
+export const SET_FRACTAL = 'ALGORITHM_SET_FRACTAL';
+export const UPDATE_PARAMS = 'ALGORITHM_UPDATE_PARAMS';
 
-export type Coordinate = CartesianCoord
 
-export type MethodName = 'burningship' | 'julia' | 'julia-quadratic' | 'mandelbrot'
+export type FractalList = {[k: string]: Fractal}
 
-interface CommonParams {
-  [k: string]: any,
-  bound: number,
-  iterations: number
+export type FractalKey = keyof FractalList
+
+export type ParamControl = ControlProps
+
+export { ControlType }
+
+export interface State{
+  current: FractalKey
+  fractals: FractalList
+  params: Params
+  defaultParams: {bound: number, iterations: number}
+  paramControls: ParamControl[]
 }
 
-export interface BurningShipParams extends CommonParams {
-  flip: boolean
-  power: number
+export type SetFractal = {
+  type: typeof SET_FRACTAL,
+  payload: {current: FractalKey, params?: Params},
 }
 
-export interface MandelbrotParams extends CommonParams {
-  power: number
+export type UpdateParams = {
+  type: typeof UPDATE_PARAMS,
+  payload: Params
 }
 
-export interface JuliaParams extends CommonParams {
-  f: string,
-}
-
-export interface JuliaQuadraticParams extends CommonParams {
-  c: Coordinate,
-}
-
-export type MethodParams = JuliaParams | JuliaQuadraticParams | CommonParams
-
-export type State = {
-  [k: string]: any
-  method: MethodName,
-  'julia': JuliaParams,
-  'julia-quadratic': JuliaQuadraticParams,
-  'burningship': BurningShipParams,
-  'mandelbrot': MandelbrotParams,
-}
-
-export type SetMethod = {
-  type: typeof SET_METHOD,
-  payload: MethodName,
-}
-
-export type Update = {
-  type: typeof UPDATE,
-  payload:
-    {method: 'julia', params: Partial<JuliaParams>} |
-    {method: 'julia-quadratic', params: Partial<JuliaQuadraticParams>} |
-    {method: 'burningship', params: Partial<BurningShipParams>} |
-    {method: 'mandelbrot', params: Partial<MandelbrotParams>}
-}
-
-export type Action = SetMethod | Update
+export type Action = SetFractal | UpdateParams

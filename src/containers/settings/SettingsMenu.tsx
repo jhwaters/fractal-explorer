@@ -1,0 +1,136 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import { State, Dispatch } from '../../store/types';
+import { Modal } from '../../store/ui/types';
+import { setModal } from '../../store/ui/actions'
+import AlgorithmSettings from './AlgorithmSettings';
+import ColorSettings from './ColorSettings';
+import ViewSettings from './ViewSettings';
+import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
+import List from '@material-ui/core/List';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import FullResolution from './FullResolution';
+import { withStyles } from '@material-ui/core/styles';
+import { Icon } from '../../components';
+
+type Props = {
+  open: boolean
+  setModal: (modal: Modal) => void
+}
+
+const StyledMenuItem = withStyles({
+  root: {
+    padding: '1em',
+  }
+})(MenuItem)
+
+const StyledLabel = withStyles({
+  root: {
+    padding: 0,
+    margin: 0,
+  }
+})(ListItemText)
+
+
+const StyledSwipeableDrawer = withStyles({
+  paper: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100%',
+  }
+})(SwipeableDrawer)
+
+enum Menu {
+  None,
+  Algorithm,
+  Color,
+  View,
+}
+
+class SettingsDrawer extends React.Component<Props> {
+  state: {
+    menu: Menu,
+    popup: boolean,
+  }
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      menu: Menu.None,
+      popup: false,
+    }
+  }
+
+
+
+  openMenu = () => this.props.setModal(Modal.Menu);
+  openAlgorithm = () => this.setState({menu: Menu.Algorithm});
+  openColor = () => this.setState({menu: Menu.Color});
+  openView = () => this.setState({menu: Menu.View});
+  closeAll = () => {
+    this.setState({menu: Menu.None});
+    this.closePopup();
+    this.props.setModal(Modal.None);
+  }
+
+  openPopup = () => this.setState({popup: true})
+  closePopup = () => this.setState({popup: false})
+
+  render() {
+    const labelStyle = this.state.menu === Menu.None ? {} : {display: 'none'};
+    return (
+      <>
+      <StyledSwipeableDrawer
+        open={this.props.open}
+        onOpen={this.openMenu}
+        onClose={this.closeAll}
+      >
+        <List>
+          <StyledMenuItem onClick={this.openAlgorithm}>
+            <ListItemIcon><Icon.Functions/></ListItemIcon>
+            <StyledLabel style={labelStyle}>Algorithm</StyledLabel>
+          </StyledMenuItem>
+          <StyledMenuItem onClick={this.openColor}>
+            <ListItemIcon><Icon.Palette/></ListItemIcon>
+            <StyledLabel style={labelStyle}>Colors</StyledLabel>
+          </StyledMenuItem>
+          <StyledMenuItem onClick={this.openView}>
+            <ListItemIcon><Icon.View/></ListItemIcon>
+            <StyledLabel style={labelStyle}>View</StyledLabel>
+          </StyledMenuItem>
+          <Divider/>
+          <StyledMenuItem onClick={this.openPopup}>
+            <ListItemIcon><Icon.FullResolution/></ListItemIcon>
+            <StyledLabel style={labelStyle}>Render Full Resolution</StyledLabel>
+          </StyledMenuItem>
+          <StyledMenuItem onClick={this.closeAll} style={{paddingTop: '2em', paddingBottom: '2em'}}>
+            <ListItemIcon><Icon.Back/></ListItemIcon>
+            <StyledLabel style={labelStyle}>Close</StyledLabel>
+          </StyledMenuItem>
+        </List>
+        <Box>
+          {this.state.menu === Menu.Algorithm ? <AlgorithmSettings/>
+          : this.state.menu === Menu.Color ? <ColorSettings/>
+          : this.state.menu === Menu.View ? <ViewSettings/>
+          : null}
+        </Box>
+        
+      </StyledSwipeableDrawer>
+      <FullResolution open={this.state.popup} onClose={this.closePopup}/>
+      </>
+    )
+  }
+}
+
+export default connect(
+  (state: State) => ({
+    open: state.ui.modal === Modal.Menu,
+  }),
+  (dispatch: Dispatch) => ({
+    setModal: (modal: Modal) => dispatch(setModal(modal))
+  })
+)(SettingsDrawer)

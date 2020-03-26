@@ -8,7 +8,6 @@ export type State = {
   h: number
   ppu: number // pixels per unit
   previewPixels: number
-  stretch: boolean
 }
 
 export const UPDATE = 'VIEW_UPDATE';

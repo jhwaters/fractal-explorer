@@ -1,0 +1,47 @@
+.Outer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.Inner {
+  overflow: clip;
+}
+
+.Canvas {
+  all: unset;
+  user-select: none;
+  /*box-shadow: 1px 1px 10px rgba(0,0,0,0.4);*/
+}
+
+.Stretch.Outer {
+  overflow: hidden;
+}
+
+.FullResolution .Inner {
+  max-height: 100%;
+  max-width: 100%;
+  top: 0;
+  bottom: 0;
+  overflow: scroll;
+}
+
+.Outer.FullResolution {
+  display: block;
+  overflow: scroll;
+}
+
+.Outer.FullResolution.Stretch {
+  display: flex;
+}
+
+.Stretch .Inner,
+.Stretch .Canvas {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+

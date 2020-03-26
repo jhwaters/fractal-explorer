@@ -1,56 +1,44 @@
-import { randomC } from '../../fractal/juliaQuadratic'
 import {
   State,
   Action,
-  UPDATE,
-  SET_METHOD,
+  SET_FRACTAL,
+  UPDATE_PARAMS,
 } from './types';
+import { FractalList } from '../../fractals';
 
+const Dflt = 'Julia1KC'
 
 
 const initialState: State = {
-  method: 'julia-quadratic',
-  'julia-quadratic': {
-    bound: 10,
-    iterations: 30,
-    power: 2,
-    c: randomC(),
-  },
-  julia: {
-    f: 'e^(z^3)-0.6',
-    //f: 'A',
-    bound: 10,
-    iterations: 30,
-  },
-  mandelbrot: {
-    power: 2,
-    bound: 10,
-    iterations: 30,
-  },
-  burningship: {
-    power: 2,
-    bound: 10,
-    iterations: 30,
-    flip: true,
-  }
+  current: Dflt,
+  params: FractalList[Dflt].create(),
+  defaultParams: {bound: 10, iterations: 30},
+  fractals: FractalList,
+  paramControls: FractalList[Dflt].controls,
 }
 
+
 export default function(state: State=initialState, action: Action) {
-  switch(action.type) {
-    case SET_METHOD:
-      return {...state, method: action.payload}
-    case UPDATE:
-      const {method, params} = action.payload;
-      const i = params.iterations;
-      if (i !== undefined) {
-        params.iterations = Math.max(2, i);
+  switch (action.type) {
+    case SET_FRACTAL:
+      if (action.payload.params === undefined) {
+        return {
+          ...state, 
+          current: action.payload.current, 
+          params: state.fractals[action.payload.current].create(),
+          paramControls: state.fractals[action.payload.current].controls,
+        }
+      } else {
+        return {
+          ...state,
+          current: action.payload.current,
+          params: action.payload.params,
+          paramControls: state.fractals[action.payload.current].controls,
+        }
       }
-      return {
-        ...state,
-        method: method,
-        [method]: {...state[method], ...params},
-      }
+    case UPDATE_PARAMS:
+      return {...state, params: {...state.params, ...action.payload}}
     default:
-      return state;
+      return state
   }
 }

@@ -1,6 +1,1 @@
-import Zoom from './Zoom';
-
-
-export {
-  Zoom,
-}
+export { default as Controls } from './Controls';

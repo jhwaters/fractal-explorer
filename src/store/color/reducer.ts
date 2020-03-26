@@ -1,4 +1,4 @@
-import COLORSCHEMES from '../../fractal/color/schemes';
+import { COLORSCHEMES } from '../../colors';
 import {
   State,
   Action,
@@ -9,10 +9,11 @@ import {
 const initialState: State = {
   scheme: 'Rainbow',
   reverse: false,
+  adaptiveScale: false,
   skew: 0,
-  schemeList: Object.keys(COLORSCHEMES),
+  schemeList: Object.keys(COLORSCHEMES).sort(),
   customSchemes: {
-    //Hello: ["#3db5ec", "#73c2b0", "#b9e375", "#f4bb44", "#eb591b"],
+    'Nice': ["#3db5ec", "#73c2b0", "#b9e375", "#f4bb44", "#eb591b"],
     'Ink': ['#000000', '#FFDD8C'],
   },
 }

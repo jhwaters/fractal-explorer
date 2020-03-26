@@ -1,78 +1,53 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Katex from '../components/katex';
-import {State as AppState} from '../store/types';
-import {State as AlgState} from '../store/algorithm/types';
-import { FORMULAS } from './settings/Julia';
-import {
-  Typography,
-} from '../components';
+import Katex from '../components/Katex';
+import { State as AppState, Dispatch } from '../store/types';
+import { setModal } from '../store/ui/actions';
+import { Modal } from '../store/ui/types';
+import { State as AlgState } from '../store/algorithm/types';
+import { TextWithMath } from '../components';
+import Box from '@material-ui/core/Box';
+import Button, { ButtonProps } from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import { fractal } from '../fractals';
 
 
-type Props = {
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  algorithm: AlgState,
-}
+const KatexButton = withStyles({
+  label: {textTransform: 'none'},
+})(Button)
 
-function withSign(n: number, p: number=4) {
-  if (n < 0) {
-    return n.toPrecision(p)
-  } else {
-    return '+' + n.toPrecision(p)
-  }
-}
+const InfoButton_ = ({formula, ...rest}: {
+  formula: string | {math: string} | (string | {math: string})[]
+} & ButtonProps) => (
+  <KatexButton {...rest}>
+    <TextWithMath data={formula}/>
+  </KatexButton>
+)
 
-function fff(alg: AlgState) {
-  const {method} = alg;
-  const params = alg[method];
-  if (method === 'burningship') {
-    const exp = Math.round(params.power * 10000) / 10000
+export const InfoButton = connect(
+  (state: AppState) => {
+    const {formula} = fractal(state.algorithm);
     return {
-      f: `(|Re(z_n)| + i|Im(z_n)|)^{${exp}} + x + yi`,
-      z: '0',
+      disabled: state.ui.modal === Modal.Info,
+      formula,
     }
-  }
-  if (method === 'mandelbrot') {
-    const exp = Math.round(params.power * 10000) / 10000
-    return {
-      f: `z_n^{${exp}} + x + yi`,
-      z: 'z_0 = 0',
-    }
-  }
-  if (method === 'julia-quadratic') {
-    const exp = Math.round(params.power * 10000) / 10000
-    const {x, y} = params.c;
-    return {
-      f: `z_n^{${exp}}${withSign(x)}${withSign(y)}i`,
-      z: 'x + yi',
-    }
-  }
-  if (method === 'julia') {
-    const f = FORMULAS[params.f];
-    if (f.latex) {
-      return {
-        f: f.latex.replace(/z/g, 'z_{n}'),
-        z: 'x + yi',
-      }
-    } else {
-      return {
-        f: params.f,
-        z: 'x + yi',
-        nolatex: true,
-      }
-    }
-  }
-}
+  },
+  (dispatch: Dispatch) => ({
+    onClick: () => dispatch(setModal(Modal.Info))
+  })
+)(InfoButton_)
+
+
+//////////////////////////////////////////////////
+////////////////////////////////////////////////
 
 
 function rounder(p: number) {
   const d = Math.pow(10, p);
   return (n: number) => Math.round(n * d) / d;
 }
-
 
 function science(n: number, p: number=4) {
   const a = n.toPrecision(4);
@@ -84,71 +59,74 @@ function science(n: number, p: number=4) {
   }
 }
 
+type Props = {
+  visible: boolean,
+  anchorEl?: HTMLElement,
+  onClose: () => void,
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  algorithm: AlgState,
+}
+
+
 const FractalInfo = (props: Props) => {
 
   const {algorithm} = props;
-  const {method} = algorithm;
-  const params = algorithm[method];
+  const fractalinfo = fractal(algorithm).description;
 
   const round = rounder(3-Math.floor(Math.log10(props.rx)))
 
   const cx = round(props.cx)
-  const cy = round(method === 'burningship' && params.flip ? -props.cy : props.cy)
+  const cy = round(props.cy)
 
   const rx = science(Math.abs(props.rx))
   const ry = science(Math.abs(props.ry))
 
+  const centerx = 'x_c = ' + cx
+  const centery = 'y_c = ' + cy
+  const domainx = '|x - x_c| \\leq ' + rx 
+  const domainy = '|y - y_c| \\leq ' + ry 
+
+  /*
   const center = (
     '\\begin{aligned}'
-    + 'x_c &= ' + cx 
+    + centerx
     + '\\\\' 
-    + 'y_c &= ' + cy + 
-    '\\end{aligned}'
+    + centery
+    + '\\end{aligned}'
   );
 
   const domain = (
-    '\\begin{aligned}' 
-    + '|x - x_c| &< ' + rx 
-    + '\\\\' 
-    + '|y - y_c| &< ' + ry 
-    + '\\end{aligned}'
+    //'\\begin{aligned}' 
+    + domainx
+    //+ '\\\\' 
+    + domainy
+    //+ '\\end{aligned}'
   );
-
-  const {f, z, nolatex=false} = fff(algorithm) as {f: string, z: string, nolatex?: boolean};
-
-  const fmla = (
-    '\\begin{aligned}'
-    + 'z_0 &= ' + z
-    + '\\\\' 
-    + 'z_{n+1} &= ' + f 
-    + '\\end{aligned}'
-  );
+  */
 
   return (
-    <>
-      {nolatex ? (
-        <p>{f}</p>
-      ) : (
-        <Katex math={fmla} displayMode={true}/>
-      )}
-
-      <Typography>
-        The color of the pixel located at <Katex math="(x, y)"/> corresponds 
-        to <Katex math="k"/>, where <Katex math="z_k"/> is the first term of
-        the above sequence such that <Katex math={"|z_k| \\geq " + params.bound}/>.
-        If this does not occur in the first {params.iterations} terms of the sequence,
-        then <Katex math={"k = " + params.iterations}/>.
-      </Typography>
-      <Typography>
-        The currently displayed portion of this fractal is centered
-        at <Katex math="(x_c, y_c)"/>, where
-      </Typography>
-      <Katex math={center} displayMode={true}/>
-      <Typography>
-        and plotted over <Katex math="(x, y)"/> such that
-      </Typography>
-      <Katex math={domain} displayMode={true}/>
-    </>
+    <Popover
+      PaperProps={{square: true}}
+      open={props.visible}
+      onClose={props.onClose}
+      anchorEl={props.anchorEl}
+    >
+      <Box p={1.5} onClick={props.onClose}>
+        <TextWithMath data={fractalinfo}/>
+        <Typography style={{marginTop: '1em'}}>
+          The currently displayed portion of this fractal is centered
+          at <Katex math="(x_c, y_c)"/>, where
+        </Typography>
+        <Katex math={centerx + '\\text{ and }' + centery} displayMode={true}/>
+        <Typography>
+          and plotted over <Katex math="(x, y)"/> such that 
+        </Typography>
+        <Katex math={domainx + '\\text{ and }' + domainy} displayMode={true}/>
+      </Box>
+    </Popover>
   )
 }
 
@@ -157,11 +135,15 @@ export default connect(
     const {cx, cy, ppu, w, h} = state.view;
     const rx = w/ppu/2, ry = h/ppu/2;
     return {
+      visible: state.ui.modal === Modal.Info,
       cx: cx,
       cy: cy,
       rx: rx,
       ry: ry,
       algorithm: state.algorithm,
     }
-  }
+  },
+  (dispatch: Dispatch) => ({
+    onClose: () => dispatch(setModal(Modal.None))
+  })
 )(FractalInfo)

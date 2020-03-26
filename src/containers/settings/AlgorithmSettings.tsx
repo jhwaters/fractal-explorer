@@ -1,203 +1,96 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State as AppState } from '../../store/types';
-import {
-  State,
-  MethodName,
-  MethodParams,
-  JuliaParams,
-  JuliaQuadraticParams,
-  BurningShipParams,
-  MandelbrotParams,
-} from '../../store/algorithm/types';
-import { update as updateAlgorithm } from '../../store/algorithm/actions';
-import { update as updateView, recenter as recenterView } from '../../store/view/actions';
-import { setDrawing } from '../../store/draw/actions';
-import JuliaSettings from './Julia';
-import JuliaQuadraticSettings from './JuliaQuadratic';
-import MandelbrotSettings from './Mandelbrot';
-import BurningShipSettings from './BurningShip';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  MenuItem,
-  TextField,
-} from '../../components/material';
+import { State as AppState, Dispatch } from '../../store/types';
+import { State as AlgState, FractalKey, Params } from '../../store/algorithm/types';
+import { setFractal } from '../../store/algorithm/actions';
+import { startDrawing } from '../../store/ui/actions'
+import { recenter } from '../../store/view/actions';
+import { SettingsContainer, TextWithMath } from '../../components';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+
 
 type Props = {
-  value: State,
-  onClose: () => void,
-  onChange: (method: MethodName, params: MethodParams, x?: {recenter?: boolean, previewPixels?: number}) => void,
+  algorithm: AlgState
+  setFractal: (key: FractalKey) => void
 }
 
-interface MyState extends State {
-  previewPixels?: number
+interface State {
+  current: FractalKey,
+  params: Params,
 }
 
 class AlgorithmSettings extends React.Component<Props> {
-  state: MyState
+  state: State
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      ...props.value,
+      current: props.algorithm.current,
+      params: {...props.algorithm.params},
     };
+  }
+
+  selectMethod = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({current: evt.target.value});
   }
 
   apply = () => {
-    const {method} = this.state;
-    const opts: {recenter: boolean, previewPixels?: number} = {
-      recenter: (method !== this.props.value.method) || (method === 'julia'),
-    };
-    if (this.state.previewPixels) {
-      opts.previewPixels = this.state.previewPixels;
-    } else {
-      opts.previewPixels = 160000
-    }
-    this.props.onChange(method, this.state[method], opts);
+    console.log(this.state.current)
+    this.props.setFractal(this.state.current)
   }
 
-  revert = () => {
-    const method = this.state.method;
+  reset = () => {
     this.setState({
-      [method]: {...this.props.value[method]},
-    });
-  }
-
-  changedParams() {
-    for (const m of ['julia', 'julia-quadratic', 'mandelbrot', 'burningship']) {
-      for (const k in this.state[m]) {
-        if (this.state[m][k] !== this.props.value[m][k]) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  changedMethod() {
-    return this.state.method !== this.props.value.method;
-  }
-
-  hasChanged() {
-    if (this.changedMethod()) return true;
-    if (this.changedParams()) return true;
-    return false;
-  }
-
-  selectMethod = (evt: any) => this.setState({
-    method: evt.target.value,
-  });
-
-  updateJulia = (x: Partial<JuliaParams>, p?: {previewPixels?: number}) => {
-    this.setState({
-      ...p,
-      julia: {...this.state.julia, ...x},
+      current: this.props.algorithm.current,
+      params: {...this.props.algorithm.params},
     })
-  }
-
-  updateJuliaQuadratic = (x: Partial<JuliaQuadraticParams>) => {
-    this.setState({
-      'julia-quadratic': {...this.state['julia-quadratic'], ...x},
-    })
-  }
-
-  updateMandelbrot = (x: Partial<MandelbrotParams>) => {
-    this.setState({
-      mandelbrot: {...this.state.mandelbrot, ...x},
-    })
-  }
-
-  updateBurningShip = (x: Partial<BurningShipParams>) => {
-    this.setState({
-      burningship: {...this.state.burningship, ...x},
-    })
-  }
-
-  renderMethodSettings() {
-    if (this.state.method === 'julia') {
-      return (
-        <JuliaSettings
-          onApply={this.apply}
-          onChange={this.updateJulia}
-          value={this.state['julia']}
-        />
-      )
-    }
-    if (this.state.method === 'julia-quadratic') {
-      return (
-        <JuliaQuadraticSettings
-          onApply={this.apply}
-          onChange={this.updateJuliaQuadratic}
-          value={this.state['julia-quadratic']}
-        />
-      )
-    }
-    if (this.state.method === 'mandelbrot') {
-      return (
-        <MandelbrotSettings
-          onApply={this.apply}
-          onChange={this.updateMandelbrot}
-          value={this.state['mandelbrot']}
-        />
-      )
-    }
-    if (this.state.method === 'burningship') {
-      return (
-        <BurningShipSettings
-          onApply={this.apply}
-          onChange={this.updateBurningShip}
-          value={this.state['burningship']}
-        />
-      )
-    }
   }
 
   render() {
-    const disabled = !this.hasChanged();
     return (
-      <>
-        <Box>
-          <TextField select
-            label="Method"
-            value={this.state.method}
-            onChange={this.selectMethod}
-          >
-            <MenuItem value="burningship">Burning Ship</MenuItem>
-            <MenuItem value="julia-quadratic">Julia (1 term)</MenuItem>
-            <MenuItem value="mandelbrot">Mandelbrot</MenuItem>
-            <MenuItem value="julia">Other</MenuItem>
-          </TextField>
+      <SettingsContainer>
+        <Box m={1}>
+          <Box m={1}>
+            <TextField select
+              label="Method"
+              value={this.state.current}
+              onChange={this.selectMethod}
+              style={{maxWidth: '500px'}}
+            >
+              {Object.keys(this.props.algorithm.fractals).sort().map(k => {
+                return (
+                  <MenuItem key={k} value={k}>
+                      <TextWithMath data={this.props.algorithm.fractals[k].label}/>
+                  </MenuItem>
+                )
+              })}
+            </TextField>
+          </Box>
+          <Box m={1}>
+            <ButtonGroup fullWidth color="primary">
+              <Button fullWidth onClick={this.reset}>Reset</Button>
+              <Button fullWidth onClick={this.apply}>Apply</Button>
+            </ButtonGroup>
+          </Box>
         </Box>
-        {this.renderMethodSettings()}
-
-      <ButtonGroup fullWidth color="primary" variant="text">
-        <Button 
-          onClick={this.apply} 
-          disabled={disabled}
-        >Apply</Button>
-      </ButtonGroup>
-      </>
+      </SettingsContainer>
     )
   }
 }
 
 export default connect(
   (state: AppState) => ({
-    value: state.algorithm,
+    algorithm: state.algorithm,
   }),
-  (dispatch) => ({
-    onChange: (method: MethodName, params: MethodParams, opts?: {
-      recenter?: boolean,
-      previewPixels?: number,
-    }) => {
-      if (opts) {
-        if (opts.previewPixels) dispatch(updateView({previewPixels: opts.previewPixels}));
-        if (opts.recenter) dispatch(recenterView());
-      }
-      dispatch(updateAlgorithm(method, params));
-      dispatch(setDrawing(true));
+  (dispatch: Dispatch) => ({
+    setFractal: (key: FractalKey) => {
+      dispatch(setFractal(key))
+      dispatch(recenter())
+      dispatch(startDrawing())
     },
   })
 )(AlgorithmSettings)

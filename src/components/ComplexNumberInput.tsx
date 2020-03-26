@@ -1,5 +1,183 @@
 import React from 'react';
-import styles from './components.module.css';
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+
+
+export interface ComplexNumberInputProps {
+  value: [number, number],
+  max: number,
+  onClick?: (v: [number, number]) => void,
+  onDoubleClick?: (v: [number, number]) => any,
+  size: number,
+  precision: number,
+  stepRect: number,
+  stepRadius: number,
+  stepAngle: number,
+  angles?: number[],
+  style?: React.CSSProperties,
+  markerColor: string,
+  gridColor?: string,
+  textColor?: string,
+}
+
+
+const styles = createStyles({
+  root: {
+    padding: '0px',
+    userSelect: 'none',
+  },
+  
+  grid: {
+    strokeLinecap: 'square',
+    fill: 'none',
+  },
+  
+  major: {
+    strokeWidth: 0.5,
+    strokeOpacity: 1,
+  },
+  
+  minor: {
+    strokeWidth: 0.5,
+    strokeOpacity: 0.3,
+  },
+  
+  marker: {
+    strokeWidth: 0,
+  },
+});
+
+
+interface Props extends ComplexNumberInputProps, WithStyles<typeof styles> {}
+
+class ComplexNumberInput extends React.Component<Props> {
+  ref: React.RefObject<SVGSVGElement>
+  GRID: {
+    RECT?: {MAJOR?: string, MINOR?: string},
+    POLAR?: {MAJOR?: string, MINOR?: string},
+  }
+  round: (n: number) => number
+
+  static defaultProps = {
+    size: 100,
+    precision: 3,
+    stepAngle: 30,
+    stepRadius: 0.2,
+    stepRect: 0.2,
+
+    markerColor: 'blue',
+    //gridColor: 'black',
+  }
+
+  constructor(props: React.PropsWithChildren<Props>) {
+    super(props);
+    this.ref = React.createRef();
+    const r = Math.pow(10, props.precision);
+    this.round = (n: number) => Math.round(n*r) / r;
+    const {max, stepRadius, stepRect, stepAngle, angles} = this.props;
+    this.GRID = makegrid({max, stepRadius, stepAngle, angles, stepX: stepRect, stepY: stepRect});
+  }
+
+  getValueAtClick(evt: any): [number, number] | undefined {
+    const svg = this.ref.current;
+    if (svg) {
+      const rect = svg.getBoundingClientRect();
+      const {x, y} = rect;
+      const {clientX, clientY} = evt.nativeEvent;
+      const clickX = ((clientX - x) / this.props.size - 0.5) * 2*this.props.max;
+      const clickY = -((clientY - y) / this.props.size - 0.5) * 2*this.props.max;
+      return [this.round(clickX), this.round(clickY)];
+    }
+  }
+
+  onClick = (evt: any) => {
+    if (this.props.onClick) {
+      const p = this.getValueAtClick(evt);
+      if (p) this.props.onClick(p);
+    }
+  }
+
+  onDoubleClick = (evt: any) => {
+    if (this.props.onDoubleClick) {
+      const p = this.getValueAtClick(evt);
+      if (p) this.props.onDoubleClick(p);
+    }
+  }
+
+  polarGrid() {
+    if (this.GRID.POLAR) {
+      return (
+        <>
+        {this.GRID.POLAR.MINOR ? (
+          <path d={this.GRID.POLAR.MINOR} 
+            className={this.props.classes.minor} 
+            vectorEffect="non-scaling-stroke"/>
+        ) : null}
+        {this.GRID.POLAR.MAJOR ? (
+          <path d={this.GRID.POLAR.MAJOR} 
+            className={this.props.classes.major} 
+            vectorEffect="non-scaling-stroke"/>
+        ) : null}
+        </>
+      )
+    }
+    return null;
+  }
+
+  rectGrid() {
+    if (this.GRID.RECT) {
+      return (
+        <>
+        {this.GRID.RECT.MINOR ? (
+          <path d={this.GRID.RECT.MINOR} 
+            className={this.props.classes.minor} 
+            vectorEffect="non-scaling-stroke"/>
+        ) : null}
+        {this.GRID.RECT.MAJOR ? (
+          <path d={this.GRID.RECT.MAJOR} 
+            className={this.props.classes.major} 
+            vectorEffect="non-scaling-stroke"/>
+        ) : null}
+        </>
+      )
+    }
+    return null;
+  }
+  
+  render() {
+    const markerRadius = this.props.max / 24;
+    const viewBox = [-this.props.max, -this.props.max, 2*this.props.max, 2*this.props.max]
+    return (
+      <svg 
+        ref={this.ref}
+        onClick={this.onClick}
+        onDoubleClick={this.onDoubleClick}
+        viewBox={viewBox.join(' ')}
+        className={this.props.classes.root}
+        style={{...this.props.style, width: this.props.size, height: this.props.size}}
+      >
+        <g className={this.props.classes.grid}
+          style={{stroke: this.props.gridColor}}
+        >
+          {this.rectGrid()}
+          {this.polarGrid()}
+        </g>
+        <circle 
+          cx={this.props.value[0]}
+          cy={-this.props.value[1]}
+          r={markerRadius} 
+          className={this.props.classes.marker}
+          style={{
+            stroke: this.props.markerColor,
+            fill: this.props.markerColor,
+          }}
+        />
+      </svg>
+    )
+  }
+}
+
+
+export default withStyles(styles)(ComplexNumberInput)
 
 
 function makegrid({max, stepX, stepY, stepRadius, stepAngle, angles}: {
@@ -69,152 +247,3 @@ function makegrid({max, stepX, stepY, stepRadius, stepAngle, angles}: {
   }
   
 }
-
-type Props = {
-  value: {x: number, y: number},
-  max: number,
-  onClick?: (x: number, y: number) => void,
-  onDoubleClick?: (x: number, y: number) => any,
-  size: number,
-  precision: number,
-  stepRect: number,
-  stepRadius: number,
-  stepAngle: number,
-  angles?: number[],
-  style?: React.CSSProperties,
-
-  markerColor: string,
-  gridColor?: string,
-  textColor?: string,
-}
-
-
-
-class ComplexNumberInput extends React.Component<Props> {
-  ref: React.RefObject<SVGSVGElement>
-  GRID: {
-    RECT?: {MAJOR?: string, MINOR?: string},
-    POLAR?: {MAJOR?: string, MINOR?: string},
-  }
-  round: (n: number) => number
-
-  static defaultProps = {
-    size: 100,
-    precision: 3,
-    stepAngle: 30,
-    stepRadius: 0.2,
-    stepRect: 0.2,
-
-    markerColor: 'blue',
-    //gridColor: 'black',
-  }
-
-  constructor(props: React.PropsWithChildren<Props>) {
-    super(props);
-    this.ref = React.createRef();
-    const r = Math.pow(10, props.precision);
-    this.round = (n: number) => Math.round(n*r) / r;
-    const {max, stepRadius, stepRect, stepAngle, angles} = this.props;
-    this.GRID = makegrid({max, stepRadius, stepAngle, angles, stepX: stepRect, stepY: stepRect});
-  }
-
-  getValueAtClick(evt: any): [number, number] | undefined {
-    const svg = this.ref.current;
-    if (svg) {
-      const rect = svg.getBoundingClientRect();
-      const {x, y} = rect;
-      const {clientX, clientY} = evt.nativeEvent;
-      const clickX = ((clientX - x) / this.props.size - 0.5) * 2*this.props.max;
-      const clickY = -((clientY - y) / this.props.size - 0.5) * 2*this.props.max;
-      return [this.round(clickX), this.round(clickY)];
-    }
-  }
-
-  onClick = (evt: any) => {
-    if (this.props.onClick) {
-      const p = this.getValueAtClick(evt);
-      if (p) this.props.onClick(...p);
-    }
-  }
-
-  onDoubleClick = (evt: any) => {
-    if (this.props.onDoubleClick) {
-      const p = this.getValueAtClick(evt);
-      if (p) this.props.onDoubleClick(...p);
-    }
-  }
-
-  polarGrid() {
-    if (this.GRID.POLAR) {
-      return (
-        <>
-        {this.GRID.POLAR.MINOR ? (
-          <path d={this.GRID.POLAR.MINOR} 
-            className={styles.Minor} 
-            vectorEffect="non-scaling-stroke"/>
-        ) : null}
-        {this.GRID.POLAR.MAJOR ? (
-          <path d={this.GRID.POLAR.MAJOR} 
-            className={styles.Major} 
-            vectorEffect="non-scaling-stroke"/>
-        ) : null}
-        </>
-      )
-    }
-    return null;
-  }
-
-  rectGrid() {
-    if (this.GRID.RECT) {
-      return (
-        <>
-        {this.GRID.RECT.MINOR ? (
-          <path d={this.GRID.RECT.MINOR} 
-            className={styles.Minor} 
-            vectorEffect="non-scaling-stroke"/>
-        ) : null}
-        {this.GRID.RECT.MAJOR ? (
-          <path d={this.GRID.RECT.MAJOR} 
-            className={styles.Major} 
-            vectorEffect="non-scaling-stroke"/>
-        ) : null}
-        </>
-      )
-    }
-    return null;
-  }
-  
-  render() {
-    const markerRadius = this.props.max / 30;
-    const viewBox = [-this.props.max, -this.props.max, 2*this.props.max, 2*this.props.max]
-    return (
-      <svg 
-        ref={this.ref}
-        onClick={this.onClick}
-        onDoubleClick={this.onDoubleClick}
-        viewBox={viewBox.join(' ')}
-        className={styles.ComplexNumberInput}
-        style={{...this.props.style, width: this.props.size, height: this.props.size}}
-      >
-        <g className={styles.Grid}
-          style={{stroke: this.props.gridColor}}
-        >
-          {this.rectGrid()}
-          {this.polarGrid()}
-        </g>
-        <circle 
-          cx={this.props.value.x}
-          cy={-this.props.value.y}
-          r={markerRadius} 
-          className={styles.Marker}
-          style={{
-            stroke: this.props.markerColor,
-            fill: this.props.markerColor,
-          }}
-        />
-      </svg>
-    )
-  }
-}
-
-export default ComplexNumberInput

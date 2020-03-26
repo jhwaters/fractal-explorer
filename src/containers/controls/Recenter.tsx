@@ -1,26 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { recenter as recenterView } from '../../store/view/actions';
-import { setDrawing } from '../../store/draw/actions';
-import { Button } from '../../components/material';
+import { Dispatch } from '../../store/types';
+import { startDrawing } from '../../store/ui/actions';
+import { recenter } from '../../store/view/actions';
+import Button, { ButtonProps } from '@material-ui/core/Button';
+import { Icon } from '../../components';
 
-type Props = {
-  recenter: () => void
-}
 
-const Recenter = ({recenter}: Props) => {
-  return (
-    <Button onClick={recenter}>Re-center</Button>
-  )
-}
 
+const RecenterButton = (props: ButtonProps) => (
+  <Button startIcon={<Icon.Recenter/>} {...props}>
+    Recenter
+  </Button>
+)
 
 export default connect(
   null,
-  (dispatch: any) => ({
-    recenter: () => {
-      dispatch(recenterView());
-      dispatch(setDrawing(true));
+  (dispatch: Dispatch) => ({
+    onClick: () => {
+      dispatch(recenter());
+      dispatch(startDrawing());
     }
-  })
-)(Recenter)
+  }),
+)(RecenterButton)

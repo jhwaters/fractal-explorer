@@ -1,43 +1,62 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State as AppState } from '../store/types';
-import Canvas from './Canvas';
-import UI from './UI';
+import { State } from '../store/types';
+import { Nav } from '../store/ui/types';
+import BottomBar from './Bottombar';
+import Settings from './Settings';
+import { Controls } from './Controls';
+import Display from './Display';
+import TopBar from './TopBar';
+import Info from './Info';
+import Box from '@material-ui/core/Box';
+import { withStyles } from '@material-ui/core/styles';
 import styles from './App.module.css';
 
+
 type Props = {
-  fullResolution: boolean,
-  stretch: boolean
+  nav: Nav,
 }
 
-type State = {
-}
+const WithBottomNav = withStyles({
+  root: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column-reverse',
+  }
+})(Box)
+
+const AboveBox = withStyles({
+  root: {
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    flexGrow: 1,
+  }
+})(Box)
 
 class App extends React.Component<Props> {
-  
+
   render() {
-    const classNames = [styles.CanvasContainer]
-    if (this.props.stretch) {
-      classNames.push(styles.Stretch)
-    }
-    if (this.props.fullResolution) {
-      classNames.push(styles.FullResolution)
-    }
 
     return (
-      <>
-      <UI />
-      <div className={classNames.join(' ')}>
-        <Canvas />
+      <div className={styles.App}>
+        <TopBar />
+        <Info />
+        <Settings />
+        <WithBottomNav>
+          <BottomBar />
+            <Controls/>
+          <AboveBox>
+            <Display/>
+          </AboveBox>
+        </WithBottomNav>
       </div>
-      </>
     )
   }
 }
 
 export default connect(
-  (state: AppState) => ({
-    fullResolution: state.draw.fullResolution,
-    stretch: state.view.stretch,
-  })
+  (state: State) => ({nav: state.ui.nav})
 )(App);
