@@ -1,7 +1,7 @@
 import * as Icon from './icons';
 
 export { default as NumberIncrementer } from './NumberIncrementer';
-export { default as ComplexIncrementer } from './ComplexNumberIncrementer';
+export { default as ComplexIncrementer } from './ComplexIncrementer';
 export { default as TextWithMath } from './TextWithMath';
 export { default as SettingsContainer } from './SettingsContainer';
 export { default as Katex } from './Katex';

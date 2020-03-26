@@ -9,6 +9,9 @@ import {
 import { Polar } from '../fractals/math/types';
 import { Icon } from '.';
 
+
+//const round = (n: number) => Math.round(n * 100000) / 100000
+
 type Vec = [number, number]
 
 interface NewProps {
