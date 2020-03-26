@@ -108,19 +108,19 @@ export const Mandelbox1: FractalInterface<MandelboxParams & EscapeParams> = ({
 
 
 
-interface Mandelbox2Params {
+interface BurningShipBoxParams {
   k: number,
   scale: number,
 }
 
-export const Mandelbox2BurningShip: FractalInterface<Mandelbox2Params & EscapeParams> = ({
-  label: 'Mandelbox/Burning Ship Mashup',
+export const BurningShip2Mandelbox: FractalInterface<BurningShipBoxParams & EscapeParams> = ({
+  label: 'Burning Ship (Mandelbox Remix)',
 
   ...mix.escape.pixel(
-    ({scale, k}: Mandelbox2Params) => {
+    ({scale, k}: BurningShipBoxParams) => {
       const pow = isInt(k) && k > 0 ? powInt : powFloat
       return (c: Complex) => (z: Complex) => {
-        let z1 = multReal(pow(complex(Math.abs(z.re), Math.abs(z.im)), k), 1/scale);
+        let z1 = multReal(pow(complex(Math.abs(z.re), -Math.abs(z.im)), k), 1/scale);
         z1 = complex(f1(z1.re), f1(z1.im))
         let abs2z1 = abs2(z1)
         if (abs2z1 < 0.25) {
@@ -137,12 +137,12 @@ export const Mandelbox2BurningShip: FractalInterface<Mandelbox2Params & EscapePa
   ...mix.escape.create(() => ({scale: 2.2, k: 2, bound: 50})),
   ...mix.base.settings(),
 
-  formula: ({scale,k}: Mandelbox2Params) => ['Burning Shipbox (', num(scale), ', ', num(k), ')'],
+  formula: ({scale,k}: BurningShipBoxParams) => ['Burning Shipbox (', num(scale), ', ', num(k), ')'],
 
-  description: ({scale, k, bound, iterations}: Mandelbox2Params & EscapeParams) => [
+  description: ({scale, k, bound, iterations}: BurningShipBoxParams & EscapeParams) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
     {
-      math: `z \\mapsto \\left(|Re(z)|+|Im(z)|\\right)^{${num(k)}} \\div ${num(scale)}`,
+      math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(scale)}`,
       displayMode: true,
     }
   ],
