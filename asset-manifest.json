@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/fractal-explorer/static/css/main.08d1e4b1.chunk.css",
-    "main.js": "/fractal-explorer/static/js/main.b1051033.chunk.js",
-    "main.js.map": "/fractal-explorer/static/js/main.b1051033.chunk.js.map",
+    "main.css": "/fractal-explorer/static/css/main.5156b5d0.chunk.css",
+    "main.js": "/fractal-explorer/static/js/main.bebc7cf6.chunk.js",
+    "main.js.map": "/fractal-explorer/static/js/main.bebc7cf6.chunk.js.map",
     "runtime-main.js": "/fractal-explorer/static/js/runtime-main.98a64640.js",
     "runtime-main.js.map": "/fractal-explorer/static/js/runtime-main.98a64640.js.map",
     "static/css/2.de167b80.chunk.css": "/fractal-explorer/static/css/2.de167b80.chunk.css",
-    "static/js/2.bb2ded57.chunk.js": "/fractal-explorer/static/js/2.bb2ded57.chunk.js",
-    "static/js/2.bb2ded57.chunk.js.map": "/fractal-explorer/static/js/2.bb2ded57.chunk.js.map",
+    "static/js/2.cb53b854.chunk.js": "/fractal-explorer/static/js/2.cb53b854.chunk.js",
+    "static/js/2.cb53b854.chunk.js.map": "/fractal-explorer/static/js/2.cb53b854.chunk.js.map",
     "index.html": "/fractal-explorer/index.html",
-    "precache-manifest.c3d2cc84a0a36bb3b511ec4147484061.js": "/fractal-explorer/precache-manifest.c3d2cc84a0a36bb3b511ec4147484061.js",
+    "precache-manifest.ae12823f24f91c1235365bdbd0565026.js": "/fractal-explorer/precache-manifest.ae12823f24f91c1235365bdbd0565026.js",
     "service-worker.js": "/fractal-explorer/service-worker.js",
     "static/css/2.de167b80.chunk.css.map": "/fractal-explorer/static/css/2.de167b80.chunk.css.map",
-    "static/css/main.08d1e4b1.chunk.css.map": "/fractal-explorer/static/css/main.08d1e4b1.chunk.css.map",
-    "static/js/2.bb2ded57.chunk.js.LICENSE.txt": "/fractal-explorer/static/js/2.bb2ded57.chunk.js.LICENSE.txt",
+    "static/css/main.5156b5d0.chunk.css.map": "/fractal-explorer/static/css/main.5156b5d0.chunk.css.map",
+    "static/js/2.cb53b854.chunk.js.LICENSE.txt": "/fractal-explorer/static/js/2.cb53b854.chunk.js.LICENSE.txt",
     "static/media/katex.css": "/fractal-explorer/static/media/KaTeX_Typewriter-Regular.6cc31ea5.woff2"
   },
   "entrypoints": [
     "static/js/runtime-main.98a64640.js",
     "static/css/2.de167b80.chunk.css",
-    "static/js/2.bb2ded57.chunk.js",
-    "static/css/main.08d1e4b1.chunk.css",
-    "static/js/main.b1051033.chunk.js"
+    "static/js/2.cb53b854.chunk.js",
+    "static/css/main.5156b5d0.chunk.css",
+    "static/js/main.bebc7cf6.chunk.js"
   ]
 }
