@@ -41,6 +41,7 @@ const StyledSwipeableDrawer = withStyles({
     display: 'flex',
     flexDirection: 'row',
     height: '100%',
+    maxWidth: '90vw',
   }
 })(SwipeableDrawer)
 
@@ -82,6 +83,7 @@ class SettingsDrawer extends React.Component<Props> {
 
   render() {
     const labelStyle = this.state.menu === Menu.None ? {} : {display: 'none'};
+    const listStyle = this.state.menu === Menu.None ? {} : {width: '4em'}
     return (
       <>
       <StyledSwipeableDrawer
@@ -89,7 +91,7 @@ class SettingsDrawer extends React.Component<Props> {
         onOpen={this.openMenu}
         onClose={this.closeAll}
       >
-        <List>
+        <List style={listStyle}>
           <StyledMenuItem onClick={this.openAlgorithm}>
             <ListItemIcon><Icon.Functions/></ListItemIcon>
             <StyledLabel style={labelStyle}>Algorithm</StyledLabel>
@@ -113,9 +115,9 @@ class SettingsDrawer extends React.Component<Props> {
           </StyledMenuItem>
         </List>
         <Box>
-          {this.state.menu === Menu.Algorithm ? <AlgorithmSettings/>
-          : this.state.menu === Menu.Color ? <ColorSettings/>
-          : this.state.menu === Menu.View ? <ViewSettings/>
+          {this.state.menu === Menu.Algorithm ? <AlgorithmSettings onClose={this.closeAll}/>
+          : this.state.menu === Menu.Color ? <ColorSettings onClose={this.closeAll}/>
+          : this.state.menu === Menu.View ? <ViewSettings onClose={this.closeAll}/>
           : null}
         </Box>
         

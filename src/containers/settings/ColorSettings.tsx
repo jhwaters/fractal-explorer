@@ -25,6 +25,7 @@ type Props = {
   current: ColorTypes.State,
   updateColor: (update: Partial<ColorTypes.State>) => void
   addScheme: (k: string, colors: string[]) => void
+  onClose?: () => void
 }
 
 
@@ -93,6 +94,9 @@ class ColorSettings extends React.Component<Props> {
       skew: this.state.skew,
       adaptiveScale: this.state.adaptiveScale,
     });
+    if (this.props.onClose) {
+      this.props.onClose()
+    }
   }
 
   revert = () => {
@@ -188,15 +192,15 @@ class ColorSettings extends React.Component<Props> {
             </Box>
 
             
-            <ButtonGroup fullWidth color="primary">
-              <Button
-                onClick={this.revert}
-                disabled={!this.hasChanged()}
-              >Reset</Button>
+            <ButtonGroup fullWidth color="primary" orientation="vertical">
               <Button 
                 onClick={this.apply}
                 disabled={!this.hasChanged()}
               >Apply</Button>
+              <Button
+                onClick={this.revert}
+                disabled={!this.hasChanged()}
+              >Reset</Button>
             </ButtonGroup>
 
           </Box>

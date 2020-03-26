@@ -14,6 +14,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 type Props = {
   current: ViewState
   updateView: (update: Partial<ViewState>) => void
+  onClose?: () => void
 }
 
 type Evt = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,6 +45,9 @@ class ViewSettings extends React.Component<Props> {
   apply = () => {
     let {h, ppu, ...rest} = this.state.current;
     this.props.updateView({h, ppu, ...rest});
+    if (this.props.onClose) {
+      this.props.onClose()
+    }
   }
 
   revert = () => {
@@ -132,15 +136,16 @@ class ViewSettings extends React.Component<Props> {
             />
           </Box>
 
-          <ButtonGroup fullWidth color="primary">
-            <Button
-              onClick={this.revert}
-              disabled={!this.hasChanged()}
-            >Reset</Button>
+          <ButtonGroup fullWidth color="primary" orientation="vertical">
             <Button 
               onClick={this.apply}
               disabled={!this.hasChanged()}
             >Apply</Button>
+            <Button
+              onClick={this.revert}
+              disabled={!this.hasChanged()}
+            >Reset</Button>
+
           </ButtonGroup>
         </Box>
       </Box>

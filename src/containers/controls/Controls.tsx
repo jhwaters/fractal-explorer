@@ -30,9 +30,9 @@ const OuterBox = withStyles((theme: Theme) => ({
 const CenteringBox = withStyles({
   root: {
     display: 'flex',
-    flexDirection: 'row',
+    flexFlow: 'row wrap',
     alignItems: 'center',
-    height: '70px',
+    //height: '70px',
     justifyContent: 'space-around',
   }
 })(Box)

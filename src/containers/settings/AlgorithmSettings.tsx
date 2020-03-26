@@ -11,12 +11,16 @@ import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-
+import { withStyles } from '@material-ui/core/styles';
 
 type Props = {
   algorithm: AlgState
   setFractal: (key: FractalKey) => void
+  onClose?: () => void
 }
+
+const StyledMenuItem = withStyles({
+})(MenuItem)
 
 interface State {
   current: FractalKey,
@@ -39,8 +43,10 @@ class AlgorithmSettings extends React.Component<Props> {
   }
 
   apply = () => {
-    console.log(this.state.current)
     this.props.setFractal(this.state.current)
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
   }
 
   reset = () => {
@@ -59,21 +65,26 @@ class AlgorithmSettings extends React.Component<Props> {
               label="Method"
               value={this.state.current}
               onChange={this.selectMethod}
-              style={{maxWidth: '500px'}}
+              style={{maxWidth: '300px'}}
             >
               {Object.keys(this.props.algorithm.fractals).sort().map(k => {
                 return (
-                  <MenuItem key={k} value={k}>
-                      <TextWithMath data={this.props.algorithm.fractals[k].label}/>
-                  </MenuItem>
+                  <StyledMenuItem key={k} value={k}>
+                      <TextWithMath 
+                        data={this.props.algorithm.fractals[k].label}
+                        typographyProps={{
+                          variant: 'caption',
+                        }}
+                      />
+                  </StyledMenuItem>
                 )
               })}
             </TextField>
           </Box>
           <Box m={1}>
-            <ButtonGroup fullWidth color="primary">
-              <Button fullWidth onClick={this.reset}>Reset</Button>
+            <ButtonGroup fullWidth color="primary" orientation="vertical">
               <Button fullWidth onClick={this.apply}>Apply</Button>
+              <Button fullWidth onClick={this.reset}>Reset</Button>
             </ButtonGroup>
           </Box>
         </Box>
