@@ -36,6 +36,7 @@ class ParamControls extends React.Component<Props> {
     const {param} = x;
     return (
       <NumberIncrementer
+        key={'number-'+param}
         controlProps={x}
         value={this.props.params[param]}
         onChange={this.paramUpdater(param)}
@@ -47,6 +48,7 @@ class ParamControls extends React.Component<Props> {
     const {param} = x;
     return (
       <ComplexIncrementer
+        key={'complex-'+param}
         controlProps={x}
         value={this.props.params[param]}
         onChange={this.paramUpdater(param)}
@@ -59,6 +61,7 @@ class ParamControls extends React.Component<Props> {
     if (label && icon === 'Random') {
       return (
         <Button
+          key={'action-'+label}
           variant="outlined"
           color="inherit"
           size="small"
@@ -69,7 +72,7 @@ class ParamControls extends React.Component<Props> {
     }
     if (!label && icon === 'Random') {
       return (
-        <IconButton onClick={() => this.props.onChange(x.onCall())}>
+        <IconButton key={'action-'+icon} onClick={() => this.props.onChange(x.onCall())}>
           <Icon.Random/>
         </IconButton>
       )
@@ -77,6 +80,7 @@ class ParamControls extends React.Component<Props> {
     if (label) {
       return (
         <Button
+          key={'action-'+label}
           variant="outlined"
           size="small"
           onClick={() => this.props.onChange(x.onCall())}
