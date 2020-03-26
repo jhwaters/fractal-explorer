@@ -36,7 +36,7 @@ const FullResolutionPopup = (props: Props) => {
         <Box m={1}>
           <Typography>
             Are you sure you want to render in full resolution?
-            This may take a long time.
+            This may take a long time, especially on a mobile device.
           </Typography>
         </Box>
       <ButtonGroup
