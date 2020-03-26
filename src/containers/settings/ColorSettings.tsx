@@ -5,7 +5,13 @@ import * as ColorTypes from '../../store/color/types';
 import { update as updateColor, addScheme } from '../../store/color/actions';
 import { setCanvasAction } from '../../store/ui/actions';
 import { CanvasAction } from '../../store/ui/types';
-import { ColorPreview, SettingsContainer } from '../../components';
+import {
+  ColorPreview,
+  SettingsContainer,
+  Select,
+  Option,
+  OptionLabel,
+} from '../../components';
 import CustomColor from './CustomColor';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -13,11 +19,9 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
 import Slider from '@material-ui/core/Slider';
 import Switch from '@material-ui/core/Switch';
-import TextField from '@material-ui/core/TextField';
 
 
 type Props = {
@@ -112,20 +116,25 @@ class ColorSettings extends React.Component<Props> {
         <SettingsContainer>
           <Box m={1}>
             <Box m={1}>
-              <TextField select
-                size="small"
+              <Select select
                 label="Scheme"
                 value={this.state.scheme}
                 onChange={this.selectScheme}
               >
-                <MenuItem value="CUSTOM">CREATE NEW SCHEME</MenuItem>
+                <Option value="CUSTOM">
+                  <OptionLabel data="CREATE NEW SCHEME"/>
+                </Option>
                 {this.props.current.schemeList.sort().map(k => (
-                  <MenuItem key={k} value={k}>{k}</MenuItem>
+                  <Option key={k} value={k}>
+                    <OptionLabel data={k}/>
+                  </Option>
                 ))}
                 {Object.keys(this.props.current.customSchemes).sort().map(k => (
-                  <MenuItem key={k} value={k}>{k}</MenuItem>
+                  <Option key={k} value={k}>
+                    <OptionLabel data={k}/>
+                  </Option>
                 ))}
-              </TextField>
+              </Select>
             </Box>
             <Box m={2}>
               <FormControlLabel

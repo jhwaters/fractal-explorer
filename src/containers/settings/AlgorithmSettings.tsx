@@ -5,12 +5,16 @@ import { State as AlgState, FractalKey, Params } from '../../store/algorithm/typ
 import { setFractal } from '../../store/algorithm/actions';
 import { startDrawing } from '../../store/ui/actions'
 import { recenter } from '../../store/view/actions';
-import { SettingsContainer, TextWithMath } from '../../components';
+import {
+  SettingsContainer, 
+  Select,
+  Option,
+  OptionLabel,
+} from '../../components';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 
 type Props = {
@@ -19,8 +23,7 @@ type Props = {
   onClose?: () => void
 }
 
-const StyledMenuItem = withStyles({
-})(MenuItem)
+
 
 interface State {
   current: FractalKey,
@@ -61,25 +64,21 @@ class AlgorithmSettings extends React.Component<Props> {
       <SettingsContainer>
         <Box m={1}>
           <Box m={1}>
-            <TextField select
+            <Select select
               label="Method"
               value={this.state.current}
               onChange={this.selectMethod}
-              style={{maxWidth: '300px'}}
             >
               {Object.keys(this.props.algorithm.fractals).sort().map(k => {
                 return (
-                  <StyledMenuItem key={k} value={k}>
-                      <TextWithMath 
-                        data={this.props.algorithm.fractals[k].label}
-                        typographyProps={{
-                          variant: 'caption',
-                        }}
-                      />
-                  </StyledMenuItem>
+                  <Option key={k} value={k}>
+                    <OptionLabel
+                      data={this.props.algorithm.fractals[k].label}
+                    />
+                  </Option>
                 )
               })}
-            </TextField>
+            </Select>
           </Box>
           <Box m={1}>
             <ButtonGroup fullWidth color="primary" orientation="vertical">
