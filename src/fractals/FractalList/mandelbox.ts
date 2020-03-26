@@ -137,7 +137,7 @@ export const Mandelbox2BurningShip: FractalInterface<Mandelbox2Params & EscapePa
   ...mix.escape.create(() => ({scale: 2.2, k: 2, bound: 50})),
   ...mix.base.settings(),
 
-  formula: ({scale,k}: Mandelbox2Params) => ['MandelShipBox (', num(scale), ',', num(k), ')'],
+  formula: ({scale,k}: Mandelbox2Params) => ['Burning Shipbox (', num(scale), ', ', num(k), ')'],
 
   description: ({scale, k, bound, iterations}: Mandelbox2Params & EscapeParams) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
