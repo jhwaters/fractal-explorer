@@ -7,41 +7,18 @@ import { Modal } from '../store/ui/types';
 import { State as AlgState } from '../store/algorithm/types';
 import { TypographyWithMath } from '../components';
 import Box from '@material-ui/core/Box';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 import { fractal } from '../fractals';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
 
-const KatexButton = withStyles({
-  label: {textTransform: 'none'},
-})(Button)
-
-const InfoButton_ = ({formula, ...rest}: {
-  formula: string | {math: string} | (string | {math: string})[]
-} & ButtonProps) => (
-  <KatexButton {...rest}>
-    <TextWithMath data={formula}/>
-  </KatexButton>
-)
-
-export const InfoButton = connect(
-  (state: AppState) => {
-    const {formula} = fractal(state.algorithm);
-    return {
-      disabled: state.ui.modal === Modal.Info,
-      formula,
-    }
-  },
-  (dispatch: Dispatch) => ({
-    onClick: () => dispatch(setModal(Modal.Info))
-  })
-)(InfoButton_)
-
-
-//////////////////////////////////////////////////
-////////////////////////////////////////////////
+const styles = createStyles((theme: Theme) => ({
+  text: {
+    fontSize: '1em',
+  }
+}))
 
 
 function rounder(p: number) {
@@ -59,19 +36,21 @@ function science(n: number, p: number=4) {
   }
 }
 
-type Props = {
-  visible: boolean,
-  anchorEl?: HTMLElement,
-  onClose: () => void,
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  algorithm: AlgState,
+interface Props {
+  visible: boolean
+  anchorEl?: HTMLElement
+  onClose: () => void
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+  algorithm: AlgState
 }
 
+interface PP extends Props, WithStyles<typeof styles> {}
 
-const FractalInfo = (props: Props) => {
+
+const FractalInfo = (props: PP) => {
 
   const {algorithm} = props;
   const fractalinfo = fractal(algorithm).description;
@@ -89,43 +68,28 @@ const FractalInfo = (props: Props) => {
   const domainx = '|x - x_c| \\leq ' + rx 
   const domainy = '|y - y_c| \\leq ' + ry 
 
-  /*
-  const center = (
-    '\\begin{aligned}'
-    + centerx
-    + '\\\\' 
-    + centery
-    + '\\end{aligned}'
-  );
-
-  const domain = (
-    //'\\begin{aligned}' 
-    + domainx
-    //+ '\\\\' 
-    + domainy
-    //+ '\\end{aligned}'
-  );
-  */
+  const classes = props.classes as {text: string};
 
   return (
     <Popover
-      PaperProps={{square: true}}
       open={props.visible}
       onClose={props.onClose}
-      anchorEl={props.anchorEl}
+      marginThreshold={10}
     >
-      <Box p={1.5} onClick={props.onClose}>
-        <TextWithMath data={fractalinfo}/>
-        <Typography style={{marginTop: '1em'}}>
-          The currently displayed portion of this fractal is centered
-          at <Katex math="(x_c, y_c)"/>, where
-        </Typography>
-        <Katex math={centerx + '\\text{ and }' + centery} displayMode={true}/>
-        <Typography>
-          and plotted over <Katex math="(x, y)"/> such that 
-        </Typography>
-        <Katex math={domainx + '\\text{ and }' + domainy} displayMode={true}/>
-      </Box>
+      <Paper >
+        <Box p={2} onClick={props.onClose}>
+          <TypographyWithMath data={fractalinfo} className={classes.text}/>
+          <Typography style={{marginTop: '1em'}} className={classes.text}>
+            The currently displayed portion of this fractal is centered
+            at <Katex math="(x_c, y_c)"/>, where
+          </Typography>
+          <Katex math={centerx + '\\text{ and }' + centery} displayMode={true} className={classes.text}/>
+          <Typography className={classes.text}>
+            and plotted over <Katex math="(x, y)"/> such that 
+          </Typography>
+          <Katex math={domainx + '\\text{ and }' + domainy} displayMode={true} className={classes.text}/>
+        </Box>
+      </Paper>
     </Popover>
   )
 }
@@ -146,4 +110,4 @@ export default connect(
   (dispatch: Dispatch) => ({
     onClose: () => dispatch(setModal(Modal.None))
   })
-)(FractalInfo)
+)(withStyles(styles)(FractalInfo))

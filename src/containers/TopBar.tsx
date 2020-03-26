@@ -9,7 +9,7 @@ import _AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon } from '../components'
-import { InfoButton } from './Info';
+import InfoButton from './Controls/InfoButton';
 
 
 const Box = withStyles({
