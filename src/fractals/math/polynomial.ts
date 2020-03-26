@@ -16,7 +16,7 @@ import { isInt } from './util';
 
 function allAreInts(coeffs: Coeffs): boolean {
   for (const k in coeffs) {
-    if (!isInt(coeffs[k])) return false;
+    if (!isInt(+k) || +k < 0) return false;
   }
   return true;
 }
@@ -27,7 +27,7 @@ export default function(coeffs: Coeffs): (z: Complex) => Complex {
     return (z: Complex) => {
       let result: Complex = {re: 0, im: 0};
       for (const k in coeffs) {
-        result = add(result, multReal(powInt(z, coeffs[k]), +k))
+        result = add(result, multReal(powInt(z, +k), coeffs[k]))
       }
       return result
     }
@@ -36,7 +36,7 @@ export default function(coeffs: Coeffs): (z: Complex) => Complex {
       const p = toPolar(z);
       let result: Complex = {re: 0, im: 0};
       for (const k in coeffs) {
-        result = addPolar(result, P.multReal(P.powReal(p, coeffs[k]), +k))
+        result = addPolar(result, P.multReal(P.powReal(p, +k), coeffs[k]))
       }
       return result
     }
