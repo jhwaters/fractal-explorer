@@ -117,6 +117,12 @@ export const Julia1Poly = mix.julia.julia<JuliaPolyParams>({
   }),
 
   controls: [
+    ...['a', 'm', 'b', 'n'].map(p => ({
+      type: ControlType.Number,
+      param: p,
+      label: p,
+      step: p === 'a' || p === 'b' ? 1 : 0.1,
+    }) as ControlProps),
     {
       type: ControlType.Complex,
       label: 'c',
@@ -124,12 +130,6 @@ export const Julia1Poly = mix.julia.julia<JuliaPolyParams>({
       stepRadius: 0.05,
       stepAngle: 0.1,
     },
-    ...['a', 'm', 'b', 'n'].map(p => ({
-      type: ControlType.Number,
-      param: p,
-      label: p,
-      step: p === 'a' || p === 'b' ? 1 : 0.1,
-    }) as ControlProps),
   ],
 })
 
