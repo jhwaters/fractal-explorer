@@ -7,7 +7,7 @@ type NumberOpts = {
 
 export function num(n: number, {
   sign,
-  fixed=6
+  fixed=4
 }: NumberOpts={}): string {
   if (sign && !(n < 0)) {
     return '+' + num(n, {fixed})
