@@ -48,7 +48,7 @@ export const BurningShip1 = mix.escape.escape<BurningShipParams>({
 
 
 
-export const BurningShip2 = mix.escape.escape<BurningShipParams>({
+const BurningShip2 = mix.escape.escape<BurningShipParams>({
   label: 'Burning Ship II',
   latexF: (p: BurningShipParams) => `\\left(|Re(z)|+|Im(z)|\\right)^{${num(p.k)}}+x-yi`,
   f: (p: BurningShipParams) => {

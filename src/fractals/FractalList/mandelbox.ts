@@ -7,8 +7,10 @@ import {
   multReal,
   abs2,
   powInt,
+  powFloat,
 } from '../math/complex';
 import { R as Math } from '../math';
+import { isInt } from '../math/util';
 import { num } from '../formatting'
 
 
@@ -106,33 +108,41 @@ export const Mandelbox1: FractalInterface<MandelboxParams & EscapeParams> = ({
 
 
 
-export const Mandelbox2BurningShip: FractalInterface<MandelboxParams & EscapeParams> = ({
+interface Mandelbox2Params {
+  k: number,
+  scale: number,
+}
+
+export const Mandelbox2BurningShip: FractalInterface<Mandelbox2Params & EscapeParams> = ({
   label: 'Mandelbox/Burning Ship Mashup',
 
   ...mix.escape.pixel(
-    ({scale}: MandelboxParams) => (c: Complex) => (z: Complex) => {
-      let z1 = multReal(powInt(complex(Math.abs(z.re), Math.abs(z.im)), 2), 1/scale);
-      z1 = complex(f1(z1.re), f1(z1.im))
-      let abs2z1 = abs2(z1)
-      if (abs2z1 < 0.25) {
-        return add(multReal(z1, 4*scale), c)
-      } else if (abs2z1 < 1) {
-        return add(multReal(z1, scale/abs2z1), c)
-      } else {
-        return add(multReal(z1, scale), c)
+    ({scale, k}: Mandelbox2Params) => {
+      const pow = isInt(k) && k > 0 ? powInt : powFloat
+      return (c: Complex) => (z: Complex) => {
+        let z1 = multReal(pow(complex(Math.abs(z.re), Math.abs(z.im)), k), 1/scale);
+        z1 = complex(f1(z1.re), f1(z1.im))
+        let abs2z1 = abs2(z1)
+        if (abs2z1 < 0.25) {
+          return add(multReal(z1, 4*scale), c)
+        } else if (abs2z1 < 1) {
+          return add(multReal(z1, scale/abs2z1), c)
+        } else {
+          return add(multReal(z1, scale), c)
+        }
       }
     }
   ),
 
-  ...mix.escape.create(() => ({scale: 2.2, bound: 50})),
+  ...mix.escape.create(() => ({scale: 2.2, k: 2, bound: 50})),
   ...mix.base.settings(),
 
-  formula: ({scale}: MandelboxParams) => ['Mandelbox (', num(scale), ')'],
+  formula: ({scale,k}: Mandelbox2Params) => ['MandelShipBox (', num(scale), ',', num(k), ')'],
 
-  description: ({scale, bound, iterations}: MandelboxParams & EscapeParams) => [
+  description: ({scale, k, bound, iterations}: Mandelbox2Params & EscapeParams) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
     {
-      math: 'z \\mapsto \\left(|Re(z)|+|Im(z)|\\right)^2 \\div' + num(scale),
+      math: `z \\mapsto \\left(|Re(z)|+|Im(z)|\\right)^{${num(k)}} \\div ${num(scale)}`,
       displayMode: true,
     }
   ],
@@ -147,6 +157,13 @@ export const Mandelbox2BurningShip: FractalInterface<MandelboxParams & EscapePar
       type: ControlType.Number,
       param: 'scale',
       label: 'scale',
+      step: 0.1,
+      //min: 0
+    },
+    {
+      type: ControlType.Number,
+      param: 'k',
+      label: 'k',
       step: 0.1,
       //min: 0
     },
