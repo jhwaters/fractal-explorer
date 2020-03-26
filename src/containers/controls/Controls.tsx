@@ -32,8 +32,8 @@ const CenteringBox = withStyles({
     display: 'flex',
     flexFlow: 'row wrap',
     alignItems: 'center',
-    //height: '70px',
     justifyContent: 'space-around',
+    paddingBottom: '1em',
   }
 })(Box)
 
@@ -56,13 +56,15 @@ class Controls extends React.Component<Props> {
         <CenteringBox style={navigation}>
           <Iterator fontSize="large"/>
           <Zoom factor={2} fontSize="large" label="Zoom"/>
-          <RecenterButton color="inherit"/>
+          <RecenterButton />
         </CenteringBox>
         <CenteringBox style={help}>
-          <Typography variant="caption">
-            Double-click the fractal to re-center it.
-            Click the formula at the top of the screen for information
-            about how the current fractal was generated.
+          <Typography >
+            Double-click the image to re-center it.
+            The buttons at the bottom of the screen will allow you to adjust the parameters of the current fractal.
+            The formula at the top will update to reflect any changes.
+            You can click on the formula for more detailed information about how the fractal was generated. 
+            The menu at the top left can be used to change many settings and to select different types of fractals.
           </Typography>
         </CenteringBox>
       </OuterBox>
