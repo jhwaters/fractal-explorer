@@ -1,5 +1,6 @@
 import { Complex, ControlType, FractalInterface } from '../types';
 import { EscapeParams, describeEscapeFunction } from './mixers/escape';
+import { BurningShipParams } from './burningship';
 import * as mix from './mixers';
 import {
   complex,
@@ -19,75 +20,108 @@ function randomParams() {
 }
 
 
-function f1(n: number) {
-  if (n > 1) return 2 - n;
-  else if (n < -1) return -2 -n;
-  else return n;
+function mandelboxA(v: number=1) {
+  const w = v*2;
+  const f = (n: number) =>  {
+    if (n > v) return w - n;
+    else if (n < -v) return -w - n;
+    else return n;
+  }
+  return (z: Complex) => complex(f(z.re), f(z.im));
+}
+
+function mandelboxB(v: number=2) {
+  const v2 = v*v;
+  const recip = 1/v2;
+  return (z: Complex) => {
+    const ab2 = abs2(z);
+    if (ab2 < recip) {
+      return multReal(z, v2)
+    } else if (ab2 < 1) {
+      return multReal(z, 1/ab2)
+    } else {
+      return z
+    }
+  }
 }
 
 
 
-const f1latex = (
-  'f_{\\mathbb{R}\\mapsto\\mathbb{R}}(n)='
-  + '\\left\\{\\begin{aligned}'
-  + '2 - n & \\text{, if $n > 1$}\\\\'
-  + '-2 - n & \\text{, if $n < -1$}\\\\'
-  + 'n & \\text{, otherwise}\\\\'
+const mandelboxFlatex = (v: number) => (
+  '\\left\\{\\begin{aligned}'
+  + `${num(2*v)} - n &, \\text{ if \$n > ${num(v)}\$}\\\\`
+  + `${num(-2*v)} - n &, \\text{ if \$n < ${num(-v)}\$}\\\\`
+  + 'n &, \\text{ otherwise}'
+  + '\\end{aligned}\\right.'
+);
+
+const mandelboxAlatex = 'f(Re(z))+f(Im(z))i';
+
+const mandelboxBlatex = (v: number) => (
+  '\\left\\{\\begin{aligned}'
+  + `${num(2*v)}z &, \\text{ if \$|z|<${num(1/v)}\$}\\\\`
+  + `z \\div |z|^2 &, \\text{ if \$${num(1/v)} \\leq |z| < 1\$}\\\\`
+  + 'z &, \\text{ otherwise}\\\\'
   + '\\end{aligned}\\right.'
 )
 
-const f2latex = (
-  'g_{\\mathbb{C}\\mapsto\\mathbb{C}}(z)='
-  + 'f(Re(z))+f(Im(z))i'
-)
+const mandelboxClatex = (v: number) => num(v) + '\\cdot B(A(z)) + x + yi';
 
-const f3latex = (
-  'h_{\\mathbb{C}\\mapsto\\mathbb{C}}(z)='
-  + '\\left\\{\\begin{aligned}'
-  + '4z & \\text{, if $|z|<0.5$}\\\\'
-  + 'z \\div |z|^2 & \\text{, if $0.5 \\leq |z| < 1$}\\\\'
-  + 'z & \\text{, otherwise}\\\\'
-  + '\\end{aligned}\\right.'
-)
+function describeMandelbox(a: number, b: number, c: number, bound: number, iterations: number) {
+  return [
+    {
+      math: 'f_{\\mathbb{R}\\mapsto\\mathbb{R}}(n) =' + mandelboxFlatex(a),
+      displayMode: true,
+    },
+    {
+      math: 'A_{\\mathbb{C}\\mapsto\\mathbb{C}}(z) =' + mandelboxAlatex,
+      displayMode: true,
+    },
+    {
+      math: 'B_{\\mathbb{C}\\mapsto\\mathbb{C}}(z) =' + mandelboxBlatex(b),
+      displayMode: true,
+    },
+    ...describeEscapeFunction(
+      mandelboxClatex(c),
+      '0',
+      bound,
+      iterations,
+    )
+  ]
+} 
 
 
-
-
-export interface MandelboxParams {scale: number}
+export interface MandelboxParams {
+  a: number,
+  b: number,
+  c: number,
+}
 
 export const Mandelbox1: FractalInterface<MandelboxParams & EscapeParams> = ({
   label: 'Mandelbox',
 
   ...mix.escape.pixel(
-    ({scale}: MandelboxParams) => (c: Complex) => (z: Complex) => {
-      let z1 = complex(f1(z.re), f1(z.im))
-      let abs2z1 = abs2(z1)
-      if (abs2z1 < 0.25) {
-        return add(multReal(z1, 4*scale), c)
-      } else if (abs2z1 < 1) {
-        return add(multReal(z1, scale/abs2z1), c)
-      } else {
-        return add(multReal(z1, scale), c)
+    ({a, b, c}: MandelboxParams) => {
+      const A = mandelboxA(a)
+      const B = mandelboxB(b)
+      return (x: Complex) => (z: Complex) => {
+        return  add(multReal(B(A(z)), c), x)
       }
     }
   ),
 
-  ...mix.escape.create(() => ({scale: 2.2})),
+  ...mix.escape.create(() => ({a: 1, b: 2, c: 2.2})),
   ...mix.base.settings(),
 
-  formula: ({scale}: MandelboxParams) => ['Mandelbox (', num(scale), ')'],
-
-  description: ({scale, bound, iterations}: MandelboxParams & EscapeParams) => [
-    {math: f1latex, displayMode: true},
-    {math: f2latex, displayMode: true},
-    {math: f3latex, displayMode: true},
-    ...describeEscapeFunction(
-      num(scale) + '\\cdot h(g(z))+x+yi',
-      '0',
-      bound,
-      iterations,
-    )
+  formula: ({a, b, c}: MandelboxParams) => [
+    'Mandelbox (', 
+    [a, b, c].map((v: number) => num(v)).join(', '), 
+    ')',
   ],
+
+  description: ({a, b, c, bound, iterations}: MandelboxParams & EscapeParams) => {
+    return describeMandelbox(a, b, c, bound, iterations);
+  },
 
   ...mix.base.controls([
     {
@@ -97,52 +131,67 @@ export const Mandelbox1: FractalInterface<MandelboxParams & EscapeParams> = ({
     },
     {
       type: ControlType.Number,
-      param: 'scale',
-      label: 'scale',
+      param: 'a',
+      label: 'a',
       step: 0.1,
-      min: 0
+      min: 0.1,
     },
+    {
+      type: ControlType.Number,
+      param: 'b',
+      label: 'b',
+      step: 0.1,
+      min: 0.1,
+    },
+    {
+      type: ControlType.Number,
+      param: 'c',
+      label: 'c',
+      step: 0.1,
+      min: 0.1,
+    },
+    {
+      type: ControlType.Number,
+      param: 'bound',
+      label: 'bound',
+      step: 10,
+      min: 0,
+    }
   ])
 
 });
 
 
 
-interface BurningShipBoxParams {
-  k: number,
-  scale: number,
-}
+interface BurningShipBoxParams extends BurningShipParams, MandelboxParams {}
 
 export const BurningShip2Mandelbox: FractalInterface<BurningShipBoxParams & EscapeParams> = ({
   label: 'Burning Ship (Mandelbox Remix)',
 
   ...mix.escape.pixel(
-    ({scale, k}: BurningShipBoxParams) => {
+    ({a, b, c, k}: BurningShipBoxParams) => {
       const pow = isInt(k) && k > 0 ? powInt : powFloat
-      return (c: Complex) => (z: Complex) => {
-        let z1 = multReal(pow(complex(Math.abs(z.re), -Math.abs(z.im)), k), 1/scale);
-        z1 = complex(f1(z1.re), f1(z1.im))
-        let abs2z1 = abs2(z1)
-        if (abs2z1 < 0.25) {
-          return add(multReal(z1, 4*scale), c)
-        } else if (abs2z1 < 1) {
-          return add(multReal(z1, scale/abs2z1), c)
-        } else {
-          return add(multReal(z1, scale), c)
-        }
+      const A = mandelboxA(a)
+      const B = mandelboxB(b)
+      return (x: Complex) => (z: Complex) => {
+        let z1 = multReal(pow(complex(Math.abs(z.re), -Math.abs(z.im)), k), 1/c);
+        return add(multReal(B(A(z1)), c), x)
       }
     }
   ),
 
-  ...mix.escape.create(() => ({scale: 2.2, k: 2, bound: 50})),
+  ...mix.escape.create(() => ({a: 1, b: 2, c: 2.2, k: 2, bound: 50})),
   ...mix.base.settings(),
 
-  formula: ({scale,k}: BurningShipBoxParams) => ['Burning Shipbox (', num(scale), ', ', num(k), ')'],
+  formula: ({a, b, c, k}: BurningShipBoxParams) => [
+    'Burning Shipbox (', 
+    [a, b, c, k].map((v) => num(v)).join(', '),
+    ')'],
 
-  description: ({scale, k, bound, iterations}: BurningShipBoxParams & EscapeParams) => [
+  description: ({a, b, c, k, bound, iterations}: BurningShipBoxParams & EscapeParams) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
     {
-      math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(scale)}`,
+      math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(c)}`,
       displayMode: true,
     }
   ],
@@ -155,10 +204,24 @@ export const BurningShip2Mandelbox: FractalInterface<BurningShipBoxParams & Esca
     },
     {
       type: ControlType.Number,
-      param: 'scale',
-      label: 'scale',
+      param: 'a',
+      label: 'a',
       step: 0.1,
-      //min: 0
+      min: 0.1,
+    },
+    {
+      type: ControlType.Number,
+      param: 'b',
+      label: 'b',
+      step: 0.1,
+      min: 0.1,
+    },
+    {
+      type: ControlType.Number,
+      param: 'c',
+      label: 'c',
+      step: 0.1,
+      min: 0.1,
     },
     {
       type: ControlType.Number,
