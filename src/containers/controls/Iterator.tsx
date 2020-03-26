@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { updateParams } from '../../store/algorithm/actions';
 import { ControlType, ControlNumber } from '../../fractals/types';
-import { startDrawing } from '../../store/ui/actions';
+import { startDrawing, startIterating } from '../../store/ui/actions';
 import { NumberIncrementer}  from '../../components';
 
 export default connect(

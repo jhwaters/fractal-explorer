@@ -20,7 +20,6 @@ import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 
 
-
 type Props = {
   current: ColorTypes.State,
   updateColor: (update: Partial<ColorTypes.State>) => void
