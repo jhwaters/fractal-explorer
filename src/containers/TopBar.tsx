@@ -35,7 +35,7 @@ const TopBar = (props: {
 }) => (
   <AppBar color="transparent">
     <Box>
-      <IconButton onClick={props.openMenu}>
+      <IconButton onClick={props.openMenu} color="inherit">
         <Icon.Menu/>
       </IconButton>
       <InfoButton variant="text" fullWidth/>
