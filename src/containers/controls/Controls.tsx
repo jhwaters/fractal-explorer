@@ -60,10 +60,9 @@ class Controls extends React.Component<Props> {
         </CenteringBox>
         <CenteringBox style={help}>
           <Typography >
-            Double-click the image to re-center it.
-            The buttons at the bottom of the screen will allow you to adjust the parameters of the current fractal.
-            The formula at the top will update to reflect any changes.
-            You can click on the formula for more detailed information about how the fractal was generated. 
+            Move the center of the image by double-clicking.
+            The buttons at the bottom of the screen will adjust the parameters of the current fractal, and the formula at the top will update to reflect any changes.
+            Clicking on the formula will display more detailed information about how the fractal was generated. 
             The menu at the top left can be used to change many settings and to select different types of fractals.
           </Typography>
         </CenteringBox>
