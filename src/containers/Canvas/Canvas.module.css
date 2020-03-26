@@ -4,10 +4,12 @@
   align-items: center;
   justify-content: center;
   flex-grow: 1;
+  user-select: none;
 }
 
 .Inner {
   overflow: clip;
+  user-select: none;
 }
 
 .Canvas {
