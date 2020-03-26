@@ -49,6 +49,7 @@ export function noParam(props: {
   f: (z: Complex) => Complex,
   latexF: string,
   settings?: any[],
+  create?: () => Partial<EscapeParams>
   controls?: ControlProps[],
 }): FractalInterface<EscapeParams> {
   return {
@@ -56,7 +57,7 @@ export function noParam(props: {
         f: () => props.f,
         label: props.latexF,
         latexF: () => props.latexF,
-        create: () => ({}),
+        create: props.create ? props.create : () => ({}),
         settings: props.settings,
         controls: props.controls,
     }),
