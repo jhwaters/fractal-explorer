@@ -4,7 +4,7 @@ import { State } from '../store/types';
 import { Nav } from '../store/ui/types';
 import BottomBar from './Bottombar';
 import Settings from './Settings';
-import { Controls } from './Controls';
+import Controls from './Controls';
 import Display from './Display';
 import TopBar from './TopBar';
 import Info from './Info';
