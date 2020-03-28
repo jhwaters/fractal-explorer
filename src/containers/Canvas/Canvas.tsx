@@ -60,6 +60,7 @@ class Canvas extends React.Component<Props> {
   calculateImage() {
     const {algorithm} = this.props;
     const view = this.view();
+    console.log('calculating:', algorithm.current, algorithm.params);
     const f = fractal(algorithm).pixel;
     const rx = view.w / view.ppu / 2;
     const ry = view.h / view.ppu / 2;
