@@ -75,7 +75,7 @@ class JSONInterface extends React.Component<Props> {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={this.onCopy}>
+                  <IconButton onClick={this.onCopy} title="copy to clipboard">
                     <Icon.Copy/>
                   </IconButton>
                 </InputAdornment>
@@ -90,7 +90,7 @@ class JSONInterface extends React.Component<Props> {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={this.onUpload} disabled={!this.state.parsed}>
+                <IconButton onClick={this.onUpload} disabled={!this.state.parsed} title="load data into viewer">
                   <Icon.Upload/>
                 </IconButton>
               </InputAdornment>

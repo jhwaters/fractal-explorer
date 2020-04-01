@@ -7,7 +7,7 @@ import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 import { Icon } from '../../components';
 
 const RecenterButton = (props: IconButtonProps) => (
-  <IconButton {...props}>
+  <IconButton {...props} title="recenter image at origin">
     <Icon.Recenter/>
   </IconButton>
 )

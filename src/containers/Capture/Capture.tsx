@@ -201,7 +201,7 @@ class Capture extends React.Component<Props> {
             />
           </Box>
 
-          <IconButton onClick={this.swapWH}>
+          <IconButton onClick={this.swapWH} title="swap width and height">
             <Icon.SwapHoriz />
           </IconButton>
 
@@ -216,7 +216,7 @@ class Capture extends React.Component<Props> {
             />
           </Box>
 
-          <Fab onClick={this.onClick} color="primary">
+          <Fab onClick={this.onClick} color="primary" title="render selected area">
             <Icon.AddAPhoto/>
           </Fab>
 
