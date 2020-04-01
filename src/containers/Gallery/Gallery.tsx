@@ -17,7 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { JSONState, shortName } from '../../fractals/json';
+import { JSONState, toBase64 } from '../../fractals/json';
 
 const StyledGridList = withStyles({
   root: {
@@ -125,7 +125,14 @@ class Gallery extends React.Component<Props> {
 
   onCopy = () => {
     if (this.state.current) {
-      navigator.clipboard.writeText(JSON.stringify(this.state.current.data));
+      
+    }
+  }
+
+  onLink = () => {
+    if (this.state.current) {
+      const q = toBase64(JSON.stringify(this.state.current.data))
+      navigator.clipboard.writeText(window.location.origin + '?frac=' + q);
     }
   }
 
@@ -177,6 +184,9 @@ class Gallery extends React.Component<Props> {
           </IconButton>
           <IconButton onClick={this.onCopy} title="copy data to clipboard">
             <Icon.Copy/>
+          </IconButton>
+          <IconButton onClick={this.onLink} title="link to this fractal">
+            <Icon.Link/>
           </IconButton>
           <IconButton onClick={this.onLoad} title="load in fractal viewer">
             <Icon.Upload/>

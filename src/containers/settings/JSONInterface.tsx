@@ -127,7 +127,7 @@ class JSONInterface extends React.Component<Props> {
         </Box>
         <Box>
           <JSONTextField 
-            label="Upload JSON"
+            label="Load JSON"
             onChange={this.onChangeJson}
             value={this.state.jsonInput}
             InputProps={{
@@ -143,7 +143,7 @@ class JSONInterface extends React.Component<Props> {
         </Box>
         <Box>
           <JSONTextField 
-            label="Upload Base64"
+            label="Load Base64"
             onChange={this.onChangeBase64}
             value={this.state.base64Input}
             InputProps={{

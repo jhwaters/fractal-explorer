@@ -9,6 +9,7 @@ export { default as FullResolution } from '@material-ui/icons/HighQualityRounded
 export { default as Functions } from '@material-ui/icons/FunctionsRounded';
 export { default as Gallery } from '@material-ui/icons/PermMediaRounded';
 export { default as Help } from '@material-ui/icons/HelpOutlineRounded';
+export { default as Link } from '@material-ui/icons/LinkRounded';
 export { default as Menu } from '@material-ui/icons/MenuRounded';
 export { default as Minus } from '@material-ui/icons/RemoveCircleRounded';
 export { default as Palette } from '@material-ui/icons/PaletteRounded';

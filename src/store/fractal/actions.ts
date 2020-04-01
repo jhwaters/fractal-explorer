@@ -1,4 +1,4 @@
-import { UploadState, JSONState, jsonToState } from '../../fractals/json';
+import { UploadState, JSONState, jsonToState, fromBase64 } from '../../fractals/json';
 import {
   UPDATE_FRACTAL,
   UpdateFractal,
@@ -31,3 +31,17 @@ export const uploadJson = (data: JSONState): UpdateFractal => ({
   type: UPDATE_FRACTAL,
   payload: jsonToState(data)
 })
+
+export const uploadBase64 = (s: string): UpdateFractal => {
+  try {
+    return ({
+      type: UPDATE_FRACTAL,
+      payload: jsonToState(JSON.parse(fromBase64(s)))
+    })
+  } catch {
+    return ({
+      type: UPDATE_FRACTAL,
+      payload: undefined
+    })
+  }
+}
