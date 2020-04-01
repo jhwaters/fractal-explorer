@@ -28,7 +28,11 @@ const StyledGridListTile = withStyles({
     maxWidth: '200px',
     maxHeight: '200px',
     margin: '1mm',
-  }
+  },
+  tile: {
+    width: '200px',
+    height: '200px',
+  },
 })(GridListTile);
 
 const StyledIconButton = withStyles({
@@ -50,7 +54,6 @@ function ImageTile(props: {
   return (
     <StyledGridListTile key={props.title} cols={1}>
       <img 
-        crossOrigin="anonymous"
         src={props.url}
         alt={props.title} 
         style={{objectFit: 'cover'}}/>
@@ -61,8 +64,8 @@ function ImageTile(props: {
           <StyledIconButton onClick={props.onDelete}>
             <Icon.Delete/>
           </StyledIconButton>
-          <StyledIconButton >
-            <Icon.ViewImage onClick={props.onView}/>
+          <StyledIconButton onClick={props.onView}>
+            <Icon.ViewImage/>
           </StyledIconButton>
           </>
         }
