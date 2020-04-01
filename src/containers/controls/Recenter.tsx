@@ -3,15 +3,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from '../../store/types';
 import { redraw } from '../../store/ui/actions';
 import { recenter } from '../../store/fractal/view/actions';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 import { Icon } from '../../components';
 
-
-
-const RecenterButton = (props: ButtonProps) => (
-  <Button startIcon={<Icon.Recenter/>} {...props}>
-    Recenter
-  </Button>
+const RecenterButton = (props: IconButtonProps) => (
+  <IconButton {...props}>
+    <Icon.Recenter/>
+  </IconButton>
 )
 
 export default connect(

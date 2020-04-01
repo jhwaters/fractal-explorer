@@ -57,7 +57,7 @@ function TopBar(props: {
         <IconButton onClick={props.openMenu} edge="start">
           <Icon.Menu/>
         </IconButton>
-        <InfoButton className={classes.formula} fullWidth/>
+        <InfoButton className={classes.formula} style={{marginLeft: 'auto', marginRight: 'auto'}}/>
         <Typography className={classes.gallery}>Saved Fractals</Typography>
         <RecenterButton className={classes.recenter}/>
       </Toolbar>
