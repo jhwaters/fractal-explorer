@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Icon } from '../../components';
 import { withStyles } from '@material-ui/core/styles';
-import { stateToJSON, jsonToState, UploadState } from '../../fractals/json';
+import { stateToJSON, jsonToState, UploadState, toBase64, fromBase64 } from '../../fractals/json';
 
 
 const JSONTextField = withStyles({
@@ -69,7 +69,7 @@ class JSONInterface extends React.Component<Props> {
 
   onChangeBase64 = (evt: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const parsedBase64 = jsonToState(JSON.parse(atob(evt.target.value)));
+      const parsedBase64 = jsonToState(JSON.parse(fromBase64(evt.target.value)));
       this.setState({
         base64Input: evt.target.value,
         parsedBase64,
@@ -170,7 +170,7 @@ export default connect(
     const jsonstr = JSON.stringify(stateToJSON(state));
     return ({
       currentJson: jsonstr,
-      currentBase64: btoa(jsonstr),
+      currentBase64: toBase64(jsonstr),
     });
   },
   (dispatch: Dispatch) => ({

@@ -88,10 +88,19 @@ export function jsonToState(json: JSONState): UploadState | undefined {
 
 let idcount = 1;
 
+
 export function shortName(json: JSONState): string {
   if (json.v === '1') {
     return `${idcount++}-${json.alg.m}`;
   } else {
     return `${idcount++}-fractal`;
   }
+}
+
+export function toBase64(s: string) {
+  return btoa(s).replace(/=/g, '_').replace(/\+/g, '-')
+}
+
+export function fromBase64(s: string) {
+  return atob(s.replace(/_/g, '=').replace(/-/g, '+'))
 }
