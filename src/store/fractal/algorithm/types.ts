@@ -3,7 +3,7 @@ import {
 } from '../../../fractals/algorithm/types';
 
 export const UPDATE = 'ALGORITHM_UPDATE';
-export const SET_FRACTAL = 'ALGORITHM_SET_FRACTAL';
+export const SET_ALGORITHM = 'ALGORITHM_SET';
 export const UPDATE_PARAMS = 'ALGORITHM_UPDATE_PARAMS';
 
 export type Method<T> = FractalInterface<T>
@@ -19,8 +19,8 @@ export type Update<T> = {
   payload: Partial<State<T>>
 }
 
-export type SetFractal<T> = {
-  type: typeof SET_FRACTAL,
+export type SetAlgorithm<T> = {
+  type: typeof SET_ALGORITHM,
   payload: {
     methodName: string
     method: Method<T>
@@ -33,4 +33,4 @@ export type UpdateParams<T> = {
   payload: T
 }
 
-export type Action<T> = Update<T> | SetFractal<T> | UpdateParams<T>
+export type Action<T> = Update<T> | SetAlgorithm<T> | UpdateParams<T>

@@ -34,11 +34,12 @@ class ViewSettings extends React.Component<Props> {
   }
 
   hasChanged = () => {
-    for (const k in this.props.current) {
-      if (this.props.current[k] !== this.state.current[k]) {
-        return true;
-      }
-    }
+    if (this.props.current.cx !== this.state.current.cx) return true;
+    if (this.props.current.cy !== this.state.current.cy) return true;
+    if (this.props.current.w !== this.state.current.w) return true;
+    if (this.props.current.h !== this.state.current.h) return true;
+    if (this.props.current.ppu !== this.state.current.ppu) return true;
+    if (this.props.current.pixelCount !== this.state.current.pixelCount) return true;
     return false;
   }
 

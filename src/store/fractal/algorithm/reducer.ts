@@ -1,7 +1,7 @@
 import {
   State,
   Action,
-  SET_FRACTAL,
+  SET_ALGORITHM,
   UPDATE,
   UPDATE_PARAMS,
 } from './types';
@@ -17,7 +17,7 @@ export default function<T>(state: State<any>=initialState, action: Action<T>) {
   switch (action.type) {
     case UPDATE:
       return {...state, ...action.payload}
-    case SET_FRACTAL:
+    case SET_ALGORITHM:
       return {
         methodName: action.payload.methodName,
         method: action.payload.method, 

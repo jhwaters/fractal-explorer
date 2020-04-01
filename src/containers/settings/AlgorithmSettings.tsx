@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
 import { Method } from '../../store/fractal/algorithm/types';
-import { setFractal, recenter } from '../../store/fractal/actions';
+import { setAlgorithm, recenter } from '../../store/fractal/actions';
 import { redraw } from '../../store/ui/actions'
 import {
   SettingsContainer, 
@@ -19,7 +19,7 @@ type Props = {
   methodName: string
   params: object
   methodList: {[k: string]: Method<any>}
-  setFractal: <T extends object>(methodName: string, method: Method<T>, params?: T) => void
+  setAlgorithm: <T extends object>(methodName: string, method: Method<T>, params?: T) => void
   onClose?: () => void
 }
 
@@ -50,7 +50,7 @@ class AlgorithmSettings extends React.Component<Props> {
 
   apply = () => {
     const {methodName, method, params} = this.state;
-    this.props.setFractal(methodName, method, params)
+    this.props.setAlgorithm(methodName, method, params)
     if (this.props.onClose) {
       this.props.onClose();
     }
@@ -105,8 +105,8 @@ export default connect(
     params: state.fractal.algorithm.params,
   }),
   (dispatch: Dispatch) => ({
-    setFractal: function<T>(methodName: string, method: Method<T>, params?: T) {
-      dispatch(setFractal(methodName, method, params))
+    setAlgorithm: function<T>(methodName: string, method: Method<T>, params?: T) {
+      dispatch(setAlgorithm(methodName, method, params))
       dispatch(recenter())
       dispatch(redraw())
     },

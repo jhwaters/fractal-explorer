@@ -1,7 +1,12 @@
+import { UploadState, JSONState, jsonToState } from '../../fractals/json';
+import {
+  UPDATE_FRACTAL,
+  UpdateFractal,
+} from './types';
 
 export {
   update as updateAlgorithm,
-  setFractal,
+  setAlgorithm,
   updateParams,
 } from './algorithm/actions'
 
@@ -17,3 +22,12 @@ export {
   zoomOut,
 } from './view/actions';
 
+export const uploadData = (data: UploadState): UpdateFractal => ({
+  type: UPDATE_FRACTAL,
+  payload: data
+})
+
+export const uploadJson = (data: JSONState): UpdateFractal => ({
+  type: UPDATE_FRACTAL,
+  payload: jsonToState(data)
+})

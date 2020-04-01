@@ -1,4 +1,5 @@
 import { CombinedState } from 'redux';
+import { JSONState } from '../../fractals/json';
 
 import {
   Action as AlgorithmAction,
@@ -14,6 +15,16 @@ import {
 } from './view/types';
 
 
+export const UPDATE_FRACTAL = 'FRACTAL_UPDATE';
+
+export type UpdateFractal = {
+  type: typeof UPDATE_FRACTAL
+  payload: {
+    algorithm?: Partial<AlgorithmState<any>>
+    color?: Partial<ColorState>
+    view?: Partial<ViewState>
+  } | undefined
+}
 
 export type State = CombinedState<{
   algorithm: AlgorithmState<any>
@@ -21,4 +32,4 @@ export type State = CombinedState<{
   view: ViewState
 }>
 
-export type Action = AlgorithmAction<any> | ColorAction | ViewAction
+export type Action = AlgorithmAction<any> | ColorAction | ViewAction | UpdateFractal

@@ -1,23 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
-import { State as FractalState } from '../../store/fractal/types';
-import { ALLFRACTALS, COLORSCHEMES } from '../../fractals';
-import {
-  updateAlgorithm,
-  updateColor,
-  updateView,
-} from '../../store/fractal/actions';
+import { uploadData } from '../../store/fractal/actions';
 import { redraw } from '../../store/ui/actions';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Icon } from '../../components';
 import { withStyles } from '@material-ui/core/styles';
-import { stateToJSON, jsonToState, JSONState, UploadState } from '../../fractals/json';
-
+import { stateToJSON, jsonToState, UploadState } from '../../fractals/json';
 
 
 const JSONTextField = withStyles({
@@ -33,7 +25,7 @@ const JSONTextField = withStyles({
 
 interface Props {
   current: string,
-  setFractal: (json: UploadState) => void,
+  uploadData: (json: UploadState) => void,
 }
 
 class JSONInterface extends React.Component<Props> {
@@ -68,7 +60,7 @@ class JSONInterface extends React.Component<Props> {
 
   onUpload = () => {
     if (this.state.parsed) {
-      this.props.setFractal(this.state.parsed);
+      this.props.uploadData(this.state.parsed);
     }
   }
 
@@ -117,10 +109,8 @@ export default connect(
     current: JSON.stringify(stateToJSON(state)),
   }),
   (dispatch: Dispatch) => ({
-    setFractal: ({algorithm, color, view}: UploadState) => {
-      dispatch(updateAlgorithm(algorithm));
-      dispatch(updateColor(color));
-      dispatch(updateView(view));
+    uploadData: (data: UploadState) => {
+      dispatch(uploadData(data));
       dispatch(redraw());
     },
   })

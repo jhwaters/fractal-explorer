@@ -1,7 +1,4 @@
-//import Big from 'big.js';
-
 export type State = {
-  [k: string]: number | boolean
   cx: number
   cy: number
   w: number
