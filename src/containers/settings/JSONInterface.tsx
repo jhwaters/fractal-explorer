@@ -55,6 +55,10 @@ class JSONInterface extends React.Component<Props> {
     navigator.clipboard.writeText(this.props.currentBase64);
   }
 
+  onCopyLink = () => {
+    navigator.clipboard.writeText(window.location.origin + '?frac=' + this.props.currentBase64);
+  }
+
   onChangeJson = (evt: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const parsedJson = jsonToState(JSON.parse(evt.target.value));
@@ -94,6 +98,22 @@ class JSONInterface extends React.Component<Props> {
   render() {
     return (
       <Box m={2}>
+        <Box>
+          <JSONTextField
+            label="Link to Current Fractal"
+            disabled
+            value={window.location.origin + '?frac=' + this.props.currentBase64}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={this.onCopyLink} title="copy to clipboard">
+                    <Icon.Copy/>
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Box>
         <Box>
           <JSONTextField
             label="Current JSON"
