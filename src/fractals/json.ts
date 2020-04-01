@@ -9,7 +9,7 @@ interface Json {
   v: '1'
 }
 
-export interface V1 extends Json {
+interface V1 extends Json {
   v: '1',
   alg: {
     m: string
