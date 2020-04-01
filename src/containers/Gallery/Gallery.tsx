@@ -4,6 +4,8 @@ import { State, Dispatch } from '../../store/types';
 import { Nav } from '../../store/ui/types';
 import { State as GalleryState } from '../../store/gallery/types';
 import { deleteImage } from '../../store/gallery/actions';
+import { uploadJson } from '../../store/fractal/actions';
+import { redraw, setNav } from '../../store/ui/actions';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -15,6 +17,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import { JSONState, shortName } from '../../fractals/json';
 
 const StyledGridList = withStyles({
   root: {
@@ -45,28 +51,28 @@ const StyledIconButton = withStyles({
 })(IconButton)
 
 
-function ImageTile(props: {
-  title: string, 
+interface TileProps {
+  data: JSONState, 
+  title: string,
   url: string,
   onView: () => void,
-  onDelete: () => void,
-}) {
+}
+
+function ImageTile(props: TileProps) {
+  const title = props.title;
   return (
-    <StyledGridListTile key={props.title} cols={1}>
+    <StyledGridListTile key={title} cols={1}>
       <img 
         src={props.url}
-        alt={props.title} 
+        alt={title} 
         style={{objectFit: 'cover'}}/>
       <GridListTileBar
-        //title={<TypographyWithMath data={props.title}/>}
+        title={title}
         actionIcon={
           <>
-          <StyledIconButton onClick={props.onDelete}>
-            <Icon.Delete/>
-          </StyledIconButton>
-          <StyledIconButton onClick={props.onView}>
-            <Icon.ViewImage/>
-          </StyledIconButton>
+            <StyledIconButton onClick={props.onView}>
+              <Icon.ViewImage/>
+            </StyledIconButton>
           </>
         }
       />
@@ -79,38 +85,71 @@ interface Props {
   images: GalleryState
   visible: boolean
   deleteImage: (url: string | null) => void
+  loadJson: (data: JSONState) => void
 }
 
 
 class Gallery extends React.Component<Props> {
   state: {
-    viewURL: string | null
-    deleteURL: string | null
+    current: {
+      url: string,
+      title: string,
+      data: JSONState,
+    } | null,
+    deletePopup: boolean
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      viewURL: null,
-      deleteURL: null
+      current: null,
+      deletePopup: false,
     };
   }
 
-  closePopup = () => {
-    this.setState({viewURL: null, deleteURL: null});
+  close = () => {
+    this.setState({current: null, deletePopup: false});
   }
 
-  delete = () => {
-    this.props.deleteImage(this.state.deleteURL);
-    this.setState({deleteURL: null})
+  onDelete = () => {
+    this.setState({deletePopup: true})
   }
 
-  viewer = (img: string) => () => {
-    this.setState({viewURL: img});
+  closeDelete = () => {
+    this.setState({deletePopup: false})
   }
 
-  deleter = (img: string) => () => {
-    this.setState({deleteURL: img});
+  deleteCurrent = () => {
+    if (this.state.current) {
+      this.props.deleteImage(this.state.current.url);
+      this.close();
+    }
+  }
+
+  onCopy = () => {
+    if (this.state.current) {
+      navigator.clipboard.writeText(JSON.stringify(this.state.current.data));
+    }
+  }
+
+  onDownload = () => {
+    if (this.state.current) {
+      const a = document.createElement('a')
+      a.download = this.state.current.title + '.png';
+      a.href = this.state.current.url;
+      a.click();
+    }
+  }
+
+  onLoad = () => {
+    if (this.state.current) {
+      this.props.loadJson(this.state.current.data);
+      this.close();
+    }
+  }
+
+  viewer = (tile: {url: string, data: JSONState, title: string}) => () => {
+    this.setState({current: tile});
   }
 
   render() {
@@ -125,32 +164,49 @@ class Gallery extends React.Component<Props> {
           return React.createElement(ImageTile, {
             ...tile,
             key: tile.url,
-            onView: this.viewer(tile.url),
-            onDelete: this.deleter(tile.url),
+            onView: this.viewer(tile),
           });
         })}
       </StyledGridList>
       <Popover
-        style={{overflow: 'hidden'}}
-        open={this.state.viewURL !== null}
-        onClick={this.closePopup}
-        onClose={this.closePopup}>
-        <div style={{width: '100%', height: '100%', overflow: 'scroll'}}>
+        open={this.state.current !== null}
+        onClose={this.close}>
+        <Box style={{position: 'relative'}}>
+          <IconButton onClick={this.close} title="close">
+            <Icon.Back/>
+          </IconButton>
+          <IconButton onClick={this.onDelete} title="delete image">
+            <Icon.Delete/>
+          </IconButton>
+          <IconButton onClick={this.onCopy} title="copy data to clipboard">
+            <Icon.Copy/>
+          </IconButton>
+          <IconButton onClick={this.onLoad} title="load in fractal viewer">
+            <Icon.Upload/>
+          </IconButton>
+          <IconButton onClick={this.onDownload} title="download image">
+            <Icon.Save/>
+          </IconButton>
           <img 
             alt="fractal"
-            src={this.state.viewURL || ''}
-            style={{objectFit: 'contain'}}/>
-        </div>
+            src={this.state.current?.url || ''}
+            style={{
+              objectFit: 'contain', 
+              maxWidth: '100%', 
+              maxHeight: '100%'
+            }}/>
+          
+        </Box>
       </Popover>
       <Popover
-        open={this.state.deleteURL !== null}
-        onClose={this.closePopup}
+        open={this.state.deletePopup}
+        onClose={this.close}
       >
         <Box m={2}>
           <Typography>Delete this image?</Typography>
           <ButtonGroup color="primary" variant="outlined">
-            <Button onClick={this.delete}>Yes</Button>
-            <Button onClick={this.closePopup}>No</Button>
+            <Button onClick={this.deleteCurrent}>Yes</Button>
+            <Button onClick={this.closeDelete}>No</Button>
           </ButtonGroup>
         </Box>
       </Popover>
@@ -169,6 +225,11 @@ export default connect(
   (dispatch: Dispatch) => ({
     deleteImage: (url: string | null) => {
       if (url) dispatch(deleteImage(url));
+    },
+    loadJson: (data: JSONState) => {
+      dispatch(uploadJson(data));
+      dispatch(redraw());
+      dispatch(setNav(Nav.Explore))
     }
   })
 )(Gallery)

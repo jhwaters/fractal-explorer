@@ -39,8 +39,10 @@ interface Rect {
   h: number
 }
 
+export type DrawerView = ViewState | Rect
+
 interface Props extends Pick<FractalState,'algorithm'|'color'> {
-  view: ViewState | Rect
+  view: DrawerView
 }
 
 function isRect(view: ViewState | Rect): view is Rect {

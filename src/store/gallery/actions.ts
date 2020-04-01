@@ -1,3 +1,4 @@
+import { JSONState } from '../../fractals/json';
 import {
   AddToGallery,
   ADD_TO_GALLERY,
@@ -6,9 +7,9 @@ import {
 } from './types';
 
 
-export const addToGallery = (url: string, title: string): AddToGallery => ({
+export const addToGallery = (url: string, data: JSONState, title: string): AddToGallery => ({
   type: ADD_TO_GALLERY,
-  payload: {title, url}
+  payload: {url, data, title}
 })
 
 export const deleteImage = (url: string): DeleteImage => ({

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { State as FractalState } from '../../store/fractal/types';
+import { State as ViewState } from '../../store/fractal/view/types';
 import { addToGallery } from '../../store/gallery/actions';
 import { capture, finish, wait } from '../../store/ui/actions';
 import { CanvasAction } from '../../store/ui/types';
@@ -9,9 +10,10 @@ import Cropper from 'react-easy-crop';
 import Box from '@material-ui/core/Box';
 import { Nav } from '../../store/ui/types';
 import { withStyles } from '@material-ui/core/styles';
-import CanvasDrawer, { linearScale, scaleDown } from '../../fractals/CanvasDrawer';
 import ControlPanel from '../Controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
+import CanvasDrawer, { linearScale, scaleDown, DrawerView } from '../../fractals/CanvasDrawer';
+import { JSONState, stateToJSON, shortName } from '../../fractals/json';
 import { Icon, NumberInput } from '../../components';
 import { captureSize } from '../../defaults';
 import Fab from '@material-ui/core/Fab';
@@ -41,7 +43,7 @@ interface CropperProps {
 interface Props {
   visible: boolean
   fractal: FractalState
-  addToGallery: (image: string, title: string) => void
+  addToGallery: (image: string, data: JSONState, title: string) => void
   capturing: boolean
   startCapture: () => void
   finishCapture: () => void
@@ -56,6 +58,7 @@ class Capture extends React.Component<Props> {
   }
   cropPixels: Area
   drawer: CanvasDrawer
+  data: JSONState
 
   constructor(props: Props) {
     super(props);
@@ -68,6 +71,7 @@ class Capture extends React.Component<Props> {
     this.cropPixels = {x: 0, y: 0, width: captureSize.w, height: captureSize.h}
     this.drawer = new CanvasDrawer();
     this.drawer.fullResolution = true;
+    this.data = stateToJSON(props);
   }
 
   setW = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +115,7 @@ class Capture extends React.Component<Props> {
     }
   }
 
-  renderImage() {
+  determineView(): DrawerView {
     const {cx, cy, w, h, ppu} = {...this.props.fractal.view, ...scaleDown(this.props.fractal.view)};
     const rx = w / ppu / 2;
     const ry = h / ppu / 2;
@@ -120,32 +124,51 @@ class Capture extends React.Component<Props> {
 
     const {x, y, width, height} = this.cropPixels;
 
-    const view = {
+    return {
       x: [xscale(x), xscale(x+width)] as [number,number],
       y: [yscale(y), yscale(y+height)] as [number,number],
       w: this.state.w,
       h: this.state.h,
     }
-
-    this.drawer.draw({...this.props.fractal, view});
   }
+
+  setData(view: any) {
+    const newview = {
+      cx: (view.x[0] + view.x[1]) / 2,
+      cy: (view.y[0] + view.y[1]) / 2,
+      w: view.w,
+      h: view.h,
+      ppu: Math.round(view.w / (view.x[1] - view.x[0]))
+    };
+
+    this.data = stateToJSON({fractal: {
+      ...this.props.fractal,
+      view: {...this.props.fractal.view, ...newview},
+    }}) as JSONState
+  }
+
 
   saveImage() {
     //const url = this.drawer.canvas.toDataURL();
-      //this.props.addToGallery(url, 'Fractal' + FractalCounter++);
-    const filename = 'Fractal' + FractalCounter++;
+    //this.props.addToGallery(url, 'Fractal' + FractalCounter++);
+
     const canvas = document.createElement('canvas');
     this.drawer.putOnCanvas(canvas);
     canvas.toBlob((blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob);
-        this.props.addToGallery(url, filename);
+        this.props.addToGallery(url, this.data, shortName(this.data));
       }
     });
   }
 
   capture = () => {
-    this.renderImage();
+    const view = this.determineView();
+    this.drawer.draw({
+      ...this.props.fractal,
+      view,
+    })
+    this.setData(view);
     this.saveImage();
     this.props.finishCapture();
   }
@@ -214,7 +237,7 @@ export default connect(
     fractal: state.fractal,
   }),
   (dispatch: Dispatch) => ({
-    addToGallery: (image:string, title: string) => dispatch(addToGallery(image, title)),
+    addToGallery: (image:string, data: JSONState, title: string) => dispatch(addToGallery(image, data, title)),
     startCapture: () => {
       dispatch(wait());
       dispatch(capture());

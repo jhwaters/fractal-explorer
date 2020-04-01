@@ -21,7 +21,7 @@ export { default as Save } from '@material-ui/icons/SaveAltRounded';
 export { default as Settings } from '@material-ui/icons/SettingsRounded';
 export { default as SwapHoriz } from '@material-ui/icons/SwapHorizRounded';
 export { default as Tune } from '@material-ui/icons/TuneRounded';
-export { default as Upload } from '@material-ui/icons/CloudUploadRounded';
+export { default as Upload } from '@material-ui/icons/PublishRounded';
 export { default as View } from '@material-ui/icons/SettingsOverscanRounded';
 export { default as ViewImage } from '@material-ui/icons/PageviewRounded';
 export { default as ZoomIn } from '@material-ui/icons/ZoomInRounded';

@@ -30,6 +30,7 @@ export interface V1 extends Json {
   }
 }
 
+
 export interface UploadState {
   algorithm: AlgorithmState<any>,
   color: ColorState,
@@ -38,7 +39,7 @@ export interface UploadState {
 
 export type JSONState = V1
 
-export function stateToJSON(state: State): JSONState {
+export function stateToJSON(state: Pick<State,'fractal'>): JSONState {
   const {algorithm, color, view} = state.fractal;
   return ({
     v: '1',
@@ -83,5 +84,15 @@ export function jsonToState(json: JSONState): UploadState | undefined {
         ppu: json.view.pp,
       }
     })
+  }
+}
+
+let idcount = 1;
+
+export function shortName(json: JSONState): string {
+  if (json.v === '1') {
+    return `${idcount++}-${json.alg.m}`;
+  } else {
+    return `${idcount++}-fractal`;
   }
 }

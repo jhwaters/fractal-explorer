@@ -1,9 +1,11 @@
+import { JSONState } from '../../fractals/json'
 export const ADD_TO_GALLERY = 'GALLERY_ADD'
 export const DELETE_IMAGE = 'GALLERY_DELETE'
 
 export interface GalleryImage {
-  title: string
   url: string
+  data: JSONState
+  title: string
 }
 
 export type State = GalleryImage[]
