@@ -44,7 +44,7 @@ export const BurningShip = mix.escape({
       type: ControlType.Number,
       label: 'exponent (k)',
       param: 'k',
-      step: 1,
+      step: 0.1,
       min: 0,
     }
   ] as ControlProps[],
@@ -85,8 +85,8 @@ export const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
       icon: 'Random',
       onCall: () => ({box3: Math.round(Math.random() * 100)/100 + 0.5})
     },
-    ...['box1', 'box2', 'box3'].map(p => ctrl.number(p, {step:0.1, min: 0.1})),
-    ctrl.number('k', {step: 0.1}),
+    ...['box1', 'box2', 'box3'].map(p => ctrl.number(p, {step:0.1})),
+    ctrl.number('k', {step: 0.1, min: 0}),
     ctrl.number('bound', {step: 5, min: 0}),
   ],
 });

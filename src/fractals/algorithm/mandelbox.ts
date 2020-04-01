@@ -63,9 +63,9 @@ const MandelboxRandom = ({
 }) as ControlProps
 
 const MandelboxControls = [
-  ctrl.number('box1', {step: 0.1, min: 0.1}),
-  ctrl.number('box2', {step: 0.1, min: 0.1}),
-  ctrl.number('box3', {step: 0.1, min: 0.1}),
+  ctrl.number('box1', {step: 0.1}),
+  ctrl.number('box2', {step: 0.1}),
+  ctrl.number('box3', {step: 0.1}),
 ]
 
 
