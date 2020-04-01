@@ -1,14 +1,14 @@
-import { Complex, ControlType } from './types';
+import { Complex, ControlType, ControlProps } from './types';
 import { EscapeParams, describeEscapeFunction } from './mixers/escape';
 import * as mix from './mixers';
 import { add, complex } from '../math/complex';
 import { R as Math } from '../math';
 import { mandelbox, burningship } from '../math/fractals';
-import * as fmt from '../formatting'
-
+import * as fmt from '../formatting';
+import * as ctrl from './mixers/controls';
 
 function randomParams() {
-  return {scale: Math.round(Math.random() * 20)/10 + 2}
+  return {box3: Math.round(Math.random() * 20)/10 + 2}
 }
 
 
@@ -31,6 +31,7 @@ const mandelboxBlatex = (v: number) => (
 )
 
 const mandelboxClatex = (v: number) => fmt.num(v) + '\\cdot B(A(z)) + x + yi';
+
 
 function describeMandelbox(a: number, b: number, c: number, bound: number, iterations: number) {
   return [
@@ -55,56 +56,44 @@ function describeMandelbox(a: number, b: number, c: number, bound: number, itera
   ]
 } 
 
+const MandelboxRandom = ({
+  type: ControlType.Call,
+  icon: 'Random',
+  onCall: () => randomParams(),
+}) as ControlProps
+
+const MandelboxControls = [
+  ctrl.number('box1', {step: 0.1, min: 0.1}),
+  ctrl.number('box2', {step: 0.1, min: 0.1}),
+  ctrl.number('box3', {step: 0.1, min: 0.1}),
+]
+
 
 export interface MandelboxParams {
-  a: number,
-  b: number,
-  c: number,
+  box1: number,
+  box2: number,
+  box3: number,
 }
 
 export const Mandelbox1 = mix.escape({
   label: 'Mandelbox',
 
-  f: ({a, b, c}: MandelboxParams) => {
-    const mbox = mandelbox(a, b, c);
+  f: ({box1, box2, box3}: MandelboxParams) => {
+    const mbox = mandelbox(box1, box2, box3);
     return (x: Complex) => (z: Complex) => {
       return  add(mbox(z), x);
     }
   },
 
-  newParams: () => ({a: 1, b: 2, c: 2.2}),
+  newParams: () => ({box1: 1, box2: 2, box3: 2.2}),
 
-  describe: ({a, b, c, bound, iterations}: MandelboxParams & EscapeParams) => {
-    return describeMandelbox(a, b, c, bound, iterations);
+  describe: ({box1, box2, box3, bound, iterations}: MandelboxParams & EscapeParams) => {
+    return describeMandelbox(box1, box2, box3, bound, iterations);
   },
 
   controls: [
-    {
-      type: ControlType.Call,
-      icon: 'Random',
-      onCall: () => randomParams(),
-    },
-    {
-      type: ControlType.Number,
-      param: 'a',
-      label: 'a',
-      step: 0.1,
-      min: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'b',
-      label: 'b',
-      step: 0.1,
-      min: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'c',
-      label: 'c',
-      step: 0.1,
-      min: 0.1,
-    },
+    MandelboxRandom,
+    ...MandelboxControls,
     {
       type: ControlType.Number,
       param: 'bound',
@@ -120,9 +109,9 @@ export const Mandelbox1 = mix.escape({
 
 export const Mandelcorner = mix.escape<MandelboxParams>({
   label: 'Mandelcorner',
-  f: ({a, b, c}) => (z0: Complex) => {
+  f: ({box1, box2, box3}) => (z0: Complex) => {
     const cc = complex(z0.re, -z0.im);
-    const f1 = mandelbox(a, b, c)
+    const f1 = mandelbox(box1, box2, box3)
     const bs = burningship()
     return (zz: Complex) => {
       let z = complex(zz.re, zz.im);
@@ -131,29 +120,13 @@ export const Mandelcorner = mix.escape<MandelboxParams>({
     }
   },
 
-  newParams: () => ({a: 1, b: 2, c: 3}),
+  newParams: () => ({box1: 1, box2: 2, box3: 3}),
 
-  describe: ({a,b,c}) => ['Mandelbox(' + [a, b, c].map(v => fmt.num(v)).join(',') + ') -> Burning Ship'],
+  describe: ({box1, box2, box3}) => ['Mandelbox(' + [box1, box2, box3].map(v => fmt.num(v)).join(',') + ') -> Burning Ship'],
 
   controls: [
-    {
-      type: ControlType.Number,
-      param: 'a',
-      label: 'a',
-      step: 0.5,
-    },
-    {
-      type: ControlType.Number,
-      param: 'b',
-      label: 'b',
-      step: 0.5,
-    },
-    {
-      type: ControlType.Number,
-      param: 'c',
-      label: 'c',
-      step: 0.5,
-    },
+    MandelboxRandom,
+    ...MandelboxControls,
     {
       type: ControlType.Number,
       param: 'bound',

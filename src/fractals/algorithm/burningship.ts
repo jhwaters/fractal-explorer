@@ -12,6 +12,7 @@ import { mandelbox } from '../math/fractals';
 import { isInt } from '../math/util';
 import { num } from '../formatting'
 import { MandelboxParams } from './mandelbox';
+import * as ctrl from './mixers/controls';
 
 
 export interface BurningShipParams { k: number }
@@ -57,68 +58,36 @@ interface BurningShipBoxParams extends BurningShipParams, MandelboxParams {}
 export const BurningShip2Mandelbox = mix.escape<BurningShipBoxParams>({
   label: 'Burning Ship (Mandelbox Remix)',
   
-  f: ({a, b, c, k}) => {
+  f: ({box1, box2, box3, k}) => {
     const pow = isInt(k) && k > 0 ? powInt : powFloat
-    const mbox = mandelbox(a, b, c);
+    const mbox = mandelbox(box1, box2, box3);
     return (x: Complex) => (z: Complex) => {
-      let z1 = multReal(pow(complex(Math.abs(z.re), -Math.abs(z.im)), k), 1/c);
+      let z1 = multReal(pow(complex(Math.abs(z.re), -Math.abs(z.im)), k), 1/box3);
       return add(mbox(z1), x);
     }
   },
 
   z0: 0,
 
-  describe: ({a, b, c, k, bound, iterations}) => [
+  describe: ({box1, box2, box3, k, bound, iterations}) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
     {
-      math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(c)}`,
+      math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(box3)}`,
       displayMode: true,
     }
   ],
 
-  newParams: () => ({a: 1, b: 2, c: 2.2, k: 2, bound: 50}),
+  newParams: () => ({box1: 1, box2: 2, box3: 2.2, k: 2, bound: 50}),
 
   controls: [
     {
       type: ControlType.Call,
       icon: 'Random',
-      onCall: () => ({scale: Math.round(Math.random() * 100)/100 + 0.5})
+      onCall: () => ({box3: Math.round(Math.random() * 100)/100 + 0.5})
     },
-    {
-      type: ControlType.Number,
-      param: 'a',
-      label: 'a',
-      step: 0.1,
-      min: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'b',
-      label: 'b',
-      step: 0.1,
-      min: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'c',
-      label: 'c',
-      step: 0.1,
-      min: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'k',
-      label: 'k',
-      step: 0.1,
-      //min: 0
-    },
-    {
-      type: ControlType.Number,
-      param: 'bound',
-      label: 'bound',
-      step: 10,
-      min: 0,
-    }
+    ...['box1', 'box2', 'box3'].map(p => ctrl.number(p, {step:0.1, min: 0.1})),
+    ctrl.number('k', {step: 0.1}),
+    ctrl.number('bound', {step: 5, min: 0}),
   ],
 });
 
