@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { State as FractalState } from '../../store/fractal/types';
-import { State as ViewState } from '../../store/fractal/view/types';
 import { addToGallery } from '../../store/gallery/actions';
 import { capture, finish, wait } from '../../store/ui/actions';
 import { CanvasAction } from '../../store/ui/types';
@@ -29,8 +28,6 @@ const CropContainer = withStyles({
 })(Box);
 
 
-
-let FractalCounter = 1;
 
 interface Crop {x: number, y: number}
 interface Area extends Crop {width: number, height: number}

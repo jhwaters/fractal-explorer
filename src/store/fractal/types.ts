@@ -1,5 +1,4 @@
 import { CombinedState } from 'redux';
-import { JSONState } from '../../fractals/json';
 
 import {
   Action as AlgorithmAction,

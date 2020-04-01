@@ -1,5 +1,4 @@
-import { State, Dispatch } from '../store/types'
-import { State as FractalState } from '../store/fractal/types';
+import { State } from '../store/types'
 import { State as AlgorithmState } from '../store/fractal/algorithm/types';
 import { State as ColorState } from '../store/fractal/color/types';
 import { State as ViewState } from '../store/fractal/view/types';
