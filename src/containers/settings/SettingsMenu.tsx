@@ -13,6 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import JSONInterface from './JSONInterface';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon } from '../../components';
 
@@ -49,6 +50,7 @@ enum Menu {
   Algorithm,
   Color,
   View,
+  JSON,
 }
 
 class SettingsDrawer extends React.Component<Props> {
@@ -71,6 +73,8 @@ class SettingsDrawer extends React.Component<Props> {
   openAlgorithm = () => this.setState({menu: Menu.Algorithm});
   openColor = () => this.setState({menu: Menu.Color});
   openView = () => this.setState({menu: Menu.View});
+  openJSON = () => this.setState({menu: Menu.JSON});
+
   closeAll = () => {
     this.setState({menu: Menu.None});
     this.closePopup();
@@ -102,6 +106,10 @@ class SettingsDrawer extends React.Component<Props> {
             <ListItemIcon><Icon.View/></ListItemIcon>
             <StyledLabel style={labelStyle}>View</StyledLabel>
           </StyledMenuItem>
+          <StyledMenuItem onClick={this.openJSON}>
+            <ListItemIcon><Icon.Code/></ListItemIcon>
+            <StyledLabel style={labelStyle}>JSON</StyledLabel>
+          </StyledMenuItem>
           <Divider/>
           <StyledMenuItem onClick={this.closeAll} style={{paddingTop: '2em', paddingBottom: '2em'}}>
             <ListItemIcon><Icon.Back/></ListItemIcon>
@@ -121,6 +129,8 @@ class SettingsDrawer extends React.Component<Props> {
             <ViewSettings
               //onClose={this.closeAll}
             />
+          ) : this.state.menu === Menu.JSON ? (
+            <JSONInterface/>
           ) : null}
         </Box>
         

@@ -1,6 +1,8 @@
+export { default as AddAPhoto } from '@material-ui/icons/AddAPhotoRounded';
 export { default as Back } from '@material-ui/icons/ChevronLeftRounded';
 export { default as Capture } from '@material-ui/icons/PhotoCameraRounded';
-export { default as AddAPhoto } from '@material-ui/icons/AddAPhotoRounded';
+export { default as Code } from '@material-ui/icons/CodeRounded';
+export { default as Copy } from '@material-ui/icons/FileCopyRounded';
 export { default as Delete } from '@material-ui/icons/DeleteForeverRounded';
 export { default as Explore } from '@material-ui/icons/ControlCameraRounded';
 export { default as FullResolution } from '@material-ui/icons/HighQualityRounded';
@@ -19,6 +21,7 @@ export { default as Save } from '@material-ui/icons/SaveAltRounded';
 export { default as Settings } from '@material-ui/icons/SettingsRounded';
 export { default as SwapHoriz } from '@material-ui/icons/SwapHorizRounded';
 export { default as Tune } from '@material-ui/icons/TuneRounded';
+export { default as Upload } from '@material-ui/icons/CloudUploadRounded';
 export { default as View } from '@material-ui/icons/SettingsOverscanRounded';
 export { default as ViewImage } from '@material-ui/icons/PageviewRounded';
 export { default as ZoomIn } from '@material-ui/icons/ZoomInRounded';
