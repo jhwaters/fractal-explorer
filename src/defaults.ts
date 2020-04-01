@@ -2,7 +2,7 @@ import { COLORSCHEMES, ALLFRACTALS } from './fractals'
 
 
 //export const fractalName = 'Julia1KC';
-export const methodName = 'Julia_'
+export const methodName = 'Julia'
 export const colorSchemeName = 'Rainbow'
 export const pixelCount = 90000
 export const captureSize = {
