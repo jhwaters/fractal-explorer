@@ -23,7 +23,7 @@ const InfoButton = ({formula, ...rest}: {
 
 export default connect(
   (state: AppState) => {
-    const {formula} = fractal(state.algorithm);
+    const formula = fractal(state.fractal.algorithm).label;
     return {
       disabled: state.ui.modal === Modal.Info,
       formula,

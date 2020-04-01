@@ -1,11 +1,12 @@
-import * as Algorithm from './algorithm/actions';
-import * as Color from './color/actions';
-import * as View from './view/actions';
+import * as Fractal from './fractal/actions';
 import * as UI from './ui/actions';
+import * as Gallery from './gallery/actions';
+
 
 export {
-  Algorithm,
-  Color,
-  View,
+  Fractal,
   UI,
+  Gallery,
 }
+
+

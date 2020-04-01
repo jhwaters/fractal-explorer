@@ -1,119 +1,142 @@
-import { PixelCalculator } from './types'
-import { colorScale } from './colors';
+import { State as FractalState } from '../store/fractal/types';
+import { State as ViewState } from '../store/fractal/view/types';
+import { colorScale } from './color';
+import { fractal } from './index';
 
 
-function linearScale(domain: [number, number], range: [number,number]) {
+export function linearScale(domain: [number, number], range: [number,number]) {
   const m = (range[1] - range[0]) / (domain[1] - domain[0])
   const b = range[0] - m*domain[0]
   return (n: number) => m*n + b;
 }
 
 
+export function scaleDown({w, h, ppu, pixelCount}: {
+  w: number,
+  h: number,
+  ppu: number,
+  pixelCount: number,
+}) {
+  const pixels = w * h;
+  const factor = Math.sqrt(pixelCount / pixels)
+  const result = {
+    w: Math.round(w * factor),
+    h: Math.round(h * factor),
+    ppu: Math.round(ppu * factor),
+  }
+  return result
+}
+
+export function rgb(color: string) {
+  return [color.slice(1,3), color.slice(3,5), color.slice(5,7)].map(s => parseInt(s, 16));
+}
+
+
+interface Rect {
+  x: [number, number]
+  y: [number, number]
+  w: number
+  h: number
+}
+
+interface Props extends Pick<FractalState,'algorithm'|'color'> {
+  view: ViewState | Rect
+}
+
+function isRect(view: ViewState | Rect): view is Rect {
+  return 'x' in view;
+}
+
 class CanvasDrawer {
-  canvas: HTMLCanvasElement
-  values: {[k: number]: [number, number][]}
-  scale: number
-  size: {w: number, h: number}
+  ctx: CanvasRenderingContext2D
+  fullResolution: boolean
+  cmap: [number,number,number][]
+  image: ImageData
 
-  constructor(size: {
-    w: number
-    h: number
-  }) {
-    this.size = size
-    this.canvas = document.createElement('canvas');
-    this.values = {};
-    this.scale = 1;
-    this.resize();
+  constructor(fullResolution: boolean=false) {
+    this.ctx = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
+    this.fullResolution = fullResolution;
+    this.cmap = [];
+    this.image = new ImageData(1,1);
   }
 
-  attach(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.resize();
-    this.clear();
-  }
-
-  resize(size?: {w: number, h: number}) {
-    if (size) {
-      this.size = {...this.size, ...size}
-      this.resize()
+  getView(view: ViewState | Rect) {
+    if (isRect(view)) {
+      return view;
     } else {
-      this.canvas.width = this.size.w * this.scale;
-      this.canvas.height = this.size.h * this.scale;
+      return {...view, ...scaleDown(view)}
     }
   }
 
-  clear() {
-    const ctx = this.canvas.getContext('2d');
-    if (ctx) ctx.clearRect(0, 0, this.size.w, this.size.h);
-    this.values = {};
+  recolor(state: Props) {
+    this.draw(state)
   }
 
-  _setValue(x: number, y: number, value: number) {
-    if (!this.values[value]) this.values[value] = [];
-    this.values[value].push([x, y]);
+  draw(state: Props) {
+    const t0 = performance.now();
+    this.makeCMap(state);
+    this.makeImage(state);
+    const t1 = performance.now();
+    console.log('draw time:', t1 - t0, 'ms')
   }
 
-  calculatePixels(f: PixelCalculator, x: [number,number], y: [number,number]) {
-    this.values = {};
-    const {w, h} = this.size;
-    const xscale = linearScale([0, w], x);
-    const yscale = linearScale([h, 0], y);
+  makeCMap({color, algorithm}: Props) {
+    const range = fractal(algorithm).range;
+    const cs = colorScale(color)(range);
+    const cmap: [number,number,number][] = [];
+    for (let i = 0; i <= range[1]; i++) {
+      this.ctx.fillStyle = cs(i);
+      const [r, g, b] = [
+        this.ctx.fillStyle.slice(1,3), 
+        this.ctx.fillStyle.slice(3,5),
+        this.ctx.fillStyle.slice(5,7),
+      ].map(n => parseInt(n, 16))
+      cmap.push([r, g, b]);
+    }
+    this.cmap = cmap;
+  }
+
+  makeImage(state: Props) {
+    const {algorithm} = state;
+    const cmap = this.cmap;
+    const view = this.getView(state.view);
+    const {w, h} = view;
+    const calc = fractal(algorithm).calc;
+    const image = new ImageData(w, h);
+    let xrange: [number,number]
+    let yrange: [number,number]
+    if (isRect(view)) {
+      xrange = view.x;
+      yrange = view.y
+    } else {
+      const {cx, cy, w, h, ppu} = view;
+      const rx = w / ppu / 2;
+      const ry = h / ppu / 2;
+      xrange = [cx - rx, cx + rx];
+      yrange = [cy + ry, cy - ry];
+    }
+    const xscale = linearScale([-0.5, w-0.5], xrange);
+    const yscale = linearScale([-0.5, h-0.5], yrange);
     for (let r = 0; r < h; r++) {
       const y = yscale(r);
+      const hh = w * r;
       for (let c = 0; c < w; c++) {
         const x = xscale(c);
-        this._setValue(c, r, f(x, y))
+        const i = 4*(c + hh);
+        const color = cmap[calc(x, y)]
+        image.data[i] = color[0];
+        image.data[i+1] = color[1];
+        image.data[i+2] = color[2];
+        image.data[i+3] = 255;
       }
     }
+    this.image = image;
   }
 
-  changeIterations(f: PixelCalculator, x: [number,number], y: [number,number], iterations: number) {
-    const tocalc: [number,number][] = [];
-    const max = Math.max(...Object.keys(this.values).map(n => +n));
-    if (max < iterations) {
-      tocalc.push(...this.values[max])
-      this.values[max] = [];
-    } else if (max > iterations) {
-      for (const v in this.values) {
-        if (+v > iterations) {
-          this.values[iterations].push(...this.values[v]);
-          this.values[v] = [];
-        }
-      }
-    }
-    if (tocalc.length) {
-      const {w, h} = this.size;
-      const xscale = linearScale([0, w], x);
-      const yscale = linearScale([h, 0], y);
-      for (const [r, c] of tocalc) {
-        this._setValue(c, r, f(xscale(r), yscale(c)))
-      }
-    }
-  }
-
-  _applyColors(cmap: (n: number) => string) {
-    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-    if (this.scale !== 1) {
-      ctx.setTransform(this.scale, 0, 0, this.scale, 0, 0)
-    }
-    ctx.clearRect(0, 0, this.size.w, this.size.h)
-    for (const value in this.values) {
-      ctx.beginPath();
-      for (const pt of this.values[value]) {
-        ctx.rect(pt[0], pt[1], 1, 1);
-      }
-      ctx.fillStyle = cmap(+value);
-      ctx.fill();
-    }
-  }
-
-  
-  colorPixels(colors: Parameters<typeof colorScale>[0], domain: [number,number] | 'auto'='auto') {
-    if (domain === 'auto') {
-      const vals = Object.keys(this.values).map(n => +n);
-      domain = [Math.min(...vals), Math.max(...vals)]
-    }
-    this._applyColors(colorScale(colors).scale(domain))
+  putOnCanvas(canvas: HTMLCanvasElement) {
+    canvas.width = this.image.width;
+    canvas.height = this.image.height;
+    canvas.getContext('2d')?.putImageData(this.image, 0, 0);
   }
 
 }

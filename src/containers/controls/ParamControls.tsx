@@ -7,14 +7,14 @@ import {
 import {
   ControlProps, ControlType, Params, 
   ControlNumber, ControlComplex, ControlCall,
-} from '../../fractals/types'
+} from '../../fractals/algorithm/types'
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { Icon } from '../../components';
 import { State, Dispatch } from '../../store/types';
 import { fractal } from '../../fractals';
-import { updateParams } from '../../store/algorithm/actions';
-import { startDrawing } from '../../store/ui/actions';
+import { updateParams } from '../../store/fractal/actions';
+import { redraw } from '../../store/ui/actions';
 
 
 interface Props {
@@ -27,7 +27,7 @@ class ParamControls extends React.Component<Props> {
 
   paramUpdater = (k: string) => {
     return (v: any) => {
-      console.log("setting " + k + ' => ' + v);
+      //console.log("setting " + k + ' => ' + v);
       this.props.onChange({[k]: v});
     }
   }
@@ -114,13 +114,13 @@ class ParamControls extends React.Component<Props> {
 
 export default connect(
   (state: State) => ({
-    controls: [...fractal(state.algorithm).controls],
-    params: {...state.algorithm.params},
+    controls: [...fractal(state.fractal.algorithm).controls],
+    params: {...state.fractal.algorithm.params},
   }),
   (dispatch: Dispatch) => ({
     onChange: (x: Params) => {
       dispatch(updateParams(x));
-      dispatch(startDrawing());
+      dispatch(redraw());
     },
   })
 )(ParamControls)

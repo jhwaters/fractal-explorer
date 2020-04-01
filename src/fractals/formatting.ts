@@ -18,6 +18,10 @@ export function num(n: number, {
   return n.toString()
 }
 
+export function complex([a, b]: [number,number], opts: NumberOpts={}) {
+  return num(a,opts) + num(b,{...opts,sign:true}) + 'i'
+}
+
 
 
 export function rounder(p: number) {

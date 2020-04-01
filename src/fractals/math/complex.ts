@@ -125,6 +125,41 @@ export function powReal(z: Complex, k: number): Complex {
   return powInt(z, k);
 }
 
+const pow2 = (z: Complex) => mult(z, z);
+const pow3 = (z: Complex) => mult(mult(z, z), z);
+const pow4 = (z: Complex) => mult(mult(mult(z, z), z), z);
+const pow5 = (z: Complex) => mult(mult(mult(mult(z, z), z), z), z);
+const pow6 = (z: Complex) => mult(mult(mult(mult(mult(z, z), z), z), z), z);
+const pow7 = (z: Complex) => mult(mult(mult(mult(mult(mult(z, z), z), z), z), z), z);
+//const pow8 = (z: Complex) => mult(mult(mult(mult(mult(mult(mult(z, z), z), z), z), z), z), z);
+const pow8 = (z: Complex) => pow2(pow2(pow2(z)))
+
+export function powN(k: number): (z: Complex) => Complex {
+  if (k < 0) {
+    const p = powN(-k);
+    return (z: Complex) => div(complex(1, 0), p(z))
+  }
+  if (k === 0) return z => complex(1, 0);
+  if (k === 1) return z => z;
+  if (k === 2) return pow2
+  if (k === 3) return pow3
+  if (k === 4) return pow4
+  if (k === 5) return pow5
+  if (k === 6) return pow6
+  if (k === 7) return pow7
+  if (k === 8) return pow8
+  if (k % 1 === 0) {
+    if (k % 2 === 0) {
+      const p = powN(k / 2)
+      return (z: Complex) => pow2(p(z))
+    } else {
+      const p = powN((k-1) / 2)
+      return (z: Complex) => mult(z, pow2(p(z)))
+    }
+  }
+  return z => powFloat(z, k);
+}
+
 
 // Other
 

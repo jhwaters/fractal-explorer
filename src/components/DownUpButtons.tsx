@@ -11,6 +11,7 @@ import * as Icon from './icons'
 const styles = ({palette}: Theme) => createStyles({
   container: {
     position: 'relative',
+    marginTop: '5px',
     marginBottom: '5px',
   },
   label: {
@@ -21,6 +22,14 @@ const styles = ({palette}: Theme) => createStyles({
     userSelect: 'none',
     color: palette.text.secondary,
   },
+  value: {
+    textAlign: 'center',
+    position: 'absolute',
+    top: '-5px',
+    width: '100%',
+    userSelect: 'none',
+    color: palette.text.secondary,
+  }
 });
 
 
@@ -30,6 +39,7 @@ export interface DownUpButtonsProps extends WithStyles<typeof styles>, Omit<Butt
   onDown?: () => void
   disableUp?: boolean
   disableDown?: boolean
+  value?: string
   label?: string
   fontSize?: "small" | "default" | "large" | "inherit"
   iconDown?: typeof SvgIcon
@@ -37,7 +47,7 @@ export interface DownUpButtonsProps extends WithStyles<typeof styles>, Omit<Butt
 }
 
 
-const DownUpButtons = ({label, classes, onUp, onDown, fontSize, 
+const DownUpButtons = ({label, value, classes, onUp, onDown, fontSize, 
   disableUp, disableDown, downIcon=Icon.Minus, upIcon=Icon.Plus,
   ...rest
 }: DownUpButtonsProps) => (
@@ -46,6 +56,11 @@ const DownUpButtons = ({label, classes, onUp, onDown, fontSize,
       {label ? (
         <Typography variant="caption" className={classes.label}>
           {label}
+        </Typography>
+      ) : null}
+      {value ? (
+        <Typography variant="caption" className={classes.value}>
+          {value}
         </Typography>
       ) : null}
     <ButtonGroup {...rest}>

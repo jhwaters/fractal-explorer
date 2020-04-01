@@ -4,7 +4,7 @@ import Katex from '../components/Katex';
 import { State as AppState, Dispatch } from '../store/types';
 import { setModal } from '../store/ui/actions';
 import { Modal } from '../store/ui/types';
-import { State as AlgState } from '../store/algorithm/types';
+import { State as AlgorithmState } from '../store/fractal/algorithm/types';
 import { TypographyWithMath } from '../components';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
@@ -44,7 +44,7 @@ interface Props {
   cy: number
   rx: number
   ry: number
-  algorithm: AlgState
+  algorithm: AlgorithmState<object>
 }
 
 interface PP extends Props, WithStyles<typeof styles> {}
@@ -53,7 +53,7 @@ interface PP extends Props, WithStyles<typeof styles> {}
 const FractalInfo = (props: PP) => {
 
   const {algorithm} = props;
-  const fractalinfo = fractal(algorithm).description;
+  const fractalinfo = fractal(algorithm).describe;
 
   const round = rounder(3-Math.floor(Math.log10(props.rx)))
 
@@ -96,7 +96,7 @@ const FractalInfo = (props: PP) => {
 
 export default connect(
   (state: AppState) => {
-    const {cx, cy, ppu, w, h} = state.view;
+    const {cx, cy, ppu, w, h} = state.fractal.view;
     const rx = w/ppu/2, ry = h/ppu/2;
     return {
       visible: state.ui.modal === Modal.Info,
@@ -104,7 +104,7 @@ export default connect(
       cy: cy,
       rx: rx,
       ry: ry,
-      algorithm: state.algorithm,
+      algorithm: state.fractal.algorithm,
     }
   },
   (dispatch: Dispatch) => ({

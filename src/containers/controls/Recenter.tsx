@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from '../../store/types';
-import { startDrawing } from '../../store/ui/actions';
-import { recenter } from '../../store/view/actions';
+import { redraw } from '../../store/ui/actions';
+import { recenter } from '../../store/fractal/view/actions';
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import { Icon } from '../../components';
 
@@ -19,7 +19,7 @@ export default connect(
   (dispatch: Dispatch) => ({
     onClick: () => {
       dispatch(recenter());
-      dispatch(startDrawing());
+      dispatch(redraw());
     }
   }),
 )(RecenterButton)

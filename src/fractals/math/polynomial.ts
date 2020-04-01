@@ -1,7 +1,6 @@
-import { Complex, Polar, Coeffs } from './types';
+import { Complex, Coeffs } from './types';
 import { add, powInt, multReal, toPolar, addPolar } from './complex';
 import * as P from './polar';
-import * as Math from './real';
 import { isInt } from './util';
 
 

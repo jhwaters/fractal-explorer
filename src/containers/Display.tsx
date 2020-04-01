@@ -1,24 +1,35 @@
 import React from 'react'
 import Canvas from './Canvas';
+import Capture from './Capture';
+import Controls from './Controls';
 import Box from '@material-ui/core/Box';
-import { withStyles } from '@material-ui/core/styles';
+import Gallery from './Gallery';
+import { makeStyles } from '@material-ui/core/styles';
 
 
-const MyBox = withStyles({
+const useStyles = makeStyles({
   root: {
-    position: 'relative',
-    overflow: 'hidden',
+    position: 'absolute',
+    overflow: 'clip',
     display: 'flex',
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     flexGrow: 1,
-    paddingTop: '50px'
+    top: '50px',
+    bottom: '55px',
+    width: '100%',
+    //paddingTop: '50px'
   }
-})(Box)
+});
 
-const Display = () => (
-  <MyBox>
-    <Canvas/>
-  </MyBox>
-)
+export default function Display() {
+  const classes = useStyles();
 
-export default Display
+  return (
+    <Box className={classes.root}>
+      <Canvas/>
+      <Capture/>
+      <Gallery/>
+      <Controls/>
+    </Box>
+  )
+};

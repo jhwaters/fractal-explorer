@@ -1,62 +1,39 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { State } from '../store/types';
-import { Nav } from '../store/ui/types';
 import BottomBar from './Bottombar';
 import Settings from './Settings';
-import Controls from './Controls';
 import Display from './Display';
 import TopBar from './TopBar';
 import Info from './Info';
-import Box from '@material-ui/core/Box';
-import { withStyles } from '@material-ui/core/styles';
-import styles from './App.module.css';
+import Waiting from './Waiting';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 
 
-type Props = {
-  nav: Nav,
-}
-
-const WithBottomNav = withStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: '100%',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column-reverse',
-  }
-})(Box)
-
-const AboveBox = withStyles({
-  root: {
-    position: 'relative',
+    flexDirection: 'column',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column-reverse',
-    flexGrow: 1,
+    justifyContent: 'space-between',
   }
-})(Box)
+}))
 
-class App extends React.Component<Props> {
 
-  render() {
+export default function App() {
+  const classes = useStyles();
 
-    return (
-      <div className={styles.App}>
-        <TopBar />
-        <Info />
-        <Settings />
-        <WithBottomNav>
-          <BottomBar />
-            <Controls/>
-          <AboveBox>
-            <Display/>
-          </AboveBox>
-        </WithBottomNav>
-      </div>
-    )
-  }
+  return (
+    <div className={classes.root}>
+      <Waiting/>
+      <Display/>
+      <TopBar />
+      <Settings />
+      <Info />
+      <BottomBar />
+    </div>
+  )
 }
-
-export default connect(
-  (state: State) => ({nav: state.ui.nav})
-)(App);

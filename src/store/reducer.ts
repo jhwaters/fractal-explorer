@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux';
-import color from './color/reducer';
-import view from './view/reducer';
-import algorithm from './algorithm/reducer';
+import fractal from './fractal/reducer';
 import ui from './ui/reducer';
+import gallery from './gallery/reducer';
 
 export default combineReducers({
-  algorithm,
-  color,
-  view,
+  fractal,
   ui,
+  gallery,
 });

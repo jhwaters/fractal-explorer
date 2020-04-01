@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState } from '../../store/types';
-import { State as ViewState } from '../../store/view/types';
-import * as ViewActions from '../../store/view/actions';
-import { startDrawing } from '../../store/ui/actions';
+import { State as ViewState } from '../../store/fractal/view/types';
+import { updateView } from '../../store/fractal/actions';
+import { redraw } from '../../store/ui/actions';
 import { NumberInput, SettingsContainer } from '../../components';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -43,8 +43,7 @@ class ViewSettings extends React.Component<Props> {
   }
 
   apply = () => {
-    let {h, ppu, ...rest} = this.state.current;
-    this.props.updateView({h, ppu, ...rest});
+    this.props.updateView(this.state.current);
     if (this.props.onClose) {
       this.props.onClose()
     }
@@ -63,7 +62,7 @@ class ViewSettings extends React.Component<Props> {
   setW = (evt: Evt) => this.setCurrent({w: +evt.target.value});
   setH = (evt: Evt) => this.setCurrent({h: +evt.target.value});
   setPPU = (evt: Evt) => this.setCurrent({ppu: +evt.target.value});
-  setPreviewPixels = (evt: Evt) => this.setCurrent({previewPixels: +evt.target.value});
+  setPixelCount = (evt: Evt) => this.setCurrent({pixelCount: +evt.target.value});
 
 
   render() {
@@ -72,7 +71,7 @@ class ViewSettings extends React.Component<Props> {
       >
         <Box m={1}>
         <Box m={1}>
-          <InputLabel>Full Resolution</InputLabel>
+          <InputLabel>Relative Dimensions</InputLabel>
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <NumberInput
@@ -100,9 +99,9 @@ class ViewSettings extends React.Component<Props> {
 
           <Box>
             <NumberInput
-              label="Preview pixel count"
-              value={+this.state.current.previewPixels} 
-              onChange={this.setPreviewPixels} 
+              label="Pixel count"
+              value={+this.state.current.pixelCount} 
+              onChange={this.setPixelCount} 
               step={10000}
               min={10000}
             />
@@ -157,12 +156,12 @@ class ViewSettings extends React.Component<Props> {
 
 export default connect(
   (state: AppState) => ({
-    current: state.view,
+    current: state.fractal.view,
   }),
   (dispatch) => ({
     updateView: (update: Partial<ViewState>) => {
-      dispatch(ViewActions.update(update));
-      dispatch(startDrawing());
+      dispatch(updateView(update));
+      dispatch(redraw());
     },
   })
 )(ViewSettings)

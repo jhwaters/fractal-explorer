@@ -1,11 +1,35 @@
 // Fractal-specific functions
 import { Complex } from './types';
-import { complex, abs2, multReal } from './complex';
+import {
+  complex,
+  abs2,
+  add,
+  multReal,
+  powN,
+} from './complex';
 import * as Math from './real';
 
-export function burningship(z: Complex) {
-  return complex(Math.abs(z.re), Math.abs(z.im))
+
+
+// Burning Ship
+
+const BS = (z: Complex) => complex(Math.abs(z.re), Math.abs(z.im))
+
+export function burningship(k: number=1, c?: [number,number]): (z: Complex) => Complex {
+  if (c) {
+    const bs = burningship(k);
+    const cc = complex(c[0], c[1])
+    return (z: Complex) => add(bs(z), cc)
+  }
+  if (k === 1) return BS
+  else {
+    const p = powN(k)
+    return (z: Complex) => p(complex(Math.abs(z.re), Math.abs(z.im)))
+  }
 }
+
+
+// Mandelbox
 
 export function mandelboxA(v: number=1) {
   const w = v*2;
@@ -32,7 +56,7 @@ export function mandelboxB(v: number=2) {
   }
 }
 
-export function mandelbox(a: number, b: number, c: number) {
+export function mandelbox(a: number=1, b: number=2, c: number=2) {
   const aa = a*2;
   const f1 = (n: number) =>  {
     if (n > a) return aa - n;
@@ -52,4 +76,46 @@ export function mandelbox(a: number, b: number, c: number) {
     }
   }
   return (z: Complex) => f2(complex(f1(z.re), f1(z.im)));
+}
+
+
+// Phoenix
+
+
+export function lookback(f: (z: Complex, zprev: Complex) => Complex, z0: Complex=complex(0,0)) {
+  let zp = z0;
+  return (z: Complex) => {
+    const z1 = f(z, zp)
+    zp = z;
+    return z1;
+  }
+}
+
+
+export function phoenix(p=-0.5, k: number=2, c?: [number,number]) {
+  const po = powN(k)
+  if (c) {
+    const cc = complex(c[0], c[1])
+    return (z: Complex, zp: Complex) => add(add(po(z), cc), multReal(zp, p));
+  } else {
+    return (z: Complex, zp: Complex) => add(po(z), multReal(zp, p));
+  }
+  /*
+  let zp = complex(0,0)
+  const po = powN(k)
+  if (c) {
+    const cc = complex(c[0], c[1])
+    return (z: Complex, zprev=zp) => {
+      const z1 = add(add(po(z), cc), multReal(zprev, p))
+      zp = z;
+      return z1;
+    }
+  } else {
+    return (z: Complex, zprev=zp) => {
+      const z1 = add(po(z), multReal(zprev, p))
+      zp = z;
+      return z1;
+    }
+  }
+  */
 }

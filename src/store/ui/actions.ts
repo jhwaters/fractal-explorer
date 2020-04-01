@@ -12,6 +12,9 @@ import {
   CanvasAction,
   SetCanvasAction,
   SET_CANVAS_ACTION,
+  AddColorScheme,
+  ADD_COLOR_SCHEME,
+  ColorScheme,
   Update,
   UPDATE,
 } from './types'
@@ -36,31 +39,39 @@ export const setNav = (nav: Nav): SetNav => ({
   payload: nav
 })
 
-export const setCanvasAction = (x: CanvasAction): SetCanvasAction => ({
+export const redraw = (): SetCanvasAction => ({
   type: SET_CANVAS_ACTION,
-  payload: x,
+  payload: CanvasAction.Draw
 })
 
-export const startDrawing = (fullResolution: boolean=false): SetCanvasAction => {
-  if (fullResolution) {
-    return ({
-      type: SET_CANVAS_ACTION,
-      payload: CanvasAction.DrawFullResolution
-    })
-  } else {
-    return ({
-      type: SET_CANVAS_ACTION,
-      payload: CanvasAction.Draw
-    })
-  }
-}
-
-export const startIterating = (): SetCanvasAction => ({
-  type: SET_CANVAS_ACTION,
-  payload: CanvasAction.Iterate,
-})
-
-export const startColoring = (): SetCanvasAction => ({
+export const recolor = (): SetCanvasAction => ({
   type: SET_CANVAS_ACTION,
   payload: CanvasAction.Color
 })
+
+export const capture = (): SetCanvasAction => ({
+  type: SET_CANVAS_ACTION,
+  payload: CanvasAction.Capture
+})
+
+export const wait = (): Update => ({
+  type: UPDATE,
+  payload: ({waiting: true}),
+})
+
+export const finish = (): Update => ({
+  type: UPDATE,
+  payload: {
+    canvasAction: CanvasAction.None,
+    waiting: false,
+  }
+})
+
+export const addColorScheme = (name: string, scheme: ColorScheme): AddColorScheme => ({
+  type: ADD_COLOR_SCHEME,
+  payload: {name, scheme}
+})
+
+
+
+

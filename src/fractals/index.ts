@@ -1,21 +1,22 @@
-import { State as AlgState } from '../store/algorithm/types';
 import CanvasDrawer from './CanvasDrawer';
-import FractalList from './FractalList';
+import { ALLFRACTALS } from './algorithm';
+import { Algorithm } from './types';
+import { colorScale, COLORSCHEMES } from './color';
 
 
 
-function fractal(alg: AlgState) {
-  const fr = alg.fractals[alg.current];
-  const params = alg.params;
+function fractal<T>({method, params}: Algorithm<T>) {
   return {
-    label: fr.label,
-    pixel: fr.pixel(params),
-    formula: fr.formula(params),
-    description: fr.description(params),
-    settings: fr.settings,
-    controls: fr.controls,
+    label: method.label,
+    calc: method.calc(params),
+    range: method.range(params),
+    describe: method.describe(params),
+    controls: method.controls,
   }
 }
 
+export { colorScale }
 
-export { CanvasDrawer, FractalList, fractal }
+
+
+export { CanvasDrawer, ALLFRACTALS, COLORSCHEMES, fractal }

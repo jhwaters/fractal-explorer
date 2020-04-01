@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { zoomIn, zoomOut } from '../../store/view/actions';
-import { startDrawing } from '../../store/ui/actions';
+import { zoomIn, zoomOut } from '../../store/fractal/view/actions';
+import { redraw } from '../../store/ui/actions';
 import DownUpButtons, { DownUpButtonsProps } from '../../components/DownUpButtons';
 import { Icon } from '../../components';
 
@@ -37,11 +37,11 @@ export default connect(
   (dispatch: any) => ({
     zoomIn: (n: number) => {
       dispatch(zoomIn(n));
-      dispatch(startDrawing());
+      dispatch(redraw());
     },
     zoomOut: (n: number) => {
       dispatch(zoomOut(n));
-      dispatch(startDrawing());
+      dispatch(redraw());
     }
   })
 )(Zoom)

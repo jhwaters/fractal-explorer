@@ -1,5 +1,5 @@
 import React from 'react';
-import { ControlComplex } from '../fractals/types'
+import { ControlComplex } from '../fractals/algorithm/types'
 import DownUpButtons, { DownUpButtonsProps } from './DownUpButtons';
 import {
   complex,
@@ -8,7 +8,7 @@ import {
 } from '../fractals/math/complex';
 import { Polar } from '../fractals/math/types';
 import { Icon } from '.';
-
+import * as fmt from '../fractals/formatting';
 
 //const round = (n: number) => Math.round(n * 100000) / 100000
 
@@ -20,7 +20,7 @@ interface NewProps {
   onChange: (x: Vec) => void
 }
 
-interface Props extends NewProps, Omit<DownUpButtonsProps, 'label' | 'onDown' | 'onUp'> {}
+interface Props extends NewProps, Omit<DownUpButtonsProps,'onChange'> {}
 
 class ComplexIncrementer extends React.Component<Props> {
 
@@ -80,12 +80,14 @@ class ComplexIncrementer extends React.Component<Props> {
 
 
   render() {
-    const {controlProps, params, onChange, ...rest} = this.props;
+    const {controlProps, onChange, ...rest} = this.props;
+    const pol = this.toPolar();
     return (
       <>
       <DownUpButtons
         {...rest}
         //label={controlProps.label + ': θ'}
+        value={fmt.num(pol.angle)}
         label={controlProps.label + ': angle'}
         onDown={this.onAngleDown}
         onUp={this.onAngleUp}
@@ -94,6 +96,7 @@ class ComplexIncrementer extends React.Component<Props> {
       />
       <DownUpButtons
         {...rest}
+        value={fmt.num(pol.radius)}
         label={controlProps.label + ': radius'}
         onDown={this.onRadiusDown}
         onUp={this.onRadiusUp}

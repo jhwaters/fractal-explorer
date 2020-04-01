@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
-import { State as AlgState, FractalKey, Params } from '../../store/algorithm/types';
-import { setFractal } from '../../store/algorithm/actions';
-import { startDrawing } from '../../store/ui/actions'
-import { recenter } from '../../store/view/actions';
+import { Method } from '../../store/fractal/algorithm/types';
+import { setFractal, recenter } from '../../store/fractal/actions';
+import { redraw } from '../../store/ui/actions'
 import {
   SettingsContainer, 
   Select,
@@ -14,20 +13,21 @@ import {
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
+
 
 type Props = {
-  algorithm: AlgState
-  setFractal: (key: FractalKey) => void
+  methodName: string
+  params: object
+  methodList: {[k: string]: Method<any>}
+  setFractal: <T extends object>(methodName: string, method: Method<T>, params?: T) => void
   onClose?: () => void
 }
 
 
-
 interface State {
-  current: FractalKey,
-  params: Params,
+  methodName: string,
+  method: Method<any>
+  params: object,
 }
 
 class AlgorithmSettings extends React.Component<Props> {
@@ -36,27 +36,33 @@ class AlgorithmSettings extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      current: props.algorithm.current,
-      params: {...props.algorithm.params},
+      methodName: props.methodName,
+      method: props.methodList[props.methodName],
+      params: {...props.params},
     };
   }
 
   selectMethod = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({current: evt.target.value});
+    const methodName = evt.target.value;
+    const method = this.props.methodList[methodName]
+    this.setState({methodName, method, params: method.newParams()});
   }
 
   apply = () => {
-    this.props.setFractal(this.state.current)
+    const {methodName, method, params} = this.state;
+    this.props.setFractal(methodName, method, params)
     if (this.props.onClose) {
       this.props.onClose();
     }
   }
 
   reset = () => {
+    const {methodName, params} = this.props;
     this.setState({
-      current: this.props.algorithm.current,
-      params: {...this.props.algorithm.params},
-    })
+      methodName,
+      method: this.props.methodList[methodName],
+      params: {...params},
+    });
   }
 
   render() {
@@ -66,14 +72,14 @@ class AlgorithmSettings extends React.Component<Props> {
           <Box m={1}>
             <Select select
               label="Method"
-              value={this.state.current}
+              value={this.state.methodName}
               onChange={this.selectMethod}
             >
-              {Object.keys(this.props.algorithm.fractals).sort().map(k => {
+              {Object.keys(this.props.methodList).sort().map(k => {
                 return (
                   <Option key={k} value={k}>
                     <OptionLabel
-                      data={this.props.algorithm.fractals[k].label}
+                      data={this.props.methodList[k].label}
                     />
                   </Option>
                 )
@@ -94,13 +100,15 @@ class AlgorithmSettings extends React.Component<Props> {
 
 export default connect(
   (state: AppState) => ({
-    algorithm: state.algorithm,
+    methodName: state.fractal.algorithm.methodName,
+    methodList: state.ui.methodList,
+    params: state.fractal.algorithm.params,
   }),
   (dispatch: Dispatch) => ({
-    setFractal: (key: FractalKey) => {
-      dispatch(setFractal(key))
+    setFractal: function<T>(methodName: string, method: Method<T>, params?: T) {
+      dispatch(setFractal(methodName, method, params))
       dispatch(recenter())
-      dispatch(startDrawing())
+      dispatch(redraw())
     },
   })
 )(AlgorithmSettings)

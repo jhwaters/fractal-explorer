@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState } from '../../store/types';
-import * as ColorTypes from '../../store/color/types';
-import { update as updateColor, addScheme } from '../../store/color/actions';
-import { setCanvasAction } from '../../store/ui/actions';
-import { CanvasAction } from '../../store/ui/types';
+import { State as ColorState, ColorScheme } from '../../store/fractal/color/types';
+import { updateColor } from '../../store/fractal/actions';
+import { recolor, addColorScheme } from '../../store/ui/actions';
 import {
   ColorPreview,
   SettingsContainer,
   Select,
   Option,
   OptionLabel,
+  CustomColor,
 } from '../../components';
-import CustomColor from './CustomColor';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -24,32 +23,38 @@ import Slider from '@material-ui/core/Slider';
 import Switch from '@material-ui/core/Switch';
 
 
-type Props = {
-  current: ColorTypes.State,
-  updateColor: (update: Partial<ColorTypes.State>) => void
-  addScheme: (k: string, colors: string[]) => void
-  onClose?: () => void
+interface Colors {
+  schemeName: string
+  reverse: boolean
+  skew: number
 }
 
 
-type Evt = any
+type Props = {
+  current: Colors
+  updateColor: (update: Partial<ColorState>) => void
+  addScheme: (name: string, scheme: string[]) => void
+  onClose?: () => void
+  schemeList: {[k: string]: ColorScheme}
+}
+
+
+type Evt = React.ChangeEvent<HTMLInputElement>
 
 class ColorSettings extends React.Component<Props> {
   state: {
-    scheme: ColorTypes.SchemeName,
-    reverse: boolean,
-    skew: number,
-    adaptiveScale: boolean,
-    customPopup: boolean,
+    current: Colors
+    customPopup: boolean
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      scheme: props.current.scheme,
-      reverse: props.current.reverse,
-      skew: props.current.skew,
-      adaptiveScale: props.current.adaptiveScale,
+      current: {
+        schemeName: props.current.schemeName,
+        reverse: props.current.reverse,
+        skew: props.current.skew,
+      },
       customPopup: false,
     }
   }
@@ -57,14 +62,19 @@ class ColorSettings extends React.Component<Props> {
   openCustomPopup = () => this.setState({customPopup: true})
   closeCustomPopup = () => this.setState({customPopup: false})
 
-  setScheme(scheme: string) {
-    this.setState({scheme});
+  setCurrent(x: Partial<Colors>) {
+    this.setState({...this.state, current: {...this.state.current, ...x}});
   }
 
-  changeReverse = (evt: Evt) => this.setState({reverse: evt.target.checked});
-  changeSkew = (evt: Evt, skew: number | number[]) => this.setState({skew});
+  setScheme(schemeName: string) {
+    this.setCurrent({schemeName});
+  }
 
-  changeAdaptiveScale = (evt: Evt) => this.setState({adaptiveScale: evt.target.checked})
+  changeReverse = (evt: Evt) => this.setCurrent({reverse: evt.target.checked});
+  changeSkew = (evt: any, skew: number | number[]) => {
+    if (typeof skew === 'number') this.setCurrent({skew});
+    else console.log(skew);
+  }
 
   selectScheme = (evt: any) => {
     const scheme = evt.target.value;
@@ -76,10 +86,9 @@ class ColorSettings extends React.Component<Props> {
   }
 
   hasChanged = () => {
-    if (this.state.scheme !== this.props.current.scheme
-      || this.state.reverse !== this.props.current.reverse
-      || this.state.adaptiveScale !== this.props.current.adaptiveScale
-      || this.state.skew !== this.props.current.skew) {
+    if (this.state.current.schemeName !== this.props.current.schemeName
+      || this.state.current.reverse !== this.props.current.reverse
+      || this.state.current.skew !== this.props.current.skew) {
       return true;
     }
     return false;
@@ -92,10 +101,10 @@ class ColorSettings extends React.Component<Props> {
 
   apply = () => {
     this.props.updateColor({
-      scheme: this.state.scheme,
-      reverse: this.state.reverse,
-      skew: this.state.skew,
-      adaptiveScale: this.state.adaptiveScale,
+      schemeName: this.state.current.schemeName,
+      scheme: this.props.schemeList[this.state.current.schemeName],
+      reverse: this.state.current.reverse,
+      skew: this.state.current.skew,
     });
     if (this.props.onClose) {
       this.props.onClose()
@@ -104,7 +113,7 @@ class ColorSettings extends React.Component<Props> {
 
   revert = () => {
     this.setState({
-      scheme: this.props.current.scheme,
+      schemeName: this.props.current.schemeName,
       reverse: this.props.current.reverse,
       skew: this.props.current.skew,
     })
@@ -118,18 +127,13 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <Select select
                 label="Scheme"
-                value={this.state.scheme}
+                value={this.state.current.schemeName}
                 onChange={this.selectScheme}
               >
                 <Option value="CUSTOM">
                   <OptionLabel data="CREATE NEW SCHEME"/>
                 </Option>
-                {this.props.current.schemeList.sort().map(k => (
-                  <Option key={k} value={k}>
-                    <OptionLabel data={k}/>
-                  </Option>
-                ))}
-                {Object.keys(this.props.current.customSchemes).sort().map(k => (
+                {Object.keys(this.props.schemeList).sort().map(k => (
                   <Option key={k} value={k}>
                     <OptionLabel data={k}/>
                   </Option>
@@ -140,7 +144,7 @@ class ColorSettings extends React.Component<Props> {
               <FormControlLabel
                 label="Reversed"
                 control={
-                  <Switch checked={this.state.reverse}
+                  <Switch checked={this.state.current.reverse}
                     onChange={this.changeReverse}
                     edge="end"
                   />
@@ -149,23 +153,11 @@ class ColorSettings extends React.Component<Props> {
             </Box>
 
             <Box m={2}>
-              <FormControlLabel
-                label="Adaptive Scale"
-                control={
-                  <Switch checked={this.state.adaptiveScale}
-                    onChange={this.changeAdaptiveScale}
-                    edge="end"
-                  />
-                }
-              />
-            </Box>
-
-            <Box m={2} style={this.state.adaptiveScale ? {display: 'none'} : {}}>
               <FormControl fullWidth>
                 <InputLabel shrink>Skew</InputLabel>
                 <Slider
                   color="secondary"
-                  value={this.state.skew}
+                  value={this.state.current.skew}
                   onChange={this.changeSkew}
                   min={-5}
                   max={5}
@@ -177,10 +169,9 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
-                scheme={this.state.scheme}
-                customSchemes={this.props.current.customSchemes}
-                reverse={this.state.reverse}
-                skew={this.state.skew}
+                scheme={this.props.schemeList[this.state.current.schemeName]}
+                reverse={this.state.current.reverse}
+                skew={this.state.current.skew}
                 width={100}
                 height={10}
               />
@@ -189,8 +180,7 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
-                scheme={this.props.current.scheme}
-                customSchemes={this.props.current.customSchemes}
+                scheme={this.props.schemeList[this.state.current.schemeName]}
                 reverse={this.props.current.reverse}
                 skew={this.props.current.skew}
                 width={100}
@@ -222,10 +212,7 @@ class ColorSettings extends React.Component<Props> {
             <CustomColor
               onSave={this.saveScheme}
               onClose={this.closeCustomPopup}
-              takenNames={[
-                ...this.props.current.schemeList,
-                ...Object.keys(this.props.current.customSchemes)
-              ]}
+              takenNames={Object.keys(this.props.schemeList)}
             />
           </Box>
         </Popover>
@@ -236,15 +223,16 @@ class ColorSettings extends React.Component<Props> {
 
 export default connect(
   (state: AppState) => ({
-    current: {...state.color},
+    current: {...state.fractal.color},
+    schemeList: state.ui.colorSchemeList,
   }),
   (dispatch) => ({
-    updateColor: (updates: Partial<ColorTypes.State>) => {
+    updateColor: (updates: Partial<ColorState>) => {
       dispatch(updateColor(updates));
-      dispatch(setCanvasAction(CanvasAction.Color));
+      dispatch(recolor());
     },
     addScheme: (k: string, colors: string[]) => {
-      dispatch(addScheme(k, colors));
+      dispatch(addColorScheme(k, colors));
     },
   }),
 )(ColorSettings);

@@ -1,27 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
-import { State as AlgState } from '../../store/algorithm/types';
-import { State as ColorState } from '../../store/color/types';
-import { setCenter } from '../../store/view/actions';
-import { setCanvasAction } from '../../store/ui/actions';
-import { StretchMode, CanvasAction } from '../../store/ui/types';
-import { CanvasDrawer, fractal } from '../../fractals';
+import { State as FractalState } from '../../store/fractal/types';
+import { setCenter } from '../../store/fractal/actions';
+import { redraw, finish } from '../../store/ui/actions';
+import { StretchMode, CanvasAction, Nav } from '../../store/ui/types';
+import { CanvasDrawer } from '../../fractals';
 import Box from '@material-ui/core/Box';
 import styles from './Canvas.module.css';
 
 
 type Props = {
-  view: {
-    w: number
-    h: number
-    ppu: number
-    cx: number
-    cy: number
-    previewPixels: number
-  }
-  color: ColorState
-  algorithm: AlgState
+  visible: boolean
+  fractal: FractalState
   canvasAction: CanvasAction
   stretch: StretchMode
   setCenter: (x: number, y: number) => void
@@ -32,118 +23,42 @@ class Canvas extends React.Component<Props> {
   drawer: CanvasDrawer
   canvasRef: React.RefObject<HTMLCanvasElement>
 
-  isFullResolution: boolean
-
   constructor(props: Props) {
     super(props);
-    this.drawer = new CanvasDrawer({w: this.props.view.w, h: this.props.view.h});
+    this.drawer = new CanvasDrawer();
+    this.drawer.fullResolution = false;
     this.canvasRef = React.createRef();
-    this.isFullResolution = false;
   }
 
   get canvas() {
-    return this.canvasRef.current
-  }
-
-  resize() {
-    this.drawer.resize(this.view());
-  }
-
-  view() {
-    if (this.isFullResolution) {
-      return this.props.view;
-    } else {
-      return {...this.props.view, ...scaleDown(this.props.view)}
-    }
-  }
-
-  calculateImage() {
-    const {algorithm} = this.props;
-    const view = this.view();
-    console.log('calculating:', algorithm.current, algorithm.params);
-    const f = fractal(algorithm).pixel;
-    const rx = view.w / view.ppu / 2;
-    const ry = view.h / view.ppu / 2;
-    this.drawer.calculatePixels(
-      f, 
-      [view.cx - rx, view.cx + rx],
-      [view.cy - ry, view.cy + ry],
-    );
-  }
-
-  changeIterations() {
-    const {iterations} = this.props.algorithm.params;
-    const {algorithm} = this.props;
-    const view = this.view();
-    const f = fractal(algorithm).pixel;
-    const rx = view.w / view.ppu / 2;
-    const ry = view.h / view.ppu / 2;
-    if (iterations) {
-      this.drawer.changeIterations(
-        f, 
-        [view.cx - rx, view.cx + rx],
-        [view.cy - ry, view.cy + ry],
-        iterations,
-      );
-    }
-  }
-
-  colorCanvas() {
-    if (this.props.color.adaptiveScale) {
-      this.drawer.colorPixels(this.props.color);
-    } else {
-      const {iterations} = this.props.algorithm.params;
-      this.drawer.colorPixels(this.props.color, [0, iterations]);
-    }
+    return this.canvasRef.current as HTMLCanvasElement
   }
 
   draw() {
-    this.resize()
-    this.calculateImage()
-    this.colorCanvas()
-    this.props.finishDrawing()
-  }
-
-  reiterate() {
-    this.changeIterations()
-    this.colorCanvas()
-    this.props.finishDrawing()
-  }
-
-  recolor() {
-    this.colorCanvas()
+    this.drawer.draw(this.props.fractal);
+    this.drawer.putOnCanvas(this.canvas)
     this.props.finishDrawing()
   }
 
   componentDidMount() {
     if (this.canvas) {
-      this.drawer.attach(this.canvas)
-      this.isFullResolution = false;
       this.draw()
     }
   }
 
   componentDidUpdate() {
     if (this.props.canvasAction === CanvasAction.Draw) {
-      this.isFullResolution = false;
       this.draw()
-    }
-    else if (this.props.canvasAction === CanvasAction.DrawFullResolution) {
-      this.isFullResolution = true;
-      this.draw()
-    }
-    else if (this.props.canvasAction === CanvasAction.Iterate) {
-      this.changeIterations()
     }
     else if (this.props.canvasAction === CanvasAction.Color) {
-      this.recolor();
+      this.draw();
     }
   }
 
   centerOnClick = (evt: any) => {
     if (this.props.setCenter) {
       if (this.canvas) {
-        const {h, w, ppu, cx, cy} = this.props.view;
+        const {h, w, ppu, cx, cy} = this.props.fractal.view;
         let {width, height} = this.canvas.getBoundingClientRect();
         let {offsetX, offsetY} = evt.nativeEvent;
 
@@ -173,6 +88,7 @@ class Canvas extends React.Component<Props> {
   render() {
     const outerClasses = [styles.Outer]
     let objectFit: 'contain' | 'cover' | undefined
+    const outerstyle = this.props.visible ? {} : {display: 'none'}
     switch (this.props.stretch) {
       case StretchMode.Contain:
         objectFit = 'contain';
@@ -184,19 +100,16 @@ class Canvas extends React.Component<Props> {
         break;
     }
 
-    if (this.isFullResolution) {
-      outerClasses.push(styles.FullResolution)
-    }
     return (
-      <Box m={0} className={outerClasses.join(' ')}>
-        <div className={styles.Inner}>
+      <Box m={0} className={outerClasses.join(' ')} style={outerstyle}>
+
           <canvas
+            id="fractal-preview-canvas"
             className={styles.Canvas}
             ref={this.canvasRef}
             onDoubleClick={this.centerOnClick}
             style={{objectFit}}
           />
-        </div>
       </Box>
     )
   }
@@ -205,37 +118,16 @@ class Canvas extends React.Component<Props> {
 
 export default connect(
   (state: AppState) => ({
-    algorithm: {...state.algorithm},
-    color: state.color,
+    visible: (state.ui.nav === Nav.Params || state.ui.nav === Nav.Explore),
+    fractal: state.fractal,
     canvasAction: state.ui.canvasAction,
-    view: {...state.view},
     stretch: state.ui.canvasStretch,
   }),
   (dispatch: Dispatch) => ({
     setCenter: (x: number, y: number) => {
       dispatch(setCenter(x, y));
-      dispatch(setCanvasAction(CanvasAction.Draw));
+      dispatch(redraw());
     },
-    finishDrawing: () => dispatch(setCanvasAction(CanvasAction.None)),
+    finishDrawing: () => dispatch(finish()),
   })
 )(Canvas)
-
-
-
-
-
-function scaleDown({w, h, ppu, previewPixels}: {
-  w: number,
-  h: number,
-  ppu: number,
-  previewPixels: number,
-}) {
-  const pixelcount = w * h;
-  const factor = Math.min(1, Math.sqrt(previewPixels / pixelcount))
-  const result = {
-    w: Math.round(w * factor),
-    h: Math.round(h * factor),
-    ppu: Math.round(ppu * factor),
-  }
-  return result
-}

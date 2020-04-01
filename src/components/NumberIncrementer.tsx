@@ -1,7 +1,7 @@
 import React from 'react';
-import { ControlNumber } from '../fractals/types'
+import { ControlNumber } from '../fractals/algorithm/types'
 import DownUpButtons, { DownUpButtonsProps } from './DownUpButtons';
-
+import * as fmt from '../fractals/formatting';
 
 interface NewProps {
   controlProps: ControlNumber
@@ -49,6 +49,7 @@ class NumberIncrementer extends React.Component<Props> {
     return (
       <DownUpButtons
         {...rest}
+        value={fmt.num(this.props.value)}
         label={controlProps.label}
         onDown={this.onClickDown}
         onUp={this.onClickUp}

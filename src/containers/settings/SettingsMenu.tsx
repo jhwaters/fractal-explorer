@@ -13,7 +13,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import FullResolution from './FullResolution';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon } from '../../components';
 
@@ -85,7 +84,6 @@ class SettingsDrawer extends React.Component<Props> {
     const labelStyle = this.state.menu === Menu.None ? {} : {display: 'none'};
     const listStyle = this.state.menu === Menu.None ? {} : {width: '4em'}
     return (
-      <>
       <StyledSwipeableDrawer
         open={this.props.open}
         onOpen={this.openMenu}
@@ -105,25 +103,28 @@ class SettingsDrawer extends React.Component<Props> {
             <StyledLabel style={labelStyle}>View</StyledLabel>
           </StyledMenuItem>
           <Divider/>
-          <StyledMenuItem onClick={this.openPopup}>
-            <ListItemIcon><Icon.FullResolution/></ListItemIcon>
-            <StyledLabel style={labelStyle}>Render Full Resolution</StyledLabel>
-          </StyledMenuItem>
           <StyledMenuItem onClick={this.closeAll} style={{paddingTop: '2em', paddingBottom: '2em'}}>
             <ListItemIcon><Icon.Back/></ListItemIcon>
             <StyledLabel style={labelStyle}>Close</StyledLabel>
           </StyledMenuItem>
         </List>
         <Box>
-          {this.state.menu === Menu.Algorithm ? <AlgorithmSettings onClose={this.closeAll}/>
-          : this.state.menu === Menu.Color ? <ColorSettings onClose={this.closeAll}/>
-          : this.state.menu === Menu.View ? <ViewSettings onClose={this.closeAll}/>
-          : null}
+          {this.state.menu === Menu.Algorithm ? (
+            <AlgorithmSettings 
+              //onClose={this.closeAll}
+            />
+          ) : this.state.menu === Menu.Color ? (
+            <ColorSettings
+              //onClose={this.closeAll}
+            />
+          ) : this.state.menu === Menu.View ? (
+            <ViewSettings
+              //onClose={this.closeAll}
+            />
+          ) : null}
         </Box>
         
       </StyledSwipeableDrawer>
-      <FullResolution open={this.state.popup} onClose={this.closePopup}/>
-      </>
     )
   }
 }
