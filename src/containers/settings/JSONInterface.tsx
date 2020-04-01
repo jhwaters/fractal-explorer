@@ -24,58 +24,85 @@ const JSONTextField = withStyles({
 
 
 interface Props {
-  current: string,
+  currentJson: string,
+  currentBase64: string,
   uploadData: (json: UploadState) => void,
 }
 
 class JSONInterface extends React.Component<Props> {
   state: {
-    json: string,
-    parsed: UploadState | undefined,
+    jsonInput: string
+    base64Input: string
+    parsedJson: UploadState | undefined
+    parsedBase64: UploadState | undefined
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      json: '',
-      parsed: undefined,
+      jsonInput: '',
+      base64Input: '',
+      parsedJson: undefined,
+      parsedBase64: undefined,
     }
   }
 
-  onCopy = () => {
-    navigator.clipboard.writeText(this.props.current);
+  onCopyJson = () => {
+    navigator.clipboard.writeText(this.props.currentJson);
   }
 
-  onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  onCopyBase64 = () => {
+    navigator.clipboard.writeText(this.props.currentBase64);
+  }
+
+  onChangeJson = (evt: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      const parsed = jsonToState(JSON.parse(evt.target.value));
+      const parsedJson = jsonToState(JSON.parse(evt.target.value));
       this.setState({
-        json: evt.target.value,
-        parsed,
+        jsonInput: evt.target.value,
+        parsedJson,
       })
     } catch {
-      this.setState({json: evt.target.value, parsed: undefined});
+      this.setState({jsonInput: evt.target.value, parsedJson: undefined});
     }
   }
 
-  onUpload = () => {
-    if (this.state.parsed) {
-      this.props.uploadData(this.state.parsed);
+  onChangeBase64 = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const parsedBase64 = jsonToState(JSON.parse(atob(evt.target.value)));
+      this.setState({
+        base64Input: evt.target.value,
+        parsedBase64,
+      })
+    } catch {
+      this.setState({base64Input: evt.target.value, parsedBase64: undefined});
+    }
+  }
+
+  onUploadJson = () => {
+    if (this.state.parsedJson) {
+      this.props.uploadData(this.state.parsedJson);
+    }
+  }
+
+  onUploadBase64 = () => {
+    if (this.state.parsedBase64) {
+      this.props.uploadData(this.state.parsedBase64);
     }
   }
 
   render() {
     return (
       <Box m={2}>
-        <Box style={{display: 'flex',}}>
+        <Box>
           <JSONTextField
-            label="Current"
+            label="Current JSON"
             disabled
-            value={this.props.current}
+            value={this.props.currentJson}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={this.onCopy} title="copy to clipboard">
+                  <IconButton onClick={this.onCopyJson} title="copy to clipboard">
                     <Icon.Copy/>
                   </IconButton>
                 </InputAdornment>
@@ -83,20 +110,54 @@ class JSONInterface extends React.Component<Props> {
             }}
           />
         </Box>
-        <JSONTextField 
-          label="Upload"
-          onChange={this.onChange}
-          value={this.state.json}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={this.onUpload} disabled={!this.state.parsed} title="load data into viewer">
-                  <Icon.Upload/>
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
+        <Box>
+          <JSONTextField 
+            label="Current Base64"
+            disabled
+            value={this.props.currentBase64}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={this.onCopyBase64} title="copy to clipboard">
+                    <Icon.Copy/>
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}/>
+        </Box>
+        <Box>
+          <JSONTextField 
+            label="Upload JSON"
+            onChange={this.onChangeJson}
+            value={this.state.jsonInput}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={this.onUploadJson} disabled={!this.state.parsedJson} title="load data into viewer">
+                    <Icon.Upload/>
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            />
+        </Box>
+        <Box>
+          <JSONTextField 
+            label="Upload Base64"
+            onChange={this.onChangeBase64}
+            value={this.state.base64Input}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={this.onUploadBase64} disabled={!this.state.parsedBase64} title="load data into viewer">
+                    <Icon.Upload/>
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            />
+        </Box>
+
       </Box>
     )
   }
@@ -105,9 +166,13 @@ class JSONInterface extends React.Component<Props> {
 
 
 export default connect(
-  (state: State) => ({
-    current: JSON.stringify(stateToJSON(state)),
-  }),
+  (state: State) => {
+    const jsonstr = JSON.stringify(stateToJSON(state));
+    return ({
+      currentJson: jsonstr,
+      currentBase64: btoa(jsonstr),
+    });
+  },
   (dispatch: Dispatch) => ({
     uploadData: (data: UploadState) => {
       dispatch(uploadData(data));
