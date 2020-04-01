@@ -11,7 +11,6 @@ export const UPDATE = 'UI_UPDATE'
 export const ADD_COLOR_SCHEME = 'UI_ADD_COLOR_SCHEME'
 
 export enum Nav {
-  None,
   Params,
   Explore,
   Capture,
