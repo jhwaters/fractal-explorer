@@ -75,7 +75,7 @@ export interface MandelboxParams {
   box3: number,
 }
 
-export const Mandelbox1 = mix.escape({
+export const Mandelbox = mix.escape({
   label: 'Mandelbox',
 
   f: ({box1, box2, box3}: MandelboxParams) => {

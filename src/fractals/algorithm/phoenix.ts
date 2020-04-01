@@ -14,7 +14,7 @@ interface PhoenixParams {
   c: [number,number]
 }
 
-export const Phoenix1 = mix.escape<PhoenixParams>({
+export const Phoenix = mix.escape<PhoenixParams>({
   label: "Phoenix",
 
   newParams: () => ({p: -0.5, k: 2, c: [0.5667,0]}),

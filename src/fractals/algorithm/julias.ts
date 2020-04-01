@@ -56,7 +56,7 @@ const JuliaControls: {[k: string]: ControlProps} = ({
 
 interface JQuad extends JuliaParams {}
 
-export const Julia_ = julia({
+export const Julia = julia({
   label: {math: 'z^k+c'},
 
   f: ({k,c}: JQuad) => {
@@ -93,7 +93,7 @@ export type JPoly = {
   c: [number,number],
 }
 
-export const JuliaAPoly = julia({
+export const Julia2Term = julia({
   label: {math: 'az^m+bz^n+c'},
 
   f: ({a, b, c, m, n}: JPoly) => {
@@ -129,7 +129,7 @@ export const JuliaAPoly = julia({
 
 
 
-export const JuliaExp = julia<JuliaParams>({
+export const JuliaExponential = julia<JuliaParams>({
   label: {math: 'e^{z^k}+c'},
 
   newParams: () => ({k: 3, c: [-0.6,0]}),
