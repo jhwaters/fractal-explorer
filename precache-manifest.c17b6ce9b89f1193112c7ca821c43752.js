@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "178c986258fbd5892db22a25b8fd2a91",
+    "revision": "3bf9c387f86eb3241716ade3dc92b6d6",
     "url": "/fractal-explorer/index.html"
   },
   {
-    "revision": "6193a49ac8841b88c88d",
+    "revision": "a11d0abed27a2358e083",
     "url": "/fractal-explorer/static/css/2.de167b80.chunk.css"
   },
   {
-    "revision": "6d216db10cacfeaf1b15",
+    "revision": "ac690247babf845857f7",
     "url": "/fractal-explorer/static/css/main.dbee9ce2.chunk.css"
   },
   {
-    "revision": "6193a49ac8841b88c88d",
-    "url": "/fractal-explorer/static/js/2.c96eaa10.chunk.js"
+    "revision": "a11d0abed27a2358e083",
+    "url": "/fractal-explorer/static/js/2.7a88a808.chunk.js"
   },
   {
     "revision": "8ae279e0396a82bcb324f2e1f01716e9",
-    "url": "/fractal-explorer/static/js/2.c96eaa10.chunk.js.LICENSE.txt"
+    "url": "/fractal-explorer/static/js/2.7a88a808.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6d216db10cacfeaf1b15",
-    "url": "/fractal-explorer/static/js/main.1fa0d6ad.chunk.js"
+    "revision": "ac690247babf845857f7",
+    "url": "/fractal-explorer/static/js/main.2ce4368e.chunk.js"
   },
   {
     "revision": "0779f115e9f0f45c15a1",
