@@ -57,8 +57,8 @@ export function jsonToUrl2(data: V2): string {
   }).join(';')
   u.append('v', v)
   u.append('al', alg[0] + ';' + par)
-  u.append('co', col.join(','))
-  u.append('vw', view.join(','))
+  u.append('co', col.join(';'))
+  u.append('vw', view.join(';'))
   return u.toString()
 }
 
@@ -78,8 +78,8 @@ export function urlToJson2(u: URLSearchParams): V2 | undefined {
           return ['xx', 1]
         }
       }))
-      const [scheme, skew, rev] = co.split(',')
-      const [cx, cy, w, h, ppu] = vw.split(',').map(k => +k)
+      const [scheme, skew, rev] = co.split(';')
+      const [cx, cy, w, h, ppu] = vw.split(';').map(k => +k)
       return {
         v: '2',
         alg: [me, params],
