@@ -3,7 +3,7 @@ import { ALLFRACTALS, COLORSCHEMES } from '../'
 
 const NameMap = {
   BurningShip: 'BS',
-  BurningShipMandelbox: 'BSMB',
+  BurningShipMandelbox: 'BSMBx',
   Exponential: 'Exp',
   Julia: 'JQ',
   Julia2Term: 'J2',
@@ -12,9 +12,9 @@ const NameMap = {
   JuliaSinh: 'JSinh',
   Magnet1: 'Mg1',
   Magnet2: 'Mg2',
-  Mandelbox: 'MB',
+  Mandelbox: 'MBx',
   Mandelbrot: 'Mand',
-  Mandelcorner: 'MBC',
+  Mandelcorner: 'MBxC',
   Phoenix: 'Phx',
   PhoenixBurningShip: 'PhxBS',
 }
