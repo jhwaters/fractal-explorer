@@ -9,7 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Icon } from '../../components';
 import { withStyles } from '@material-ui/core/styles';
-import { stateToJson, jsonToState, jsonToUrl, AppState } from '../../fractals/json';
+import { stateToJson, jsonToState, jsonToUrl, AppState, urlToJson } from '../../fractals/json';
+import Link from '@material-ui/core/Link';
 
 
 const JSONTextField = withStyles({
@@ -17,7 +18,7 @@ const JSONTextField = withStyles({
     maxWidth: '240px',
     '& textarea, input': {
       fontFamily: 'roboto mono, monospace',
-      '&[readonly]': {fontSize: '0.7em'},
+      //'&[readonly]': {fontSize: '0.7em'},
     },
   },
 })(TextField)
@@ -59,7 +60,20 @@ class JSONInterface extends React.Component<Props> {
         parsedJson,
       })
     } catch {
-      this.setState({jsonInput: evt.target.value, parsedJson: undefined});
+      try {
+        const data = urlToJson(evt.target.value.split('?').slice(-1)[0]);
+        if (data) {
+          const parsedJson = jsonToState(data);
+          this.setState({
+            jsonInput: evt.target.value,
+            parsedJson,
+          })
+        } else {
+          this.setState({jsonInput: evt.target.value, parsedJson: undefined});
+        }
+      } catch {
+        this.setState({jsonInput: evt.target.value, parsedJson: undefined});
+      }
     }
   }
 
@@ -77,46 +91,25 @@ class JSONInterface extends React.Component<Props> {
     return (
       <Box m={2}>
         <Box>
-          <JSONTextField
-            label="Link to Current Fractal"
-            value={this.props.currentURL}
-            InputProps={{
-              onClick: this.selectText,
-              readOnly: true,
-              /*
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={this.onCopyLink} title="copy to clipboard">
-                    <Icon.Copy/>
-                  </IconButton>
-                </InputAdornment>
-              )
-              */
-            }}
-          />
+          <Link 
+            variant="body1"
+            href={this.props.currentURL}>
+            Link to Current Fractal
+          </Link>
         </Box>
         <Box>
           <JSONTextField
             label="Current JSON"
             value={this.props.currentJson}
             InputProps={{
-              onClick: this.selectText,
+              onFocusCapture: this.selectText,
               readOnly: true,
-              /*
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={this.onCopyJson} title="copy to clipboard">
-                    <Icon.Copy/>
-                  </IconButton>
-                </InputAdornment>
-              )
-              */
             }}
           />
         </Box>
         <Box>
           <JSONTextField 
-            label="Load JSON"
+            label="Load from URL or JSON"
             onChange={this.onChangeJson}
             value={this.state.jsonInput}
             InputProps={{
