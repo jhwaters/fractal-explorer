@@ -23,11 +23,8 @@ const CropContainer = withStyles({
     display: 'flex',
     height: '100%',
     width: '100%',
-    //backgroundColor: 'none',
   }
 })(Box);
-
-
 
 interface Crop {x: number, y: number}
 interface Area extends Crop {width: number, height: number}
@@ -146,15 +143,12 @@ class Capture extends React.Component<Props> {
 
 
   saveImage() {
-    //const url = this.drawer.canvas.toDataURL();
-    //this.props.addToGallery(url, 'Fractal' + FractalCounter++);
-
     const canvas = document.createElement('canvas');
     this.drawer.putOnCanvas(canvas);
     canvas.toBlob((blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob);
-        const title = 'Fractal' + Math.floor(Date.now()/1000).toString(16).toUpperCase()
+        const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16)
         this.props.addToGallery(url, this.data, title);
       }
     });
