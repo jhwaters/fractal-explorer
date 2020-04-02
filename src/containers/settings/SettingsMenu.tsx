@@ -9,13 +9,16 @@ import ViewSettings from './ViewSettings';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import JSONInterface from './JSONInterface';
 import { withStyles } from '@material-ui/core/styles';
 import { Icon } from '../../components';
+import { version } from '../../../package.json';
 
 type Props = {
   open: boolean
@@ -115,6 +118,9 @@ class SettingsDrawer extends React.Component<Props> {
             <ListItemIcon><Icon.Back/></ListItemIcon>
             <StyledLabel style={labelStyle}>Close</StyledLabel>
           </StyledMenuItem>
+          <ListItem style={{position: 'absolute', bottom: '0', left: '0', right: '0'}}>
+            <Typography style={labelStyle} variant="caption">{version}</Typography>
+          </ListItem>
         </List>
         <Box>
           {this.state.menu === Menu.Algorithm ? (
