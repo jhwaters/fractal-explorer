@@ -7,18 +7,18 @@ import { NumberIncrementer}  from '../../components';
 
 export default connect(
   (state: State) => ({
-    value: state.fractal.algorithm.params.iterations,
+    value: state.fractal.algorithm.params.iter,
     controlProps: {
       type: ControlType.Number,
-      param: 'iterations',
+      param: 'iter',
       label: 'iterations',
       step: 2,
       min: 0,
     } as ControlNumber
   }),
   (dispatch: Dispatch) => ({
-    onChange: (iterations: number) => {
-      dispatch(updateParams({iterations}));
+    onChange: (iter: number) => {
+      dispatch(updateParams({iter}));
       dispatch(redraw());
     }
   })

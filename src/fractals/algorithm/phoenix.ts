@@ -17,7 +17,7 @@ interface PhoenixParams {
 export const Phoenix = mix.escape<PhoenixParams>({
   label: "Phoenix",
 
-  newParams: () => ({p: -0.5, k: 2, c: [0.5667,0], iterations: 40}),
+  newParams: () => ({p: -0.5, k: 2, c: [0.5667,0], iter: 40}),
 
   f: ({p, k, c}: PhoenixParams) => {
     return (_:Complex) => lookback(phoenix(p, k, c));

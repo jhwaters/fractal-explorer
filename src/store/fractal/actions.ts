@@ -1,4 +1,7 @@
-import { UploadState, JSONState, jsonToState, fromBase64 } from '../../fractals/json';
+import {
+  jsonToState, urlToJson,
+  AppState, JsonState
+} from '../../fractals/json';
 import {
   UPDATE_FRACTAL,
   UpdateFractal,
@@ -22,23 +25,24 @@ export {
   zoomOut,
 } from './view/actions';
 
-export const uploadData = (data: UploadState): UpdateFractal => ({
+export const uploadData = (data: AppState): UpdateFractal => ({
   type: UPDATE_FRACTAL,
   payload: data
 })
 
-export const uploadJson = (data: JSONState): UpdateFractal => ({
+export const uploadJson = (data: JsonState): UpdateFractal => ({
   type: UPDATE_FRACTAL,
   payload: jsonToState(data)
 })
 
-export const uploadBase64 = (s: string): UpdateFractal => {
-  try {
+export const uploadUrl = (url: string): UpdateFractal => {
+  const data = urlToJson(url);
+  if (data) {
     return ({
       type: UPDATE_FRACTAL,
-      payload: jsonToState(JSON.parse(fromBase64(s)))
+      payload: jsonToState(data)
     })
-  } catch {
+  } else {
     return ({
       type: UPDATE_FRACTAL,
       payload: undefined

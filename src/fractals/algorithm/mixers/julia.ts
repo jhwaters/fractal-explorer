@@ -23,7 +23,7 @@ function juliaCalc<T>(
 ) {
   return (p: T & EscapeParams) => {
     const func = f(p)
-    const esc = escapeTime(p.bound, p.iterations)
+    const esc = escapeTime(p.bd, p.iter)
     return (x: number, y: number) => {
       return esc(func, complex(x, y))
     };
@@ -41,12 +41,12 @@ export default function julia<T>({f, label, latexF, ...props}: {
   return baseFractalInterface<T & EscapeParams>({
     label: juliaLabel(label),
     calc: juliaCalc(f),
-    range: (params: EscapeParams) => [0, params.iterations],
+    range: (params: EscapeParams) => [0, params.iter],
     describe: (params: T & EscapeParams) => describeEscapeFunction(
       latexF(params),
       'x+yi',
-      params.bound,
-      params.iterations,
+      params.bd,
+      params.iter,
     ),
     newParams: newParams(props.newParams),
     controls: props.controls,

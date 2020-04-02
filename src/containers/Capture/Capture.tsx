@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ControlPanel from '../Controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
 import CanvasDrawer, { linearScale, scaleDown, DrawerView } from '../../fractals/CanvasDrawer';
-import { JSONState, stateToJSON, shortName } from '../../fractals/json';
+import { stateToJson, JsonState } from '../../fractals/json';
 import { Icon, NumberInput } from '../../components';
 import { captureSize } from '../../defaults';
 import Fab from '@material-ui/core/Fab';
@@ -40,7 +40,7 @@ interface CropperProps {
 interface Props {
   visible: boolean
   fractal: FractalState
-  addToGallery: (image: string, data: JSONState, title: string) => void
+  addToGallery: (image: string, data: JsonState, title: string) => void
   capturing: boolean
   startCapture: () => void
   finishCapture: () => void
@@ -55,7 +55,7 @@ class Capture extends React.Component<Props> {
   }
   cropPixels: Area
   drawer: CanvasDrawer
-  data: JSONState
+  data: JsonState
 
   constructor(props: Props) {
     super(props);
@@ -68,7 +68,7 @@ class Capture extends React.Component<Props> {
     this.cropPixels = {x: 0, y: 0, width: captureSize.w, height: captureSize.h}
     this.drawer = new CanvasDrawer();
     this.drawer.fullResolution = true;
-    this.data = stateToJSON(props);
+    this.data = stateToJson(props.fractal);
   }
 
   setW = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,10 +138,10 @@ class Capture extends React.Component<Props> {
       ppu: Math.round(view.w / (view.x[1] - view.x[0]))
     };
 
-    this.data = stateToJSON({fractal: {
+    this.data = stateToJson({
       ...this.props.fractal,
       view: {...this.props.fractal.view, ...newview},
-    }}) as JSONState
+    })
   }
 
 
@@ -154,7 +154,8 @@ class Capture extends React.Component<Props> {
     canvas.toBlob((blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob);
-        this.props.addToGallery(url, this.data, shortName(this.data));
+        const title = 'Fractal' + Math.floor(Date.now()/1000).toString(16).toUpperCase()
+        this.props.addToGallery(url, this.data, title);
       }
     });
   }
@@ -234,7 +235,7 @@ export default connect(
     fractal: state.fractal,
   }),
   (dispatch: Dispatch) => ({
-    addToGallery: (image:string, data: JSONState, title: string) => dispatch(addToGallery(image, data, title)),
+    addToGallery: (image:string, data: JsonState, title: string) => dispatch(addToGallery(image, data, title)),
     startCapture: () => {
       dispatch(wait());
       dispatch(capture());

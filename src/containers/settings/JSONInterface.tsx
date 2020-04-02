@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Icon } from '../../components';
 import { withStyles } from '@material-ui/core/styles';
-import { stateToJSON, jsonToState, UploadState, toBase64, fromBase64 } from '../../fractals/json';
+import { stateToJson, jsonToState, jsonToUrl, AppState } from '../../fractals/json';
 
 
 const JSONTextField = withStyles({
@@ -25,25 +25,21 @@ const JSONTextField = withStyles({
 
 interface Props {
   currentJson: string,
-  currentBase64: string,
-  uploadData: (json: UploadState) => void,
+  currentURL: string,
+  uploadData: (data: AppState) => void,
 }
 
 class JSONInterface extends React.Component<Props> {
   state: {
     jsonInput: string
-    base64Input: string
-    parsedJson: UploadState | undefined
-    parsedBase64: UploadState | undefined
+    parsedJson: AppState | undefined
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
       jsonInput: '',
-      base64Input: '',
       parsedJson: undefined,
-      parsedBase64: undefined,
     }
   }
 
@@ -51,12 +47,8 @@ class JSONInterface extends React.Component<Props> {
     navigator.clipboard.writeText(this.props.currentJson);
   }
 
-  onCopyBase64 = () => {
-    navigator.clipboard.writeText(this.props.currentBase64);
-  }
-
   onCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href.split('?')[0] + '?frac=' + this.props.currentBase64);
+    navigator.clipboard.writeText(this.props.currentURL);
   }
 
   onChangeJson = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,27 +63,9 @@ class JSONInterface extends React.Component<Props> {
     }
   }
 
-  onChangeBase64 = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const parsedBase64 = jsonToState(JSON.parse(fromBase64(evt.target.value)));
-      this.setState({
-        base64Input: evt.target.value,
-        parsedBase64,
-      })
-    } catch {
-      this.setState({base64Input: evt.target.value, parsedBase64: undefined});
-    }
-  }
-
   onUploadJson = () => {
     if (this.state.parsedJson) {
       this.props.uploadData(this.state.parsedJson);
-    }
-  }
-
-  onUploadBase64 = () => {
-    if (this.state.parsedBase64) {
-      this.props.uploadData(this.state.parsedBase64);
     }
   }
 
@@ -105,7 +79,7 @@ class JSONInterface extends React.Component<Props> {
         <Box>
           <JSONTextField
             label="Link to Current Fractal"
-            value={window.location.href.split('?')[0] + '?frac=' + this.props.currentBase64}
+            value={this.props.currentURL}
             InputProps={{
               onClick: this.selectText,
               readOnly: true,
@@ -142,24 +116,6 @@ class JSONInterface extends React.Component<Props> {
         </Box>
         <Box>
           <JSONTextField 
-            label="Current Base64"
-            value={this.props.currentBase64}
-            InputProps={{
-              onClick: this.selectText,
-              readOnly: true,
-              /*
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={this.onCopyBase64} title="copy to clipboard">
-                    <Icon.Copy/>
-                  </IconButton>
-                </InputAdornment>
-              )
-              */
-            }}/>
-        </Box>
-        <Box>
-          <JSONTextField 
             label="Load JSON"
             onChange={this.onChangeJson}
             value={this.state.jsonInput}
@@ -167,22 +123,6 @@ class JSONInterface extends React.Component<Props> {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={this.onUploadJson} disabled={!this.state.parsedJson} title="load data into viewer">
-                    <Icon.Upload/>
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            />
-        </Box>
-        <Box>
-          <JSONTextField 
-            label="Load Base64"
-            onChange={this.onChangeBase64}
-            value={this.state.base64Input}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={this.onUploadBase64} disabled={!this.state.parsedBase64} title="load data into viewer">
                     <Icon.Upload/>
                   </IconButton>
                 </InputAdornment>
@@ -200,14 +140,14 @@ class JSONInterface extends React.Component<Props> {
 
 export default connect(
   (state: State) => {
-    const jsonstr = JSON.stringify(stateToJSON(state));
+    const data = stateToJson(state.fractal);
     return ({
-      currentJson: jsonstr,
-      currentBase64: toBase64(jsonstr),
+      currentJson: JSON.stringify(data),
+      currentURL: window.location.href.split('?')[0] + '?' + jsonToUrl(data),
     });
   },
   (dispatch: Dispatch) => ({
-    uploadData: (data: UploadState) => {
+    uploadData: (data: AppState) => {
       dispatch(uploadData(data));
       dispatch(redraw());
     },

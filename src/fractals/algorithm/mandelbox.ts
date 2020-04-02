@@ -33,7 +33,7 @@ const mandelboxBlatex = (v: number) => (
 const mandelboxClatex = (v: number) => fmt.num(v) + '\\cdot B(A(z)) + x + yi';
 
 
-function describeMandelbox(a: number, b: number, c: number, bound: number, iterations: number) {
+function describeMandelbox(a: number, b: number, c: number, bound: number, iter: number) {
   return [
     {
       math: 'f_{\\mathbb{R}\\mapsto\\mathbb{R}}(n) =' + mandelboxFlatex(a),
@@ -51,7 +51,7 @@ function describeMandelbox(a: number, b: number, c: number, bound: number, itera
       mandelboxClatex(c),
       '0',
       bound,
-      iterations,
+      iter,
     )
   ]
 } 
@@ -87,8 +87,8 @@ export const Mandelbox = mix.escape({
 
   newParams: () => ({box1: 1, box2: 2, box3: 2.2}),
 
-  describe: ({box1, box2, box3, bound, iterations}: MandelboxParams & EscapeParams) => {
-    return describeMandelbox(box1, box2, box3, bound, iterations);
+  describe: ({box1, box2, box3, bd, iter}: MandelboxParams & EscapeParams) => {
+    return describeMandelbox(box1, box2, box3, bd, iter);
   },
 
   controls: [
@@ -96,7 +96,7 @@ export const Mandelbox = mix.escape({
     ...MandelboxControls,
     {
       type: ControlType.Number,
-      param: 'bound',
+      param: 'bd',
       label: 'bound',
       step: 10,
       min: 0,
@@ -129,7 +129,7 @@ export const Mandelcorner = mix.escape<MandelboxParams>({
     ...MandelboxControls,
     {
       type: ControlType.Number,
-      param: 'bound',
+      param: 'bd',
       label: 'bound',
       step: 1,
     }

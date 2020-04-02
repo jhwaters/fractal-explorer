@@ -13,13 +13,13 @@ import baseFractalInterface from './base';
 
 
 export interface EscapeParams extends Params {
-  bound: number
-  iterations: number
+  bd: number
+  iter: number
 }
 
 const DefaultEscapeParams: EscapeParams ={
-  bound: 10,
-  iterations: 20,
+  bd: 10,
+  iter: 20,
 }
 
 export function newParams<T>(x: () => T): () => (T & EscapeParams) {
@@ -34,7 +34,7 @@ function calculate<T>(
     return (p: T & EscapeParams) => {
       const func = f(p)
       return (x: number, y: number) => {
-        return escapeTime(p.bound, p.iterations)(func(complex(x, y)))
+        return escapeTime(p.bd, p.iter)(func(complex(x, y)))
       };
     };
   }
@@ -42,7 +42,7 @@ function calculate<T>(
     return (p: T & EscapeParams) => {
       const func = f(p)
       return (x: number, y: number) => {
-        return escapeTime(p.bound, p.iterations)(func(complex(x, y)), complex(x, y))
+        return escapeTime(p.bd, p.iter)(func(complex(x, y)), complex(x, y))
       };
     };
   }
@@ -50,7 +50,7 @@ function calculate<T>(
     const func = f(p)
     const zz = z0(p)
     return (x: number, y: number) => {
-      return escapeTime(p.bound, p.iterations)(func(complex(x, y)), zz(complex(x, y)))
+      return escapeTime(p.bd, p.iter)(func(complex(x, y)), zz(complex(x, y)))
     };
   };
 }
@@ -62,8 +62,8 @@ function describe<T>(
   return (p: T & EscapeParams) => describeEscapeFunction(
     f(p),
     z0 === 0 ? '0' : z0 === 'c' ? 'x+yi' : z0(p),
-    p.bound,
-    p.iterations,
+    p.bd,
+    p.iter,
   );
 }
 
@@ -98,7 +98,7 @@ export default function escape<T>(props: EscapeProps<T>): FractalInterface<T & E
     return baseFractalInterface<T & EscapeParams>({
       label: props.label,
       calc: calculate(props.f, props.z0),
-      range: (params: EscapeParams) => [0, params.iterations],
+      range: (params: EscapeParams) => [0, params.iter],
       describe: describe(props.latexF, lz0),
       newParams: newParams(props.newParams),
       controls: props.controls,
@@ -107,7 +107,7 @@ export default function escape<T>(props: EscapeProps<T>): FractalInterface<T & E
     return baseFractalInterface<T & EscapeParams>({
       label: props.label,
       calc: calculate(props.f, props.z0),
-      range: (params: T & EscapeParams) => [0, params.iterations],
+      range: (params: T & EscapeParams) => [0, params.iter],
       describe: props.describe,
       newParams: newParams(props.newParams),
       controls: props.controls,
@@ -119,8 +119,8 @@ export default function escape<T>(props: EscapeProps<T>): FractalInterface<T & E
 export function describeEscapeFunction(
   f: string, 
   z0: string, 
-  bound: number, 
-  iterations: number,
+  bd: number, 
+  iter: number,
 ): StringOrMath[] {
 
   const fmla = (
@@ -136,8 +136,8 @@ export function describeEscapeFunction(
     "The color of the pixel located at ", {math: "(x, y)"},
     " corresponds to ", {math: "k"}, ", where ", {math: "z_k"},
     " is the first term of the above sequence such that ",
-    {math: `|z_k| > ${num(bound)}`},
-    ". If this does not occur in the first ", {math: num(iterations)},
-    " terms of the sequence, then ", {math: "k = " + num(iterations)}, '.',
+    {math: `|z_k| > ${num(bd)}`},
+    ". If this does not occur in the first ", {math: num(iter)},
+    " terms of the sequence, then ", {math: "k = " + num(iter)}, '.',
   ]
 }

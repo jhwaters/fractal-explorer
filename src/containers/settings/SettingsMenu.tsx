@@ -108,7 +108,7 @@ class SettingsDrawer extends React.Component<Props> {
           </StyledMenuItem>
           <StyledMenuItem onClick={this.openJSON}>
             <ListItemIcon><Icon.Code/></ListItemIcon>
-            <StyledLabel style={labelStyle}>JSON</StyledLabel>
+            <StyledLabel style={labelStyle}>Serialize</StyledLabel>
           </StyledMenuItem>
           <Divider/>
           <StyledMenuItem onClick={this.closeAll} style={{paddingTop: '2em', paddingBottom: '2em'}}>

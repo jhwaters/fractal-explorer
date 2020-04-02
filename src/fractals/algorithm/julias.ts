@@ -76,7 +76,7 @@ export const Julia = julia({
     {
       type: ControlType.Number,
       label: 'bound',
-      param: 'bound',
+      param: 'bd',
       step: 5,
       min: 0,
     }
@@ -148,7 +148,7 @@ export const JuliaExponential = julia<JuliaParams>({
     {
       type: ControlType.Number,
       label: 'bound',
-      param: 'bound',
+      param: 'bd',
       min: 0,
       step: 1,
     },
@@ -176,7 +176,7 @@ export const JuliaSinh = julia<JuliaParams>({
     {
       type: ControlType.Number,
       label: 'bound',
-      param: 'bound',
+      param: 'bd',
       min: 0,
       step: 1,
     },

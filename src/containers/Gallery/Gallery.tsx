@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Toolbar from '@material-ui/core/Toolbar';
-import { JSONState, toBase64 } from '../../fractals/json';
+import { jsonToUrl, JsonState } from '../../fractals/json';
 
 const StyledGridList = withStyles({
   root: {
@@ -50,7 +50,6 @@ const StyledIconButton = withStyles({
 
 
 interface TileProps {
-  data: JSONState, 
   title: string,
   url: string,
   onView: () => void,
@@ -83,7 +82,7 @@ interface Props {
   images: GalleryState
   visible: boolean
   deleteImage: (url: string | null) => void
-  loadJson: (data: JSONState) => void
+  loadJson: (data: JsonState) => void
 }
 
 
@@ -100,7 +99,7 @@ class Gallery extends React.Component<Props> {
     current: {
       url: string,
       title: string,
-      data: JSONState,
+      data: JsonState,
     } | null,
     popup: Popup
   }
@@ -140,8 +139,8 @@ class Gallery extends React.Component<Props> {
 
   onLink = () => {
     if (this.state.current) {
-      const q = toBase64(JSON.stringify(this.state.current.data))
-      navigator.clipboard.writeText(window.location.href.split('?')[0] + '?frac=' + q);
+      const q = jsonToUrl(this.state.current.data);
+      navigator.clipboard.writeText(window.location.href.split('?')[0] + '?' + q);
     }
   }
 
@@ -161,7 +160,7 @@ class Gallery extends React.Component<Props> {
     }
   }
 
-  viewer = (tile: {url: string, data: JSONState, title: string}) => () => {
+  viewer = (tile: {url: string, data: JsonState, title: string}) => () => {
     this.setState({current: tile});
   }
 
@@ -238,7 +237,7 @@ export default connect(
     deleteImage: (url: string | null) => {
       if (url) dispatch(deleteImage(url));
     },
-    loadJson: (data: JSONState) => {
+    loadJson: (data: JsonState) => {
       dispatch(uploadJson(data));
       dispatch(redraw());
       dispatch(setNav(Nav.Explore))
