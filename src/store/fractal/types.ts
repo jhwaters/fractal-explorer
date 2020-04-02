@@ -19,9 +19,9 @@ export const UPDATE_FRACTAL = 'FRACTAL_UPDATE';
 export type UpdateFractal = {
   type: typeof UPDATE_FRACTAL
   payload: {
-    algorithm?: Partial<AlgorithmState<any>>
-    color?: Partial<ColorState>
-    view?: Partial<ViewState>
+    algorithm: AlgorithmState<any>
+    color: ColorState
+    view: Omit<ViewState,'pixelCount'>
   } | undefined
 }
 

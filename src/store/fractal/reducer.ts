@@ -1,11 +1,10 @@
 import algorithm from './algorithm/reducer';
 import color from './color/reducer';
 import view from './view/reducer';
+import { State as ViewState } from './view/types';
 import { State, Action } from './types';
 import { combineReducers } from 'redux';
-import {
-  UPDATE_FRACTAL,
-} from './types';
+import { UPDATE_FRACTAL } from './types';
 
 const reducer1 = combineReducers({
   algorithm,
@@ -16,6 +15,14 @@ const reducer1 = combineReducers({
 export default function(state: State, action: Action): State {
   if (action.type === UPDATE_FRACTAL) {
     if (action.payload !== undefined) {
+      // fit without changing w:h ratio
+      const rw = action.payload.view.w / state.view.w;
+      const rh = action.payload.view.h / state.view.h;
+      if (rw > rh) {
+        action.payload.view.h = state.view.h * rw;
+      } else {
+        action.payload.view.w = state.view.w * rh;
+      }
       return {
         algorithm: {...state.algorithm, ...action.payload.algorithm},
         color: {...state.color, ...action.payload.color},
