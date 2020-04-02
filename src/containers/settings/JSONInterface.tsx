@@ -56,7 +56,7 @@ class JSONInterface extends React.Component<Props> {
   }
 
   onCopyLink = () => {
-    navigator.clipboard.writeText(window.location.origin + '?frac=' + this.props.currentBase64);
+    navigator.clipboard.writeText(window.location.href.split('?')[0] + '?frac=' + this.props.currentBase64);
   }
 
   onChangeJson = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +105,7 @@ class JSONInterface extends React.Component<Props> {
         <Box>
           <JSONTextField
             label="Link to Current Fractal"
-            value={window.location.origin + '?frac=' + this.props.currentBase64}
+            value={window.location.href.split('?')[0] + '?frac=' + this.props.currentBase64}
             InputProps={{
               onClick: this.selectText,
               readOnly: true,

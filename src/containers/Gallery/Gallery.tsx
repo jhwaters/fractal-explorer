@@ -141,7 +141,7 @@ class Gallery extends React.Component<Props> {
   onLink = () => {
     if (this.state.current) {
       const q = toBase64(JSON.stringify(this.state.current.data))
-      navigator.clipboard.writeText(window.location.origin + '?frac=' + q);
+      navigator.clipboard.writeText(window.location.href.split('?')[0] + '?frac=' + q);
     }
   }
 
