@@ -184,10 +184,10 @@ export const JuliaSinh = julia<JuliaParams>({
 })
 
 
-export const Julia1Burning = julia<JuliaParams>({
+export const JuliaBurningShip = julia<JuliaParams>({
   label: 'Burning Ship',
 
-  newParams: () => ({k: 2, c: randomC()}),
+  newParams: () => ({k: 2, c: [-0.52, -1.1]}),
 
   f: ({k, c}: JuliaParams) => {
     const cc = complex(c[0], c[1])
