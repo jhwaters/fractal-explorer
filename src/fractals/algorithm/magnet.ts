@@ -18,7 +18,7 @@ export interface MagnetParams {
   k: number,
 }
 
-export const Magnet1 = mix.escape({
+const Magnet1 = mix.escape({
   label: 'Magnet Type I',
 
   f: ({k}: MagnetParams) => {
@@ -57,7 +57,7 @@ export const Magnet1 = mix.escape({
 
 export interface Magnet2Params {k: number}
 
-export const Magnet2 = mix.escape({
+const Magnet2 = mix.escape({
   label: 'Magnet Type II',
 
   newParams: () => ({k: 2}),
@@ -100,3 +100,6 @@ export const Magnet2 = mix.escape({
     },
   ]
 })
+
+
+export { Magnet1, Magnet2 }

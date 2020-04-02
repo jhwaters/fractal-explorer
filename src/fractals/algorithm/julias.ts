@@ -56,7 +56,7 @@ const JuliaControls: {[k: string]: ControlProps} = ({
 
 interface JQuad extends JuliaParams {}
 
-export const Julia = julia({
+const Julia = julia({
   label: {math: 'z^k+c'},
 
   f: ({k,c}: JQuad) => {
@@ -93,7 +93,7 @@ export type JPoly = {
   c: [number,number],
 }
 
-export const Julia2Term = julia({
+const Julia2Term = julia({
   label: {math: 'az^m+bz^n+c'},
 
   f: ({a, b, c, m, n}: JPoly) => {
@@ -129,7 +129,7 @@ export const Julia2Term = julia({
 
 
 
-export const JuliaExp = julia<JuliaParams>({
+const JuliaExp = julia<JuliaParams>({
   label: {math: 'e^{z^k}+c'},
 
   newParams: () => ({k: 3, c: [-0.6,0]}),
@@ -157,7 +157,7 @@ export const JuliaExp = julia<JuliaParams>({
 
 
 
-export const JuliaSinh = julia<JuliaParams>({
+const JuliaSinh = julia<JuliaParams>({
   label: {math: '\\sqrt{\\sinh(z^{k})}+c'},
 
   newParams: () => ({k: 2, c: [0.06, 0.12]}),
@@ -184,7 +184,7 @@ export const JuliaSinh = julia<JuliaParams>({
 })
 
 
-export const JuliaBS = julia<JuliaParams>({
+const JuliaBurningShip = julia<JuliaParams>({
   label: 'Burning Ship',
 
   newParams: () => ({k: 2, c: [-0.52, -1.1]}),
@@ -204,3 +204,12 @@ export const JuliaBS = julia<JuliaParams>({
   ]
 
 });
+
+
+export {
+  Julia,
+  Julia2Term,
+  JuliaBurningShip,
+  JuliaExp,
+  JuliaSinh,
+}

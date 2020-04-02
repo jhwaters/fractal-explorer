@@ -21,7 +21,7 @@ function absabs(z: Complex) {
   return {re: Math.abs(z.re), im: Math.abs(z.im)};
 }
 
-export const BurningShip = mix.escape({
+const BurningShip = mix.escape({
   label: 'Burning Ship',
   latexF: (p: BurningShipParams) => `\\left(|Re(z)|+|Im(z)|\\right)^{${num(p.k)}}+x-yi`,
   f: (p: BurningShipParams) => {
@@ -55,7 +55,7 @@ export const BurningShip = mix.escape({
 
 interface BurningShipBoxParams extends BurningShipParams, MandelboxParams {}
 
-export const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
+const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
   label: 'Burning Ship (Mandelbox Remix)',
   
   f: ({box1, box2, box3, k}) => {
@@ -91,3 +91,7 @@ export const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
   ],
 });
 
+export {
+  BurningShip,
+  BurningShipMandelbox,
+}
