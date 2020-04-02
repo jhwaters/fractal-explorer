@@ -1,42 +1,6 @@
 import { Json, AppState } from '.';
 import { ALLFRACTALS, COLORSCHEMES } from '../'
 
-const NameMap = {
-  BurningShip: 'BS',
-  BurningShipMandelbox: 'BSMBx',
-  Exponential: 'Exp',
-  Julia: 'JQ',
-  Julia2Term: 'J2',
-  JuliaBurningShip: 'JBS',
-  JuliaExp: 'JExp',
-  JuliaSinh: 'JSinh',
-  Magnet1: 'Mg1',
-  Magnet2: 'Mg2',
-  Mandelbox: 'MBx',
-  Mandelbrot: 'Mand',
-  Mandelcorner: 'MBxC',
-  Phoenix: 'Phx',
-  PhoenixBurningShip: 'PhxBS',
-}
-
-function shortName(n: string): string {
-  for (const e of Object.entries(NameMap)) {
-    if (n === e[0]) {
-      return e[1];
-    }
-  }
-  return n;
-}
-
-function longName(n: string): string {
-  for (const e of Object.entries(NameMap)) {
-    if (n === e[1]) {
-      return e[0];
-    }
-  }
-  return n;
-}
-
 
 export interface V2 extends Json {
   v: '2',
@@ -49,14 +13,14 @@ export function stateToJson2(state: AppState): V2 {
   const {algorithm, color, view} = state;
   return ({
     v: '2',
-    alg: [shortName(algorithm.methodName), algorithm.params],
+    alg: [algorithm.methodName, algorithm.params],
     col: [color.schemeName, color.skew, color.reverse ? 1 : 0],
     view: [view.cx, view.cy, view.w, view.h, view.ppu],
   })
 }
 
 export function jsonToState2(data: V2): AppState | undefined {
-  const methodName = longName(data.alg[0]);
+  const methodName = data.alg[0];
   const schemeName = data.col[0];
   const method = ALLFRACTALS[methodName];
   const scheme = COLORSCHEMES[schemeName];
