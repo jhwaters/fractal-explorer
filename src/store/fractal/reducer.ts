@@ -1,7 +1,6 @@
 import algorithm from './algorithm/reducer';
 import color from './color/reducer';
 import view from './view/reducer';
-import { State as ViewState } from './view/types';
 import { State, Action } from './types';
 import { combineReducers } from 'redux';
 import { UPDATE_FRACTAL } from './types';
