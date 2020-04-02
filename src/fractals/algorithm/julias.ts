@@ -129,7 +129,7 @@ export const Julia2Term = julia({
 
 
 
-export const JuliaExponential = julia<JuliaParams>({
+export const JuliaExp = julia<JuliaParams>({
   label: {math: 'e^{z^k}+c'},
 
   newParams: () => ({k: 3, c: [-0.6,0]}),
@@ -184,7 +184,7 @@ export const JuliaSinh = julia<JuliaParams>({
 })
 
 
-export const JuliaBurningShip = julia<JuliaParams>({
+export const JuliaBS = julia<JuliaParams>({
   label: 'Burning Ship',
 
   newParams: () => ({k: 2, c: [-0.52, -1.1]}),
