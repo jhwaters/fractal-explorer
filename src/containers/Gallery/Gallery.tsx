@@ -17,6 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Toolbar from '@material-ui/core/Toolbar';
 import { JSONState, toBase64 } from '../../fractals/json';
 
 const StyledGridList = withStyles({
@@ -86,6 +87,14 @@ interface Props {
 }
 
 
+enum Popup {
+  None,
+  Delete,
+  JSON,
+  Link,
+}
+
+
 class Gallery extends React.Component<Props> {
   state: {
     current: {
@@ -93,30 +102,30 @@ class Gallery extends React.Component<Props> {
       title: string,
       data: JSONState,
     } | null,
-    deletePopup: boolean
+    popup: Popup
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
       current: null,
-      deletePopup: false,
+      popup: Popup.None,
     };
   }
 
   close = () => {
-    this.setState({current: null, deletePopup: false});
+    this.setState({current: null, popup: Popup.None});
+  }
+  
+  closePopup = () => {
+    this.setState({popup: Popup.None})
+  }
+
+  openDelete = () => {
+    this.setState({popup: Popup.Delete})
   }
 
   onDelete = () => {
-    this.setState({deletePopup: true})
-  }
-
-  closeDelete = () => {
-    this.setState({deletePopup: false})
-  }
-
-  deleteCurrent = () => {
     if (this.state.current) {
       this.props.deleteImage(this.state.current.url);
       this.close();
@@ -176,24 +185,20 @@ class Gallery extends React.Component<Props> {
         open={this.state.current !== null}
         onClose={this.close}>
         <Box style={{position: 'relative'}}>
-          <IconButton onClick={this.close} title="close">
-            <Icon.Back/>
-          </IconButton>
-          <IconButton onClick={this.onDelete} title="delete image">
-            <Icon.Delete/>
-          </IconButton>
-          <IconButton onClick={this.onCopy} title="copy data to clipboard">
-            <Icon.Copy/>
-          </IconButton>
-          <IconButton onClick={this.onLink} title="link to this fractal">
-            <Icon.Link/>
-          </IconButton>
-          <IconButton onClick={this.onLoad} title="load in fractal viewer">
-            <Icon.Upload/>
-          </IconButton>
-          <IconButton onClick={this.onDownload} title="download image">
-            <Icon.Save/>
-          </IconButton>
+          <Toolbar>
+            <IconButton onClick={this.close} title="close" edge="start">
+              <Icon.Back/>
+            </IconButton>
+            <IconButton onClick={this.openDelete} title="delete image">
+              <Icon.Delete/>
+            </IconButton>
+            <IconButton onClick={this.onLoad} title="load in fractal viewer">
+              <Icon.Upload/>
+            </IconButton>
+            <IconButton onClick={this.onDownload} title="download image">
+              <Icon.Save/>
+            </IconButton>
+          </Toolbar>
           <img 
             alt="fractal"
             src={this.state.current?.url || ''}
@@ -204,18 +209,18 @@ class Gallery extends React.Component<Props> {
             }}/>
           
         </Box>
-      </Popover>
-      <Popover
-        open={this.state.deletePopup}
-        onClose={this.close}
-      >
-        <Box m={2}>
-          <Typography>Delete this image?</Typography>
-          <ButtonGroup color="primary" variant="outlined">
-            <Button onClick={this.deleteCurrent}>Yes</Button>
-            <Button onClick={this.closeDelete}>No</Button>
-          </ButtonGroup>
-        </Box>
+        <Popover
+          open={this.state.popup === Popup.Delete}
+          onClose={this.close}
+        >
+          <Box m={2}>
+            <Typography>Delete this image?</Typography>
+            <ButtonGroup color="primary" variant="outlined">
+              <Button onClick={this.onDelete}>Yes</Button>
+              <Button onClick={this.closePopup}>No</Button>
+            </ButtonGroup>
+          </Box>
+        </Popover>
       </Popover>
 
       </>

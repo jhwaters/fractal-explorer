@@ -17,7 +17,7 @@ const JSONTextField = withStyles({
     maxWidth: '240px',
     '& textarea, input': {
       fontFamily: 'roboto mono, monospace',
-      //fontSize: '0.7em',
+      '&[readonly]': {fontSize: '0.7em'},
     },
   },
 })(TextField)
@@ -95,15 +95,21 @@ class JSONInterface extends React.Component<Props> {
     }
   }
 
+  selectText = (evt: any) => {
+    evt.target.select();
+  }
+
   render() {
     return (
       <Box m={2}>
         <Box>
           <JSONTextField
             label="Link to Current Fractal"
-            disabled
             value={window.location.origin + '?frac=' + this.props.currentBase64}
             InputProps={{
+              onClick: this.selectText,
+              readOnly: true,
+              /*
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={this.onCopyLink} title="copy to clipboard">
@@ -111,15 +117,18 @@ class JSONInterface extends React.Component<Props> {
                   </IconButton>
                 </InputAdornment>
               )
+              */
             }}
           />
         </Box>
         <Box>
           <JSONTextField
             label="Current JSON"
-            disabled
             value={this.props.currentJson}
             InputProps={{
+              onClick: this.selectText,
+              readOnly: true,
+              /*
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={this.onCopyJson} title="copy to clipboard">
@@ -127,15 +136,18 @@ class JSONInterface extends React.Component<Props> {
                   </IconButton>
                 </InputAdornment>
               )
+              */
             }}
           />
         </Box>
         <Box>
           <JSONTextField 
             label="Current Base64"
-            disabled
             value={this.props.currentBase64}
             InputProps={{
+              onClick: this.selectText,
+              readOnly: true,
+              /*
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={this.onCopyBase64} title="copy to clipboard">
@@ -143,6 +155,7 @@ class JSONInterface extends React.Component<Props> {
                   </IconButton>
                 </InputAdornment>
               )
+              */
             }}/>
         </Box>
         <Box>
