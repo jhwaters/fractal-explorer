@@ -63,6 +63,7 @@ export function stateToJSON(state: Pick<State,'fractal'>): JSONState {
 
 export function jsonToState(json: JSONState): UploadState | undefined {
   if (json.v === '1') {
+    const scheme = COLORSCHEMES[json.col.sc];
     return ({
       algorithm: {
         methodName: json.alg.m,
@@ -70,8 +71,8 @@ export function jsonToState(json: JSONState): UploadState | undefined {
         params: json.alg.p,
       },
       color: {
-        schemeName: json.col.sc,
-        scheme: COLORSCHEMES[json.col.sc],
+        schemeName: scheme ? json.col.sc : 'Rainbow',
+        scheme: scheme ? scheme : COLORSCHEMES.Rainbow,
         skew: json.col.sk,
         reverse: json.col.rv,
       },
