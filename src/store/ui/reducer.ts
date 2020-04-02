@@ -15,6 +15,7 @@ import { Action } from '../types';
 import { ADD_TO_GALLERY } from '../gallery/types';
 import { ALLFRACTALS } from '../../fractals/algorithm';
 import { COLORSCHEMES } from '../../fractals/color';
+import { UPDATE_FRACTAL } from '../fractal/types';
 
 
 const initialState: State = ({
@@ -24,7 +25,7 @@ const initialState: State = ({
   canvasStretch: StretchMode.Contain,
   galleryBadge: 0,
   methodList: ALLFRACTALS,
-  colorSchemeList: COLORSCHEMES,
+  colorSchemeList: {...COLORSCHEMES},
   waiting: false,
 });
 
@@ -59,6 +60,16 @@ export default function(state: State=initialState, action: Action) {
       }
     case ADD_TO_GALLERY:
       return {...state, galleryBadge: state.galleryBadge+1}
+    case UPDATE_FRACTAL:
+      if (action.payload && !(state.colorSchemeList[action.payload.color.schemeName])) {
+        return {
+          ...state, 
+          colorSchemeList: {
+            ...state.colorSchemeList,
+            [action.payload.color.schemeName]: action.payload.color.scheme,
+          },
+        }
+      }
     default:
       return state
   }

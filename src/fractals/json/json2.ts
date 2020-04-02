@@ -2,19 +2,27 @@ import { Json, AppState } from '.';
 import { ALLFRACTALS, COLORSCHEMES } from '../'
 
 
+type Color = [string, number, number] | [string, number, number, ...string[]]
+
 export interface V2 extends Json {
   v: '2',
   alg: [string, {[k: string]: any}],
-  col: [string, number, number],
+  col: Color,
   view: [number, number, number, number, number],
 }
 
 export function stateToJson2(state: AppState): V2 {
   const {algorithm, color, view} = state;
+  const {schemeName} = color;
+  const scheme = COLORSCHEMES[schemeName] ? null : color.scheme;
+  const col: Color = [color.schemeName, color.skew, color.reverse ? 1 : 0];
+  if (Array.isArray(scheme)) {
+    col.push(...scheme)
+  }
   return ({
     v: '2',
     alg: [algorithm.methodName, algorithm.params],
-    col: [color.schemeName, color.skew, color.reverse ? 1 : 0],
+    col: col,
     view: [view.cx, view.cy, view.w, view.h, view.ppu],
   })
 }
@@ -23,7 +31,10 @@ export function jsonToState2(data: V2): AppState | undefined {
   const methodName = data.alg[0];
   const schemeName = data.col[0];
   const method = ALLFRACTALS[methodName];
-  const scheme = COLORSCHEMES[schemeName];
+  let scheme = COLORSCHEMES[schemeName];
+  if (!scheme) {
+    scheme = data.col.slice(3) as string[]
+  }
   if (method) {
     return ({
       algorithm: {
@@ -32,8 +43,8 @@ export function jsonToState2(data: V2): AppState | undefined {
         params: data.alg[1],
       },
       color: {
-        schemeName: scheme ? schemeName : 'Rainbow',
-        scheme: scheme ? scheme : COLORSCHEMES.Rainbow,
+        schemeName: scheme && scheme.length ? schemeName : 'Rainbow',
+        scheme: scheme && scheme.length ? scheme : COLORSCHEMES.Rainbow,
         skew: data.col[1],
         reverse: data.col[2] ? true : false,
       },
@@ -77,12 +88,12 @@ export function urlToJson2(u: URLSearchParams): V2 | undefined {
           return ['xx', 1]
         }
       }))
-      const [scheme, skew, rev] = co.split(';')
+      const [scheme, skew, rev, ...colors] = co.split(';')
       const [cx, cy, w, h, ppu] = vw.split(';').map(k => +k)
       return {
         v: '2',
         alg: [me, params],
-        col: [scheme, +skew, +rev],
+        col: [scheme, +skew, +rev, ...colors],
         view: [cx, cy, w, h, ppu],
       }
     }
