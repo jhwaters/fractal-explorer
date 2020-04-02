@@ -75,7 +75,7 @@ class AlgorithmSettings extends React.Component<Props> {
               value={this.state.methodName}
               onChange={this.selectMethod}
             >
-              {Object.keys(this.props.methodList).sort().map(k => {
+              {Object.keys(this.props.methodList).map(k => {
                 return (
                   <Option key={k} value={k}>
                     <OptionLabel
