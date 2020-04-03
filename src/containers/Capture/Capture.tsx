@@ -11,7 +11,7 @@ import { Nav } from '../../store/ui/types';
 import { withStyles } from '@material-ui/core/styles';
 import ControlPanel from '../Controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
-import CanvasDrawer, { linearScale, scaleDown, DrawerView } from '../../fractals/CanvasDrawer';
+import FractalDrawer, { linearScale, scaleDown, DrawerView } from '../../fractals/FractalDrawer';
 import { stateToJson, JsonState } from '../../fractals/json';
 import { Icon, NumberInput } from '../../components';
 import { captureSize } from '../../defaults';
@@ -51,7 +51,7 @@ class Capture extends React.Component<Props> {
     h: number,
   }
   cropPixels: Area
-  drawer: CanvasDrawer
+  drawer: FractalDrawer
   data: JsonState
 
   constructor(props: Props) {
@@ -63,7 +63,7 @@ class Capture extends React.Component<Props> {
       image: null,
     }
     this.cropPixels = {x: 0, y: 0, width: captureSize.w, height: captureSize.h}
-    this.drawer = new CanvasDrawer();
+    this.drawer = new FractalDrawer();
     this.drawer.fullResolution = true;
     this.data = stateToJson(props.fractal);
   }

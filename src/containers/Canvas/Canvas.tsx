@@ -5,7 +5,7 @@ import { State as FractalState } from '../../store/fractal/types';
 import { setCenter } from '../../store/fractal/actions';
 import { redraw, finish } from '../../store/ui/actions';
 import { StretchMode, CanvasAction, Nav } from '../../store/ui/types';
-import { CanvasDrawer } from '../../fractals';
+import { FractalDrawer } from '../../fractals';
 import Box from '@material-ui/core/Box';
 import styles from './Canvas.module.css';
 
@@ -20,12 +20,12 @@ type Props = {
 }
 
 class Canvas extends React.Component<Props> {
-  drawer: CanvasDrawer
+  drawer: FractalDrawer
   canvasRef: React.RefObject<HTMLCanvasElement>
 
   constructor(props: Props) {
     super(props);
-    this.drawer = new CanvasDrawer();
+    this.drawer = new FractalDrawer();
     this.drawer.fullResolution = false;
     this.canvasRef = React.createRef();
   }

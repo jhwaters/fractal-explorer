@@ -1,4 +1,4 @@
-import CanvasDrawer from './CanvasDrawer';
+import FractalDrawer from './FractalDrawer';
 import { ALLFRACTALS } from './algorithm';
 import { Algorithm } from './types';
 import { colorScale, COLORSCHEMES } from './color';
@@ -19,4 +19,4 @@ export { colorScale }
 
 
 
-export { CanvasDrawer, ALLFRACTALS, COLORSCHEMES, fractal }
+export { FractalDrawer, ALLFRACTALS, COLORSCHEMES, fractal }

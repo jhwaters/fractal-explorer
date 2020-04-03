@@ -49,7 +49,7 @@ function isRect(view: ViewState | Rect): view is Rect {
   return 'x' in view;
 }
 
-class CanvasDrawer {
+class FractalDrawer {
   ctx: CanvasRenderingContext2D
   fullResolution: boolean
   cmap: [number,number,number][]
@@ -143,4 +143,4 @@ class CanvasDrawer {
 
 }
 
-export default CanvasDrawer;
+export default FractalDrawer;
