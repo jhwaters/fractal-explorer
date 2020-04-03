@@ -82,7 +82,7 @@ const PhoenixBurningShip = mix.escape<PhoenixParams>({
       param: 'c',
       label: 'c',
       stepRadius: 0.02,
-      stepAngle: 0.05,
+      stepAngle: Math.PI / 60,
     },
     {
       type: ControlType.Number,
