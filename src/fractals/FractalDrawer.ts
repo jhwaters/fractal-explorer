@@ -55,6 +55,8 @@ class FractalDrawer {
   cmap: [number,number,number][]
   image: ImageData
 
+  static logDrawTime = false
+
   constructor(fullResolution: boolean=false) {
     this.ctx = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
     this.fullResolution = fullResolution;
@@ -79,7 +81,9 @@ class FractalDrawer {
     this.makeCMap(state);
     this.makeImage(state);
     const t1 = performance.now();
-    console.log('draw time:', t1 - t0, 'ms')
+    if (FractalDrawer.logDrawTime) {
+      console.log('draw time:', t1 - t0, 'ms')
+    }
   }
 
   makeCMap({color, algorithm}: Props) {
