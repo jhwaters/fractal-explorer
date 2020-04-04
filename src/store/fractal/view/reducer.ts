@@ -16,16 +16,16 @@ const initialState: ViewState = {
   pixelCount,
 }
 
-function recenter({w, h}: {w: number, h: number}) {
-  return {cx: 0, cy: 0, ppu: Math.round(Math.min(h,w)/5)}
+export function recenterPPU({w, h}: {w: number, h: number}) {
+  return Math.round(Math.min(h,w)/5);
 }
 
-export default function(state: ViewState={...initialState, ...recenter(initialState)}, action: ViewAction) {
+export default function(state: ViewState={...initialState, ppu: recenterPPU(initialState)}, action: ViewAction) {
   switch(action.type) {
     case UPDATE_VIEW:
       return {...state, ...action.payload}
     case RECENTER:
-      return {...state, ...recenter(state)}
+      return {...state, cx: 0, cy: 0, ppu: recenterPPU(state)}
     case ZOOM_IN:
       return {...state, ppu: state.ppu * action.payload}
     case ZOOM_OUT:
