@@ -5,6 +5,7 @@ import store from './store';
 import { uploadUrl } from './store/fractal/actions';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+require('./console');
 
 
 store.dispatch(uploadUrl(window.location.search));
