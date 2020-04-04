@@ -1,14 +1,19 @@
 import store from '../store';
 import * as action from '../store/fractal/actions';
+import { ColorState } from '../store/fractal/color/types';
 import { redraw } from '../store/ui/actions';
 import { ALLFRACTALS, COLORSCHEMES } from '../fractals'; 
 import { FractalState } from '../store/fractal/types';
 import { JsonState } from '../fractals/json';
 
 
-export function setParam(k: string, v: any) {
-  store.dispatch(action.updateParams({[k]: v}));
+function withredraw(x: any) {
+  store.dispatch(x);
   store.dispatch(redraw());
+}
+
+export function setParam(k: string, v: any) {
+  withredraw(action.updateParams({[k]: v}));
 }
 
 export function getParam(k: string) {
@@ -19,8 +24,7 @@ export function method(m?: string) {
   if (m) {
     const method = ALLFRACTALS[m];
     if (method) {
-      store.dispatch(action.setAlgorithm(m, method))
-      store.dispatch(redraw());
+      withredraw(action.setAlgorithm(m, method))
     } else {
       console.error('unknown method', m);
     }
@@ -31,16 +35,14 @@ export function method(m?: string) {
 
 export function params(p?: {[k: string]: any}) {
   if (p) {
-    store.dispatch(action.updateParams(p));
-    store.dispatch(redraw());
+    withredraw(action.updateParams(p));
   } else {
     return (store.getState().fractal as FractalState).algorithm.params;
   }
 }
 
 export function loadJson(data: JsonState) {
-  store.dispatch(action.uploadJson(data));
-  store.dispatch(redraw());
+  withredraw(action.uploadJson(data));
 }
 
 export function zoom(n: number=1) {
@@ -48,16 +50,30 @@ export function zoom(n: number=1) {
 }
 
 export function zoomIn(n: number=2) {
-  store.dispatch(action.zoomIn(n))
-  store.dispatch(redraw())
+  withredraw(action.zoomIn(n));
 }
 
 export function zoomOut(n: number=2) {
-  store.dispatch(action.zoomOut(n))
-  store.dispatch(redraw())
+  withredraw(action.zoomOut(n));
 }
 
 export function recenter() {
-  store.dispatch(action.recenter())
-  store.dispatch(redraw())
+  withredraw(action.recenter())
+}
+
+export function color(x: Partial<{
+  scheme: string,
+  skew: number,
+  reverse: boolean,
+}>) {
+  const {scheme, ...rest} = x;
+  if (scheme && COLORSCHEMES[scheme]) {
+    withredraw(action.updateColor({
+      ...rest,
+      schemeName: scheme,
+      scheme: COLORSCHEMES[scheme],
+    }));
+  } else {
+    withredraw(action.updateColor(rest));
+  }
 }
