@@ -32,7 +32,7 @@ export function rotate(k: string='c', {range=[0,360],step=5,delay=100}:{range?: 
     delay: delay,
     map: (i: number) => {
       const angle = a0 + i*Math.PI/180;
-      return {[k]: rect(radius, angle)}
+      return {[k]: rect(angle, radius)}
     }
   })
 }
