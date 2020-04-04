@@ -13,8 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { Icon } from '../../components';
 import { State, Dispatch } from '../../store/types';
 import { fractal } from '../../fractals';
-import { updateParams } from '../../store/fractal/actions';
-import { redraw } from '../../store/ui/actions';
+import { updateParams, redraw } from '../../store/actions';
 
 
 interface Props {

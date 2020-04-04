@@ -6,7 +6,6 @@ export type ColorScheme = CS
 export const SET_MODAL = 'UI_SET_MODAL'
 export const SET_NAV = 'UI_SET_NAV'
 export const SET_STRETCH = 'UI_SET_STRETCH'
-export const SET_CANVAS_ACTION = 'UI_SET_CANVAS_ACTION'
 export const UPDATE_UI = 'UI_UPDATE'
 export const ADD_COLOR_SCHEME = 'UI_ADD_COLOR_SCHEME'
 
@@ -30,18 +29,10 @@ export enum StretchMode {
   Cover,
 }
 
-export enum CanvasAction {
-  None,
-  Draw,
-  Color,
-  Capture,
-}
-
 export interface UIState {
   nav: Nav
   modal: Modal
   canvasStretch: StretchMode
-  canvasAction: CanvasAction
   galleryBadge: number
   methodList: typeof ALLFRACTALS
   colorSchemeList: typeof COLORSCHEMES
@@ -63,11 +54,6 @@ export type SetNav = {
   payload: Nav
 }
 
-export type SetCanvasAction ={
-  type: typeof SET_CANVAS_ACTION
-  payload: CanvasAction
-}
-
 export type SetStretch = {
   type: typeof SET_STRETCH
   payload: StretchMode
@@ -81,4 +67,4 @@ export type AddColorScheme = {
   }
 }
 
-export type UIAction = UpdateUI | SetModal | SetNav | SetStretch | SetCanvasAction | AddColorScheme
+export type UIAction = UpdateUI | SetModal | SetNav | SetStretch | AddColorScheme

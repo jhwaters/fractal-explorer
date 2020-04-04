@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
-import { FractalState } from '../../store/fractal/types';
-import { setCenter } from '../../store/fractal/actions';
-import { redraw, finish } from '../../store/ui/actions';
-import { StretchMode, CanvasAction, Nav } from '../../store/ui/types';
+import { FractalState, DrawState } from '../../store/fractal/types';
+import { setCenter, redraw, finish } from '../../store/actions';
+import { StretchMode, Nav } from '../../store/ui/types';
 import { FractalDrawer } from '../../fractals';
 import Box from '@material-ui/core/Box';
 import styles from './Canvas.module.css';
@@ -13,7 +12,6 @@ import styles from './Canvas.module.css';
 type Props = {
   visible: boolean
   fractal: FractalState
-  canvasAction: CanvasAction
   stretch: StretchMode
   setCenter: (x: number, y: number) => void
   finishDrawing: () => void
@@ -47,10 +45,11 @@ class Canvas extends React.Component<Props> {
   }
 
   componentDidUpdate() {
-    if (this.props.canvasAction === CanvasAction.Draw) {
+    if (this.props.fractal.drawState === DrawState.Draw) {
       this.draw()
     }
-    else if (this.props.canvasAction === CanvasAction.Color) {
+    else if (this.props.fractal.drawState === DrawState.Color) {
+      // cant recolor without recalculating anymore
       this.draw();
     }
   }
@@ -120,10 +119,9 @@ export default connect(
   (state: AppState) => ({
     visible: (state.ui.nav === Nav.Params || state.ui.nav === Nav.Explore),
     fractal: state.fractal,
-    canvasAction: state.ui.canvasAction,
     stretch: state.ui.canvasStretch,
   }),
-  (dispatch: Dispatch) => ({
+  (dispatch) => ({
     setCenter: (x: number, y: number) => {
       dispatch(setCenter(x, y));
       dispatch(redraw());

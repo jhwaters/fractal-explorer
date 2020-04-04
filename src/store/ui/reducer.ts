@@ -3,11 +3,9 @@ import {
   Nav,
   Modal,
   StretchMode,
-  CanvasAction,
   SET_NAV,
   SET_MODAL,
   SET_STRETCH,
-  SET_CANVAS_ACTION,
   UPDATE_UI,
   ADD_COLOR_SCHEME,
 } from './types';
@@ -21,7 +19,6 @@ import { UPDATE_FRACTAL } from '../fractal/types';
 const initialState: UIState = ({
   nav: Nav.Explore,
   modal: Modal.None,
-  canvasAction: CanvasAction.None,
   canvasStretch: StretchMode.Contain,
   galleryBadge: 0,
   methodList: ALLFRACTALS,
@@ -42,12 +39,6 @@ export default function(state: UIState=initialState, action: Action) {
       }
     case SET_MODAL:
       return {...state, modal: action.payload};
-    case SET_CANVAS_ACTION:
-      if (state.nav === Nav.Capture && (action.payload === CanvasAction.Draw || action.payload === CanvasAction.Color)) {
-        return {...state, canvasAction: action.payload, nav: Nav.Explore};
-      } else {
-        return {...state, canvasAction: action.payload};
-      }
     case SET_STRETCH:
       return {...state, canvasStretch: action.payload};
     case ADD_COLOR_SCHEME:

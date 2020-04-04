@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../store/types';
 import { Nav } from '../store/ui/types';
-import { setNav } from '../store/ui/actions';
+import { setNav } from '../store/actions';
 import BottomNavigation, { BottomNavigationProps } from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Badge from '@material-ui/core/Badge';

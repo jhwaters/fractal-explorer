@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
 import { Method } from '../../store/fractal/algorithm/types';
-import { setAlgorithm, recenter } from '../../store/fractal/actions';
-import { redraw } from '../../store/ui/actions'
+import { setAlgorithm, recenter, redraw } from '../../store/actions';
 import {
   SettingsContainer, 
   Select,

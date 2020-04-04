@@ -1,14 +1,19 @@
 import algorithm from './algorithm/reducer';
 import color from './color/reducer';
 import view from './view/reducer';
-import { FractalState, FractalAction } from './types';
+import { reducer as drawState } from './drawState';
+import {
+  FractalState,
+  FractalAction,
+  UPDATE_FRACTAL,
+} from './types';
 import { combineReducers } from 'redux';
-import { UPDATE_FRACTAL } from './types';
 
 const reducer1 = combineReducers({
   algorithm,
   color,
   view,
+  drawState,
 });
 
 export default function(state: FractalState, action: FractalAction): FractalState {
@@ -26,6 +31,7 @@ export default function(state: FractalState, action: FractalAction): FractalStat
         algorithm: {...state.algorithm, ...action.payload.algorithm},
         color: {...state.color, ...action.payload.color},
         view: {...state.view, ...action.payload.view},
+        drawState: state.drawState,
       };
     } else {
       return state;

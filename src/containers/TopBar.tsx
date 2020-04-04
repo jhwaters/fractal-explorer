@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../store/types';
-import { setModal } from '../store/ui/actions';
+import { setModal } from '../store/actions';
 import { Modal, Nav } from '../store/ui/types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';

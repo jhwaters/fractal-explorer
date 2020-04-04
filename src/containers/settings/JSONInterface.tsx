@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
-import { uploadData } from '../../store/fractal/actions';
-import { redraw } from '../../store/ui/actions';
+import { uploadData, redraw } from '../../store/actions';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { zoomIn, zoomOut } from '../../store/fractal/view/actions';
-import { redraw } from '../../store/ui/actions';
+import { zoomIn, zoomOut, redraw } from '../../store/actions';
 import DownUpButtons, { DownUpButtonsProps } from '../../components/DownUpButtons';
 import { Icon } from '../../components';
 

@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from '../../store/types';
-import { redraw } from '../../store/ui/actions';
-import { recenter } from '../../store/fractal/view/actions';
+import { recenter, redraw } from '../../store/actions';
 import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 import { Icon } from '../../components';
 

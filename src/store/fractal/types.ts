@@ -12,7 +12,16 @@ import {
   ViewAction,
   ViewState,
 } from './view/types';
+import {
+  DrawAction,
+} from './drawState';
 
+export enum DrawState {
+  None,
+  Draw,
+  Color,
+  Capture,
+}
 
 export const UPDATE_FRACTAL = 'FRACTAL_UPDATE';
 
@@ -25,10 +34,11 @@ export type UpdateFractal = {
   } | undefined
 }
 
-export interface FractalState {
+export type FractalState = CombinedState<{
   algorithm: AlgorithmState<any>
   color: ColorState
   view: ViewState
-}
+  drawState: DrawState
+}>
 
-export type FractalAction = AlgorithmAction<any> | ColorAction | ViewAction | UpdateFractal
+export type FractalAction = AlgorithmAction<any> | ColorAction | ViewAction | UpdateFractal | DrawAction;

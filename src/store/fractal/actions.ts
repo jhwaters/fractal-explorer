@@ -25,6 +25,13 @@ export {
   zoomOut,
 } from './view/actions';
 
+export {
+  redraw,
+  recolor,
+  capture,
+  finish,
+} from './drawState'
+
 export const uploadData = (data: AppState): UpdateFractal => ({
   type: UPDATE_FRACTAL,
   payload: data

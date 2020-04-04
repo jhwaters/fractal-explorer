@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { State as AppState } from '../../store/types';
 import { StretchMode } from '../../store/ui/types';
-import { setStretch } from '../../store/ui/actions';
+import { setStretch } from '../../store/actions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 

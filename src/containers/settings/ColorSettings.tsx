@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState } from '../../store/types';
 import { ColorState, ColorScheme } from '../../store/fractal/color/types';
-import { updateColor } from '../../store/fractal/actions';
-import { recolor, addColorScheme } from '../../store/ui/actions';
+import { updateColor, recolor, addColorScheme } from '../../store/actions';
 import {
   ColorPreview,
   SettingsContainer,

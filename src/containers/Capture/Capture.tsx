@@ -1,13 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
-import { FractalState } from '../../store/fractal/types';
-import { addToGallery } from '../../store/gallery/actions';
-import { capture, finish, wait } from '../../store/ui/actions';
-import { CanvasAction } from '../../store/ui/types';
+import { FractalState, DrawState } from '../../store/fractal/types';
+import { capture, finish, addToGallery, startWaiting } from '../../store/actions';
+import { Nav } from '../../store/ui/types';
 import Cropper from 'react-easy-crop';
 import Box from '@material-ui/core/Box';
-import { Nav } from '../../store/ui/types';
 import { withStyles } from '@material-ui/core/styles';
 import ControlPanel from '../Controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,7 +36,6 @@ interface Props {
   visible: boolean
   fractal: FractalState
   addToGallery: (image: string, data: JsonState, title: string) => void
-  capturing: boolean
   startCapture: () => void
   finishCapture: () => void
 }
@@ -104,7 +101,7 @@ class Capture extends React.Component<Props> {
     if (this.props.visible && !prevProps.visible) {
       this.getImage();
     }
-    if (this.props.capturing) {
+    if (this.props.fractal.drawState === DrawState.Capture) {
       setTimeout(this.capture, 500);
     }
   }
@@ -225,13 +222,12 @@ class Capture extends React.Component<Props> {
 export default connect(
   (state: State) => ({
     visible: state.ui.nav === Nav.Capture,
-    capturing: state.ui.canvasAction === CanvasAction.Capture,
     fractal: state.fractal,
   }),
-  (dispatch: Dispatch) => ({
+  (dispatch) => ({
     addToGallery: (image:string, data: JsonState, title: string) => dispatch(addToGallery(image, data, title)),
     startCapture: () => {
-      dispatch(wait());
+      dispatch(startWaiting());
       dispatch(capture());
     },
     finishCapture: () => dispatch(finish()),

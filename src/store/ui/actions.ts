@@ -9,9 +9,6 @@ import {
   SET_NAV,
   Modal,
   Nav,
-  CanvasAction,
-  SetCanvasAction,
-  SET_CANVAS_ACTION,
   AddColorScheme,
   ADD_COLOR_SCHEME,
   ColorScheme,
@@ -19,7 +16,7 @@ import {
   UPDATE_UI,
 } from './types'
 
-export const update = (x: Partial<UIState>): UpdateUI => ({
+export const updateUI = (x: Partial<UIState>): UpdateUI => ({
   type: UPDATE_UI,
   payload: x
 })
@@ -39,32 +36,14 @@ export const setNav = (nav: Nav): SetNav => ({
   payload: nav
 })
 
-export const redraw = (): SetCanvasAction => ({
-  type: SET_CANVAS_ACTION,
-  payload: CanvasAction.Draw
-})
-
-export const recolor = (): SetCanvasAction => ({
-  type: SET_CANVAS_ACTION,
-  payload: CanvasAction.Color
-})
-
-export const capture = (): SetCanvasAction => ({
-  type: SET_CANVAS_ACTION,
-  payload: CanvasAction.Capture
-})
-
-export const wait = (): UpdateUI => ({
+export const startWaiting = (): UpdateUI => ({
   type: UPDATE_UI,
-  payload: ({waiting: true}),
+  payload: {waiting: true},
 })
 
-export const finish = (): UpdateUI => ({
+export const stopWaiting = (): UpdateUI => ({
   type: UPDATE_UI,
-  payload: {
-    canvasAction: CanvasAction.None,
-    waiting: false,
-  }
+  payload: {waiting: false}
 })
 
 export const addColorScheme = (name: string, scheme: ColorScheme): AddColorScheme => ({

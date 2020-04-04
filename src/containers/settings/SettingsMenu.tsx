@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { Modal } from '../../store/ui/types';
-import { setModal } from '../../store/ui/actions'
+import { setModal } from '../../store/actions'
 import AlgorithmSettings from './AlgorithmSettings';
 import ColorSettings from './ColorSettings';
 import ViewSettings from './ViewSettings';

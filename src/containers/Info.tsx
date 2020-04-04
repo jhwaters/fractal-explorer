@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Katex from '../components/Katex';
 import { State as AppState, Dispatch } from '../store/types';
-import { setModal } from '../store/ui/actions';
+import { setModal } from '../store/actions';
 import { Modal } from '../store/ui/types';
 import { AlgorithmState } from '../store/fractal/algorithm/types';
 import { TypographyWithMath } from '../components';

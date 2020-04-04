@@ -1,11 +1,37 @@
-import * as Fractal from './fractal/actions';
-import * as UI from './ui/actions';
-import * as Gallery from './gallery/actions';
+export {
+  updateAlgorithm,
+  setAlgorithm,
+  updateParams,
+  updateColor,
+  updateView,
+  recenter,
+  setCenter,
+  zoomIn,
+  zoomOut,
+  redraw,
+  recolor,
+  capture,
+  finish,
+  uploadData,
+  uploadJson,
+  uploadUrl,
+} from './fractal/actions';
 
 export {
-  Fractal,
-  UI,
-  Gallery,
-}
+  setNav,
+  setModal,
+  setStretch,
+  startWaiting,
+  stopWaiting,
+  updateUI,
+  addColorScheme,
+} from './ui/actions';
+
+export {
+  addToGallery,
+  massAddToGallery,
+  deleteImage,
+} from './gallery/actions';
+
 
 
