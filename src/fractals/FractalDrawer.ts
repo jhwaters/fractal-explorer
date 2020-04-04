@@ -1,5 +1,5 @@
-import { State as FractalState } from '../store/fractal/types';
-import { State as ViewState } from '../store/fractal/view/types';
+import { FractalState } from '../store/fractal/types';
+import { ViewState } from '../store/fractal/view/types';
 import { colorScale } from './color';
 import { fractal } from './index';
 

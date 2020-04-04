@@ -1,5 +1,5 @@
 import {
-  State,
+  UIState,
   SetStretch,
   StretchMode,
   SET_STRETCH,
@@ -15,12 +15,12 @@ import {
   AddColorScheme,
   ADD_COLOR_SCHEME,
   ColorScheme,
-  Update,
-  UPDATE,
+  UpdateUI,
+  UPDATE_UI,
 } from './types'
 
-export const update = (x: Partial<State>): Update => ({
-  type: UPDATE,
+export const update = (x: Partial<UIState>): UpdateUI => ({
+  type: UPDATE_UI,
   payload: x
 })
 
@@ -54,13 +54,13 @@ export const capture = (): SetCanvasAction => ({
   payload: CanvasAction.Capture
 })
 
-export const wait = (): Update => ({
-  type: UPDATE,
+export const wait = (): UpdateUI => ({
+  type: UPDATE_UI,
   payload: ({waiting: true}),
 })
 
-export const finish = (): Update => ({
-  type: UPDATE,
+export const finish = (): UpdateUI => ({
+  type: UPDATE_UI,
   payload: {
     canvasAction: CanvasAction.None,
     waiting: false,

@@ -1,6 +1,6 @@
-import { State as AlgorithmState } from '../../store/fractal/algorithm/types';
-import { State as ColorState } from '../../store/fractal/color/types';
-import { State as ViewState } from '../../store/fractal/view/types';
+import { AlgorithmState } from '../../store/fractal/algorithm/types';
+import { ColorState } from '../../store/fractal/color/types';
+import { ViewState } from '../../store/fractal/view/types';
 import { V1 } from './json1';
 import { V2 } from './json2';
 import {

@@ -1,5 +1,6 @@
 import { JsonState } from '../../fractals/json'
 export const ADD_TO_GALLERY = 'GALLERY_ADD'
+export const MASS_ADD_TO_GALLERY = 'MASS_ADD_TO_GALLERY'
 export const DELETE_IMAGE = 'GALLERY_DELETE'
 
 export interface GalleryImage {
@@ -8,11 +9,16 @@ export interface GalleryImage {
   title: string
 }
 
-export type State = GalleryImage[]
+export type GalleryState = GalleryImage[]
 
 export type AddToGallery = {
   type: typeof ADD_TO_GALLERY
   payload: GalleryImage
+}
+
+export type MassAddToGallery = {
+  type: typeof MASS_ADD_TO_GALLERY
+  payload: GalleryImage[]
 }
 
 export type DeleteImage = {
@@ -20,6 +26,6 @@ export type DeleteImage = {
   payload: string
 }
 
-export type Action = AddToGallery | DeleteImage
+export type GalleryAction = AddToGallery | DeleteImage | MassAddToGallery
 
 

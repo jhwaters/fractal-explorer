@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State as AppState } from '../../store/types';
-import { State as ViewState } from '../../store/fractal/view/types';
+import { State, Dispatch } from '../../store/types';
+import { ViewState } from '../../store/fractal/view/types';
 import { updateView } from '../../store/fractal/actions';
 import { redraw } from '../../store/ui/actions';
 import { NumberInput, SettingsContainer } from '../../components';
@@ -156,10 +156,10 @@ class ViewSettings extends React.Component<Props> {
 }
 
 export default connect(
-  (state: AppState) => ({
+  (state: State) => ({
     current: state.fractal.view,
   }),
-  (dispatch) => ({
+  (dispatch: Dispatch) => ({
     updateView: (update: Partial<ViewState>) => {
       dispatch(updateView(update));
       dispatch(redraw());

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { Nav } from '../../store/ui/types';
-import { State as GalleryState } from '../../store/gallery/types';
+import { GalleryState } from '../../store/gallery/types';
 import { deleteImage } from '../../store/gallery/actions';
 import { uploadJson } from '../../store/fractal/actions';
 import { redraw, setNav } from '../../store/ui/actions';

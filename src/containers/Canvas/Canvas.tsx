@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { State as AppState, Dispatch } from '../../store/types';
-import { State as FractalState } from '../../store/fractal/types';
+import { FractalState } from '../../store/fractal/types';
 import { setCenter } from '../../store/fractal/actions';
 import { redraw, finish } from '../../store/ui/actions';
 import { StretchMode, CanvasAction, Nav } from '../../store/ui/types';

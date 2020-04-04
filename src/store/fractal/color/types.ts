@@ -1,19 +1,19 @@
 import { ColorScheme as CS } from '../../../fractals/color/types';
 
-export const UPDATE = 'COLOR_UPDATE';
+export const UPDATE_COLOR = 'COLOR_UPDATE';
 
 export type ColorScheme = CS
 
-export type State = {
+export interface ColorState {
   schemeName: string
   scheme: ColorScheme
   reverse: boolean
   skew: number
 }
 
-export type Update = {
-  type: typeof UPDATE,
-  payload: Partial<State>,
+export type UpdateColor = {
+  type: typeof UPDATE_COLOR,
+  payload: Partial<ColorState>,
 }
 
-export type Action = Update
+export type ColorAction = UpdateColor

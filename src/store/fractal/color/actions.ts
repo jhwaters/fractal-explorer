@@ -1,12 +1,12 @@
 import {
-  UPDATE,
-  State,
-  Update,
+  UPDATE_COLOR,
+  ColorState,
+  UpdateColor,
 } from './types';
 
 
-export const update = (color: Partial<State>): Update => ({
-  type: UPDATE,
+export const updateColor = (color: Partial<ColorState>): UpdateColor => ({
+  type: UPDATE_COLOR,
   payload: color,
 })
 

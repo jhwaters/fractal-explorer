@@ -7,7 +7,7 @@ export const SET_MODAL = 'UI_SET_MODAL'
 export const SET_NAV = 'UI_SET_NAV'
 export const SET_STRETCH = 'UI_SET_STRETCH'
 export const SET_CANVAS_ACTION = 'UI_SET_CANVAS_ACTION'
-export const UPDATE = 'UI_UPDATE'
+export const UPDATE_UI = 'UI_UPDATE'
 export const ADD_COLOR_SCHEME = 'UI_ADD_COLOR_SCHEME'
 
 export enum Nav {
@@ -37,7 +37,7 @@ export enum CanvasAction {
   Capture,
 }
 
-export interface State {
+export interface UIState {
   nav: Nav
   modal: Modal
   canvasStretch: StretchMode
@@ -48,9 +48,9 @@ export interface State {
   waiting: boolean
 }
 
-export type Update = {
-  type: typeof UPDATE
-  payload: Partial<State>
+export type UpdateUI = {
+  type: typeof UPDATE_UI
+  payload: Partial<UIState>
 }
 
 export type SetModal = {
@@ -81,4 +81,4 @@ export type AddColorScheme = {
   }
 }
 
-export type Action = Update | SetModal | SetNav | SetStretch | SetCanvasAction | AddColorScheme
+export type UIAction = UpdateUI | SetModal | SetNav | SetStretch | SetCanvasAction | AddColorScheme

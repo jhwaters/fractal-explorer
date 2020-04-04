@@ -1,7 +1,7 @@
 import {
-  Update,
-  UPDATE,
-  State,
+  UpdateAlgorithm,
+  UPDATE_ALGORITHM,
+  AlgorithmState,
   UpdateParams,
   UPDATE_PARAMS,
   SetAlgorithm,
@@ -9,8 +9,8 @@ import {
   Method,
 } from './types';
 
-export const update = <T>(f: Partial<State<T>>): Update<T> => ({
-  type: UPDATE,
+export const updateAlgorithm = <T>(f: Partial<AlgorithmState<T>>): UpdateAlgorithm<T> => ({
+  type: UPDATE_ALGORITHM,
   payload: f
 })
 

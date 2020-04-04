@@ -4,7 +4,7 @@ import Katex from '../components/Katex';
 import { State as AppState, Dispatch } from '../store/types';
 import { setModal } from '../store/ui/actions';
 import { Modal } from '../store/ui/types';
-import { State as AlgorithmState } from '../store/fractal/algorithm/types';
+import { AlgorithmState } from '../store/fractal/algorithm/types';
 import { TypographyWithMath } from '../components';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';

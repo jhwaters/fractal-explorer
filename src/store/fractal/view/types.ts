@@ -1,4 +1,4 @@
-export type State = {
+export interface ViewState {
   cx: number
   cy: number
   w: number
@@ -7,14 +7,14 @@ export type State = {
   pixelCount: number
 }
 
-export const UPDATE = 'VIEW_UPDATE';
+export const UPDATE_VIEW = 'VIEW_UPDATE';
 export const ZOOM_IN = 'VIEW_ZOOM_IN';
 export const ZOOM_OUT = 'VIEW_ZOOM_OUT';
 export const RECENTER = 'VIEW_RECENTER';
 
-export type Update = {
-  type: typeof UPDATE,
-  payload: Partial<State>,
+export type UpdateView = {
+  type: typeof UPDATE_VIEW,
+  payload: Partial<ViewState>,
 }
 
 export type Recenter = {
@@ -31,4 +31,4 @@ export type ZoomOut = {
   payload: number,
 }
 
-export type Action = Update | ZoomIn | ZoomOut | Recenter;
+export type ViewAction = UpdateView | ZoomIn | ZoomOut | Recenter;

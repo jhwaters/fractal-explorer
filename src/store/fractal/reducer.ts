@@ -1,7 +1,7 @@
 import algorithm from './algorithm/reducer';
 import color from './color/reducer';
 import view from './view/reducer';
-import { State, Action } from './types';
+import { FractalState, FractalAction } from './types';
 import { combineReducers } from 'redux';
 import { UPDATE_FRACTAL } from './types';
 
@@ -11,7 +11,7 @@ const reducer1 = combineReducers({
   view,
 });
 
-export default function(state: State, action: Action): State {
+export default function(state: FractalState, action: FractalAction): FractalState {
   if (action.type === UPDATE_FRACTAL) {
     if (action.payload !== undefined) {
       // fit without changing w:h ratio

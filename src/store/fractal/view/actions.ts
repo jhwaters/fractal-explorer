@@ -1,18 +1,18 @@
 import {
-  State,
-  Update,
+  ViewState,
+  UpdateView,
   Recenter,
   ZoomIn,
   ZoomOut,
-  UPDATE,
+  UPDATE_VIEW,
   RECENTER,
   ZOOM_IN,
   ZOOM_OUT,
 } from './types';
 
 
-export const update = (update: Partial<State>): Update => ({
-  type: UPDATE,
+export const updateView = (update: Partial<ViewState>): UpdateView => ({
+  type: UPDATE_VIEW,
   payload: update,
 })
 
@@ -20,8 +20,8 @@ export const recenter = (): Recenter => ({
   type: RECENTER,
 })
 
-export const setCenter = (cx: number, cy: number): Update => ({
-  type: UPDATE,
+export const setCenter = (cx: number, cy: number): UpdateView => ({
+  type: UPDATE_VIEW,
   payload: {cx, cy},
 })
 

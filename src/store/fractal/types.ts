@@ -1,16 +1,16 @@
 import { CombinedState } from 'redux';
 
 import {
-  Action as AlgorithmAction,
-  State as AlgorithmState,
+  AlgorithmAction,
+  AlgorithmState,
 } from './algorithm/types';
 import {
-  Action as ColorAction,
-  State as ColorState,
+  ColorAction,
+  ColorState,
 } from './color/types';
 import {
-  Action as ViewAction,
-  State as ViewState,
+  ViewAction,
+  ViewState,
 } from './view/types';
 
 
@@ -25,10 +25,10 @@ export type UpdateFractal = {
   } | undefined
 }
 
-export type State = CombinedState<{
+export interface FractalState {
   algorithm: AlgorithmState<any>
   color: ColorState
   view: ViewState
-}>
+}
 
-export type Action = AlgorithmAction<any> | ColorAction | ViewAction | UpdateFractal
+export type FractalAction = AlgorithmAction<any> | ColorAction | ViewAction | UpdateFractal

@@ -1,5 +1,5 @@
 import {
-  State,
+  UIState,
   Nav,
   Modal,
   StretchMode,
@@ -8,7 +8,7 @@ import {
   SET_MODAL,
   SET_STRETCH,
   SET_CANVAS_ACTION,
-  UPDATE,
+  UPDATE_UI,
   ADD_COLOR_SCHEME,
 } from './types';
 import { Action } from '../types';
@@ -18,7 +18,7 @@ import { COLORSCHEMES } from '../../fractals/color';
 import { UPDATE_FRACTAL } from '../fractal/types';
 
 
-const initialState: State = ({
+const initialState: UIState = ({
   nav: Nav.Explore,
   modal: Modal.None,
   canvasAction: CanvasAction.None,
@@ -30,9 +30,9 @@ const initialState: State = ({
 });
 
 
-export default function(state: State=initialState, action: Action) {
+export default function(state: UIState=initialState, action: Action) {
   switch(action.type) {
-    case UPDATE:
+    case UPDATE_UI:
       return {...state, ...action.payload};
     case SET_NAV:
       if (action.payload === Nav.Gallery) {

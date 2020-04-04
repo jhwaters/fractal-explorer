@@ -8,17 +8,17 @@ import {
 } from './types';
 
 export {
-  update as updateAlgorithm,
+  updateAlgorithm,
   setAlgorithm,
   updateParams,
 } from './algorithm/actions'
 
 export {
-  update as updateColor,
+  updateColor,
 } from './color/actions';
 
 export {
-  update as updateView,
+  updateView,
   recenter,
   setCenter,
   zoomIn,

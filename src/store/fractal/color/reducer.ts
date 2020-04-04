@@ -1,21 +1,21 @@
 import { COLORSCHEMES } from '../../../fractals/color';
 import {
-  State,
-  Action,
-  UPDATE,
+  ColorState,
+  ColorAction,
+  UPDATE_COLOR,
 } from './types';
 import { colorSchemeName } from '../../../defaults';
 
-const initialState: State = {
+const initialState: ColorState = {
   schemeName: colorSchemeName,
   scheme: COLORSCHEMES[colorSchemeName],
   reverse: false,
   skew: 0,
 }
 
-export default function(state: State=initialState, action: Action) {
+export default function(state: ColorState=initialState, action: ColorAction) {
   switch(action.type) {
-    case UPDATE:
+    case UPDATE_COLOR:
       return {...state, ...action.payload}
     default:
       return state;
