@@ -14,6 +14,7 @@ import { ADD_TO_GALLERY } from '../gallery/types';
 import { ALLFRACTALS } from '../../fractals/algorithm';
 import { COLORSCHEMES } from '../../fractals/color';
 import { UPDATE_FRACTAL } from '../fractal/types';
+import { FINISH_DRAWING } from '../fractal/drawState';
 
 
 const initialState: UIState = ({
@@ -62,6 +63,8 @@ export default function(state: UIState=initialState, action: Action) {
         };
       }
       return state;
+    case FINISH_DRAWING:
+      return {...state, waiting: false}
     default:
       return state;
   }

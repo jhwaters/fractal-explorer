@@ -50,6 +50,7 @@ class Capture extends React.Component<Props> {
   cropPixels: Area
   drawer: FractalDrawer
   data: JsonState
+  shouldRedraw: boolean
 
   constructor(props: Props) {
     super(props);
@@ -63,6 +64,7 @@ class Capture extends React.Component<Props> {
     this.drawer = new FractalDrawer();
     this.drawer.fullResolution = true;
     this.data = stateToJson(props.fractal);
+    this.shouldRedraw = false;
   }
 
   setW = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,8 +100,14 @@ class Capture extends React.Component<Props> {
 
 
   componentDidUpdate(prevProps: Props) {
-    if (this.props.visible && !prevProps.visible) {
-      this.getImage();
+    if (this.props.visible) {
+      if (!prevProps.visible || (this.shouldRedraw && this.props.fractal.drawState === DrawState.None)) {
+        this.getImage();
+        this.shouldRedraw = false;
+      }
+      else if (this.props.fractal.drawState === DrawState.Draw || this.props.fractal.drawState === DrawState.Color) {
+        this.shouldRedraw = true;
+      }
     }
     if (this.props.fractal.drawState === DrawState.Capture) {
       setTimeout(this.capture, 500);
@@ -140,15 +148,10 @@ class Capture extends React.Component<Props> {
 
 
   saveImage() {
-    const canvas = document.createElement('canvas');
-    this.drawer.putOnCanvas(canvas);
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16)
-        this.props.addToGallery(url, this.data, title);
-      }
-    });
+    this.drawer.toURL().then(url => {
+      const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16)
+      this.props.addToGallery(url, this.data, title);
+    })
   }
 
   capture = () => {

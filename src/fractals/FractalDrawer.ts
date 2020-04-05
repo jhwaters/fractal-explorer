@@ -145,6 +145,21 @@ class FractalDrawer {
     canvas.getContext('2d')?.putImageData(this.image, 0, 0);
   }
 
+  toURL(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const cvs = document.createElement('canvas');
+      this.putOnCanvas(cvs);
+      cvs.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          resolve(url);
+        } else {
+          reject()
+        }
+      })
+    })
+  }
+
 }
 
 export default FractalDrawer;
