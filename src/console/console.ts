@@ -7,9 +7,7 @@ import FractalDrawer from '../fractals/FractalDrawer';
 
 
 export default {
-  controller: (autoredraw=true) => {
-    return Connected.new(autoredraw);
-  },
+  controller: Connected.new(true),
 
   hidden: () => Disconnected.new(),
   
@@ -21,5 +19,12 @@ export default {
     FractalDrawer.logDrawTime = x;
   },
 
-  magic,
+  magic: function(...args: any[]) {
+    if (args.length) {
+      if ('getParam' in args[0] && 'setParam' in args[0] && 'rotateParam' in args[0]) {
+        return magic(...args);
+      }
+    }
+    return magic(this.controller, ...args);
+  },
 }

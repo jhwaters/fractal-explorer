@@ -2,10 +2,10 @@ import reduxStore from '../../store';
 import { addToGallery } from '../../store/actions';
 import { FractalState } from '../../store/fractal/types';
 import { recenterPPU } from '../../store/fractal/view/reducer';
-import { JsonState, jsonToState, stateToJson } from '../../fractals/json';
+import { JsonState, jsonToState, stateToJson, jsonToUrl } from '../../fractals/json';
 import { ColorState } from '../../store/fractal/color/types';
 import { ViewState } from '../../store/fractal/view/types';
-import { ALLFRACTALS, COLORSCHEMES } from '../../fractals'; 
+import { ALLFRACTALS } from '../../fractals'; 
 import { FractalCommands, Params } from './types'
 import { FractalDrawer } from '../../fractals'
 import Abstract from './abstract';
@@ -50,6 +50,14 @@ class Disconnected extends Abstract implements FractalCommands {
     return new Disconnected(reduxStore.getState().fractal);
   }
 
+  json() {
+    return stateToJson(this.fractal)
+  }
+
+  url() {
+    return jsonToUrl(this.json())
+  }
+
   clear() {
     this.zipper = new Zipper();
   }
@@ -83,7 +91,7 @@ class Disconnected extends Abstract implements FractalCommands {
             this.zipper.addFile(blob)
           }
         });
-      }, ms);
+      }, ms).then(() => this);
     }
   }
 

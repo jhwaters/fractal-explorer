@@ -5,7 +5,7 @@ import { FractalState } from '../../store/fractal/types';
 import { ColorState } from '../../store/fractal/color/types';
 import { ViewState } from '../../store/fractal/view/types';
 import { JsonState } from '../../fractals/json';
-import { ALLFRACTALS, COLORSCHEMES } from '../../fractals'; 
+import { ALLFRACTALS } from '../../fractals'; 
 import { FractalCommands, Params } from './types'
 import Abstract from './abstract';
 import { animator } from './animation';
@@ -44,7 +44,10 @@ class Connected extends Abstract implements FractalCommands {
       this.autodraw = true;
       return animator(start, stop, frames, incl)((n: number) => {
         this.updateParams(param(n))
-      }, ms).then(() => { this.autodraw = autodraw });
+      }, ms).then(() => {
+        this.autodraw = autodraw;
+        return this;
+      });
     }
   }
 

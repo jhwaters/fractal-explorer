@@ -1,12 +1,12 @@
 
-function* rangeGen(start: number, stop: number, frames: number, inclusive: boolean=true): Generator<number,void> {
+function* rangeGen(start: number, stop: number, frames: number, includeStart: boolean=true): Generator<number,void> {
   const d = stop - start;
-  if (inclusive) {
+  if (includeStart) {
     for (let i = 0; i < frames; i++) {
       yield start + d*(i / (frames-1))
     }
   } else {
-    for (let i = 0; i < frames; i++) {
+    for (let i = 1; i <= frames; i++) {
       yield start + d*(i / frames)
     }
   }

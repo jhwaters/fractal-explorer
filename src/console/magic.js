@@ -24,13 +24,13 @@ export function magic(drawer, {
       if (i <= rounds) {
         console.log('round', i);
         const angle = ((Math.random() * Math.PI) + Math.PI)/2;
-        return drawer.rotateParam('c', frames, randC(), {angle, incl: false, ms}).then(rotator);
+        return drawer.rotateParam('c', {frames, center: randC(), angle, incl: false, ms}).then(rotator);
       } else {
         console.log('returning')
         const [x1, y1] = drawer.getParam('c');
         const xmid = (x0 + x1)/2;
         const ymid = (y0 + y1)/2;
-        return drawer.rotateParam('c', frames, [xmid, ymid], {angle: Math.PI, ms})
+        return drawer.rotateParam('c', {frames, center: [xmid, ymid], angle: Math.PI, ms})
       }
     };
   

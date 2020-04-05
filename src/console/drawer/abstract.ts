@@ -22,13 +22,21 @@ abstract class Base implements FractalCommands {
     ms?: number,
   }): (f: (n: number) => Params) => any
 
-  rotateParam(k: string, frames: number=30, [cx, cy]: [number, number]=[0,0], opts?: {
+  rotateParam(k: string, {
+    frames=30, 
+    center=[0,0],
+    angle=Math.PI*2,
+    incl=true,
+    ms=0
+  }: {
+    frames?: number,
+    center?: [number,number],
     angle?: number,
     incl?: boolean,
     ms?: number,
-  }) {
-    const angle = (opts && opts.angle !== undefined) ? opts.angle : Math.PI*2
+  }={}) {
     const [x0, y0]: [number, number] = this.getParam(k);
+    const [cx, cy] = center;
     const dx = x0 - cx;
     const dy = y0 - cy;
     const a0 = Math.atan2(dy, dx);
@@ -39,7 +47,7 @@ abstract class Base implements FractalCommands {
       const y1 = cy + r0 * Math.sin(a1);
       return {[k]: [x1, y1]}
     }
-    return this.animate(0, angle, frames, opts)(setAngle)
+    return this.animate(0, angle, frames, {incl, ms})(setAngle)
   }
 
   getParam(k: string) {
