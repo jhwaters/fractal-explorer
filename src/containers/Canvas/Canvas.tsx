@@ -121,7 +121,7 @@ export default connect(
     fractal: state.fractal,
     stretch: state.ui.canvasStretch,
   }),
-  (dispatch) => ({
+  (dispatch: Dispatch) => ({
     setCenter: (x: number, y: number) => {
       dispatch(setCenter(x, y));
       dispatch(redraw());

@@ -227,7 +227,7 @@ export default connect(
     visible: state.ui.nav === Nav.Capture,
     fractal: state.fractal,
   }),
-  (dispatch) => ({
+  (dispatch: Dispatch) => ({
     addToGallery: (image:string, data: JsonState, title: string) => dispatch(addToGallery(image, data, title)),
     startCapture: () => {
       dispatch(startWaiting());
