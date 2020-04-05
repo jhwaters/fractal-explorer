@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Toolbar from '@material-ui/core/Toolbar';
+import Link from '@material-ui/core/Link';
 import { jsonToUrl, JsonState } from '../../fractals/json';
 
 const StyledGridList = withStyles({
@@ -129,19 +130,6 @@ class Gallery extends React.Component<Props> {
     }
   }
 
-  onCopy = () => {
-    if (this.state.current) {
-      
-    }
-  }
-
-  onLink = () => {
-    if (this.state.current) {
-      const q = jsonToUrl(this.state.current.data);
-      navigator.clipboard.writeText(window.location.href.split('?')[0] + '?' + q);
-    }
-  }
-
   onDownload = () => {
     if (this.state.current) {
       const a = document.createElement('a')
@@ -155,6 +143,12 @@ class Gallery extends React.Component<Props> {
     if (this.state.current) {
       this.props.loadJson(this.state.current.data);
       this.close();
+    }
+  }
+
+  linkUrl() {
+    if (this.state.current) {
+      return jsonToUrl(this.state.current.data);
     }
   }
 
@@ -195,6 +189,7 @@ class Gallery extends React.Component<Props> {
             <IconButton onClick={this.onDownload} title="download image">
               <Icon.Save/>
             </IconButton>
+            <Link href={this.linkUrl()} variant="subtitle1" style={{marginLeft: '1em'}}>Direct Link</Link>
           </Toolbar>
           <img 
             alt="fractal"
