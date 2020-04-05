@@ -148,7 +148,7 @@ class Capture extends React.Component<Props> {
 
 
   saveImage() {
-    this.drawer.toURL().then(url => {
+    this.drawer.toURL(url => {
       const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16)
       this.props.addToGallery(url, this.data, title);
     })
