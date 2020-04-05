@@ -39,8 +39,10 @@ export function jsonToState(data: JsonState): Partial<AppState> | undefined {
 }
 
 export function jsonToUrl(data: JsonState): string {
-  if (data.v === '1') return jsonToUrl1(data);
-  return jsonToUrl2(data);
+  return window.location.href.split('?')[0] + '?' + (
+    data.v === '1' ? jsonToUrl1(data) :
+    jsonToUrl2(data)
+  )
 }
 
 export function urlToJson(url: string): JsonState | undefined {

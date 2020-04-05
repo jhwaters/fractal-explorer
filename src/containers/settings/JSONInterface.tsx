@@ -135,7 +135,7 @@ export default connect(
     const data = stateToJson(state.fractal);
     return ({
       currentJson: JSON.stringify(data),
-      currentURL: window.location.href.split('?')[0] + '?' + jsonToUrl(data),
+      currentURL: jsonToUrl(data),
     });
   },
   (dispatch: Dispatch) => ({
