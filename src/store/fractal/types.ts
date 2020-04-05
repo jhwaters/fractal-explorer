@@ -27,11 +27,11 @@ export const UPDATE_FRACTAL = 'FRACTAL_UPDATE';
 
 export type UpdateFractal = {
   type: typeof UPDATE_FRACTAL
-  payload: {
+  payload: Partial<{
     algorithm: AlgorithmState<any>
-    color: ColorState
-    view: Omit<ViewState,'pixelCount'>
-  } | undefined
+    color: Partial<ColorState>
+    view: Partial<Omit<ViewState,'pixelCount'>>
+  }> | undefined
 }
 
 export type FractalState = CombinedState<{

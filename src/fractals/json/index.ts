@@ -33,7 +33,7 @@ export function stateToJson(state: AppState): V2 {
   return stateToJson2(state);
 }
 
-export function jsonToState(data: JsonState): AppState | undefined {
+export function jsonToState(data: JsonState): Partial<AppState> | undefined {
   if (data.v === '1') return jsonToState1(data);
   return jsonToState2(data);
 }

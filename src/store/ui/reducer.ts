@@ -53,7 +53,10 @@ export default function(state: UIState=initialState, action: Action) {
     case ADD_TO_GALLERY:
       return {...state, galleryBadge: state.galleryBadge+1};
     case UPDATE_FRACTAL:
-      if (action.payload && !(state.colorSchemeList[action.payload.color.schemeName])) {
+      if (action.payload
+        && action.payload.color
+        && action.payload.color.schemeName 
+        && !(state.colorSchemeList[action.payload!.color!.schemeName])) {
         return {
           ...state, 
           colorSchemeList: {

@@ -19,18 +19,19 @@ const reducer1 = combineReducers({
 export default function(state: FractalState, action: FractalAction): FractalState {
   if (action.type === UPDATE_FRACTAL) {
     if (action.payload !== undefined) {
+      const vw = {...state.view, ...action.payload.view}
       // fit without changing w:h ratio
-      const rw = action.payload.view.w / state.view.w;
-      const rh = action.payload.view.h / state.view.h;
+      const rw = vw.w / state.view.w;
+      const rh = vw.h / state.view.h;
       if (rw > rh) {
-        action.payload.view.h = state.view.h * rw;
+        vw.h = state.view.h * rw;
       } else {
-        action.payload.view.w = state.view.w * rh;
+        vw.w = state.view.w * rh;
       }
       return {
         algorithm: {...state.algorithm, ...action.payload.algorithm},
         color: {...state.color, ...action.payload.color},
-        view: {...state.view, ...action.payload.view},
+        view: vw,
         drawState: state.drawState,
       };
     } else {
