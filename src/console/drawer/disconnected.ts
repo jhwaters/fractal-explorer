@@ -25,33 +25,20 @@ interface Fractal extends Omit<FractalState,'drawState'|'view'> {
 class Disconnected extends Abstract implements FractalCommands {
   fractal: Fractal
   drawer: FractalDrawer
+  zipper: Zipper
 
   constructor(fractalState: Fractal) {
     super();
     this.fractal = fractalState;
     this.drawer = new FractalDrawer();
+    this.zipper = new Zipper();
   }
 
   private static parseState(fractal: Fractal | FractalState) {
     return {
-      algorithm: {
-        method: fractal.algorithm.method,
-        methodName: fractal.algorithm.methodName,
-        params: {...fractal.algorithm.params}
-      },
-      color: {
-        scheme: fractal.color.scheme,
-        schemeName: fractal.color.schemeName,
-        skew: fractal.color.skew,
-        reverse: fractal.color.reverse,
-      },
-      view: {
-        cx: fractal.view.cx,
-        cy: fractal.view.cy,
-        w: fractal.view.w,
-        h: fractal.view.h,
-        ppu: fractal.view.ppu,
-      }
+      algorithm: {...fractal.algorithm},
+      color: {...fractal.color},
+      view: {...fractal.view},
     }
   }
 
@@ -59,16 +46,22 @@ class Disconnected extends Abstract implements FractalCommands {
     return new Disconnected(Disconnected.parseState(fractal));
   }
 
-  static fromJson(data: JsonState) {
-    const fractal = jsonToState(data);
-    if (fractal) {
-      return Disconnected.fromState(fractal);
-    }
-    console.error('failed to load data', data)
-  }
-
   static new() {
     return new Disconnected(reduxStore.getState().fractal);
+  }
+
+  clear() {
+    this.zipper = new Zipper();
+  }
+
+  loadJson(data: JsonState) {
+    const fractal = jsonToState(data);
+    if (fractal) {
+      this.fractal.algorithm = {...this.fractal.algorithm, ...fractal.algorithm}
+      this.fractal.color = {...this.fractal.color, ...fractal.color}
+      this.fractal.view = {...this.fractal.view, ...fractal.view}
+    }
+    return this;
   }
 
   animate(start: number, stop: number, frames: number=0, {
@@ -82,25 +75,19 @@ class Disconnected extends Abstract implements FractalCommands {
       frames = stop - start;
     }
     return (param: (n: number) => Params) => {
-      const zipper = new Zipper();
-      let i = 0;
       return animator(start, stop, frames, incl)((n: number) => {
         this.updateParams(param(n));
         this.redraw();
-        const name = 'img' + String(i++).padStart(4, '0')
         this.drawer.toBlob(blob => {
           if (blob) {
-            zipper.addFile(name + '.png', blob)
+            this.zipper.addFile(blob)
           }
         });
-      }, ms).then(() => {
-        return zipper;
-      });
+      }, ms);
     }
   }
 
   download(filename: string) {
-    this.redraw();
     this.drawer.toURL(url => {
       const a = document.createElement('a');
       a.href = url;
@@ -120,14 +107,6 @@ class Disconnected extends Abstract implements FractalCommands {
       const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())).toString(16)
       reduxStore.dispatch(addToGallery(url, stateToJson(this.getFractal()), title));
     })
-  }
-
-  loadJson(data: JsonState) {
-    const fractal = jsonToState(data);
-    if (fractal) {
-      this.fractal = Disconnected.parseState(fractal)
-    }
-    return this;
   }
 
   getFractal(): Omit<FractalState,'drawState'> {

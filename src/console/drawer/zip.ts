@@ -2,12 +2,16 @@ import JSZip from 'jszip';
 
 class Zipper {
   zip: JSZip
+  count: number
 
   constructor() {
     this.zip = new JSZip();
+    this.count = 0
+    
   }
 
-  addFile(name: string, data: Blob) {
+  addFile(data: Blob) {
+    const name = 'img' + String(this.count++).padStart(4, '0') + '.png'
     this.zip.file(name, data);
   }
 

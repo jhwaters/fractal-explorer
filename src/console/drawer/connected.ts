@@ -24,6 +24,11 @@ class Connected extends Abstract implements FractalCommands {
     return new Connected(reduxStore, autodraw);
   }
 
+  loadJson(data: JsonState) {
+    this.dispatch(reduxAction.uploadJson(data))
+    return this;
+  }
+
   animate(start: number, stop: number, frames: number=0, {
     incl=true,
     ms=0,
@@ -39,15 +44,8 @@ class Connected extends Abstract implements FractalCommands {
       this.autodraw = true;
       return animator(start, stop, frames, incl)((n: number) => {
         this.updateParams(param(n))
-      }, ms).then(() => {
-        this.autodraw = autodraw;
-      });
+      }, ms).then(() => { this.autodraw = autodraw });
     }
-  }
-
-  loadJson(data: JsonState) {
-    this.dispatch(reduxAction.uploadJson(data))
-    return this;
   }
 
   dispatch(action: Action) {

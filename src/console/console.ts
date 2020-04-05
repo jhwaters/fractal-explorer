@@ -2,6 +2,7 @@ import {
   Connected,
   Disconnected,
 } from './drawer';
+import { magic } from './magic';
 import FractalDrawer from '../fractals/FractalDrawer';
 
 
@@ -19,4 +20,6 @@ export default {
   set logDrawTime(x: boolean) {
     FractalDrawer.logDrawTime = x;
   },
+
+  magic,
 }

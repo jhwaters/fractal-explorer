@@ -13,10 +13,10 @@ function* rangeGen(start: number, stop: number, frames: number, inclusive: boole
 }
 
 
-function promiseGenerator<T>(gen: Generator<T>, f: (x: T) => void, ms: number) {
+export function promiseGenerator<T>(gen: Generator<T>, f: (x: T) => void, ms: number) {
   const x = gen.next();
   if (x.done) {
-    return new Promise(resolve => resolve(x))
+    return new Promise(resolve => { resolve(x) })
   } else {
     f(x.value)
     return new Promise(resolve => {
@@ -24,8 +24,6 @@ function promiseGenerator<T>(gen: Generator<T>, f: (x: T) => void, ms: number) {
     })
   }
 }
-
-
 
 export function animator(start: number, stop: number, frames: number=10, inclusive: boolean=true) {
   return (f: (n: number) => void, ms: number=0) => {
