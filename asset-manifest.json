@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/fractal-explorer/static/css/main.dbee9ce2.chunk.css",
-    "main.js": "/fractal-explorer/static/js/main.f3260a9a.chunk.js",
-    "main.js.map": "/fractal-explorer/static/js/main.f3260a9a.chunk.js.map",
+    "main.js": "/fractal-explorer/static/js/main.7916b92e.chunk.js",
+    "main.js.map": "/fractal-explorer/static/js/main.7916b92e.chunk.js.map",
     "runtime-main.js": "/fractal-explorer/static/js/runtime-main.98a64640.js",
     "runtime-main.js.map": "/fractal-explorer/static/js/runtime-main.98a64640.js.map",
     "static/css/2.de167b80.chunk.css": "/fractal-explorer/static/css/2.de167b80.chunk.css",
-    "static/js/2.47dbe0cb.chunk.js": "/fractal-explorer/static/js/2.47dbe0cb.chunk.js",
-    "static/js/2.47dbe0cb.chunk.js.map": "/fractal-explorer/static/js/2.47dbe0cb.chunk.js.map",
+    "static/js/2.fc4ab1a5.chunk.js": "/fractal-explorer/static/js/2.fc4ab1a5.chunk.js",
+    "static/js/2.fc4ab1a5.chunk.js.map": "/fractal-explorer/static/js/2.fc4ab1a5.chunk.js.map",
     "index.html": "/fractal-explorer/index.html",
-    "precache-manifest.a921bd2fa92eb04d925b9e73fc5934ec.js": "/fractal-explorer/precache-manifest.a921bd2fa92eb04d925b9e73fc5934ec.js",
+    "precache-manifest.511769cac61542fec536763df89387c5.js": "/fractal-explorer/precache-manifest.511769cac61542fec536763df89387c5.js",
     "service-worker.js": "/fractal-explorer/service-worker.js",
     "static/css/2.de167b80.chunk.css.map": "/fractal-explorer/static/css/2.de167b80.chunk.css.map",
     "static/css/main.dbee9ce2.chunk.css.map": "/fractal-explorer/static/css/main.dbee9ce2.chunk.css.map",
-    "static/js/2.47dbe0cb.chunk.js.LICENSE.txt": "/fractal-explorer/static/js/2.47dbe0cb.chunk.js.LICENSE.txt",
+    "static/js/2.fc4ab1a5.chunk.js.LICENSE.txt": "/fractal-explorer/static/js/2.fc4ab1a5.chunk.js.LICENSE.txt",
     "static/media/katex.css": "/fractal-explorer/static/media/KaTeX_Typewriter-Regular.6cc31ea5.woff2"
   },
   "entrypoints": [
     "static/js/runtime-main.98a64640.js",
     "static/css/2.de167b80.chunk.css",
-    "static/js/2.47dbe0cb.chunk.js",
+    "static/js/2.fc4ab1a5.chunk.js",
     "static/css/main.dbee9ce2.chunk.css",
-    "static/js/main.f3260a9a.chunk.js"
+    "static/js/main.7916b92e.chunk.js"
   ]
 }
