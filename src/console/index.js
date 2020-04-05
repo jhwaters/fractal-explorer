@@ -1,3 +1,3 @@
-import fractal from './fractal';
+import fractalex from './console';
 
-window.fractal = fractal;
+window.fractalex = fractalex;
