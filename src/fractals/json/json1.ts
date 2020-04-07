@@ -59,6 +59,7 @@ export function jsonToState1(data: V1): AppState | undefined {
         scheme: scheme ? scheme : COLORSCHEMES.Rainbow,
         skew: data.col.sk,
         reverse: data.col.rv,
+        count: 'iter',
       },
       view: {
         cx: data.view.cx,

@@ -10,6 +10,7 @@ import {
   Option,
   OptionLabel,
   CustomColor,
+  NumberInput,
 } from '../../components';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -26,6 +27,7 @@ interface Colors {
   schemeName: string
   reverse: boolean
   skew: number
+  count: 'iter' | number
 }
 
 
@@ -42,18 +44,26 @@ type Evt = React.ChangeEvent<HTMLInputElement>
 
 class ColorSettings extends React.Component<Props> {
   state: {
-    current: Colors
+    schemeName: string
+    reverse: boolean
+    skew: number
+    count: 'iter' | number
+
     customPopup: boolean
+    showCount: boolean
+    countInput: number
   }
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      current: {
-        schemeName: props.current.schemeName,
-        reverse: props.current.reverse,
-        skew: props.current.skew,
-      },
+      schemeName: props.current.schemeName,
+      reverse: props.current.reverse,
+      skew: props.current.skew,
+      count: props.current.count,
+
+      showCount: props.current.count !== 'iter',
+      countInput: props.current.count === 'iter' ? 10 : props.current.count,
       customPopup: false,
     }
   }
@@ -61,18 +71,37 @@ class ColorSettings extends React.Component<Props> {
   openCustomPopup = () => this.setState({customPopup: true})
   closeCustomPopup = () => this.setState({customPopup: false})
 
-  setCurrent(x: Partial<Colors>) {
-    this.setState({...this.state, current: {...this.state.current, ...x}});
-  }
 
   setScheme(schemeName: string) {
-    this.setCurrent({schemeName});
+    this.setState({schemeName});
   }
 
-  changeReverse = (evt: Evt) => this.setCurrent({reverse: evt.target.checked});
+  changeReverse = (evt: Evt) => this.setState({reverse: evt.target.checked});
   changeSkew = (evt: any, skew: number | number[]) => {
-    if (typeof skew === 'number') this.setCurrent({skew});
+    if (typeof skew === 'number') this.setState({skew});
     else console.log(skew);
+  }
+  checkCount = (evt: Evt) => {
+    if (evt.target.checked) {
+      this.setState({
+        showCount: false,
+        count: 'iter',
+      })
+    } else {
+      this.setState({
+        showCount: true,
+        count: this.state.countInput,
+      })
+    }
+  }
+
+  changeCount = (evt: Evt) => {
+    if (this.state.showCount) {
+      const count = +evt.target.value;
+      this.setState({count, countInput: count});
+    } else {
+      this.setState({countInput: +evt.target.value});
+    }
   }
 
   selectScheme = (evt: any) => {
@@ -85,9 +114,10 @@ class ColorSettings extends React.Component<Props> {
   }
 
   hasChanged = () => {
-    if (this.state.current.schemeName !== this.props.current.schemeName
-      || this.state.current.reverse !== this.props.current.reverse
-      || this.state.current.skew !== this.props.current.skew) {
+    if (this.state.schemeName !== this.props.current.schemeName
+      || this.state.reverse !== this.props.current.reverse
+      || this.state.skew !== this.props.current.skew
+      || this.state.count !== this.props.current.count) {
       return true;
     }
     return false;
@@ -100,10 +130,11 @@ class ColorSettings extends React.Component<Props> {
 
   apply = () => {
     this.props.updateColor({
-      schemeName: this.state.current.schemeName,
-      scheme: this.props.schemeList[this.state.current.schemeName],
-      reverse: this.state.current.reverse,
-      skew: this.state.current.skew,
+      schemeName: this.state.schemeName,
+      scheme: this.props.schemeList[this.state.schemeName],
+      reverse: this.state.reverse,
+      skew: this.state.skew,
+      count: this.state.count,
     });
     if (this.props.onClose) {
       this.props.onClose()
@@ -115,6 +146,7 @@ class ColorSettings extends React.Component<Props> {
       schemeName: this.props.current.schemeName,
       reverse: this.props.current.reverse,
       skew: this.props.current.skew,
+      count: this.props.current.count,
     })
   }
 
@@ -126,7 +158,7 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <Select select
                 label="Scheme"
-                value={this.state.current.schemeName}
+                value={this.state.schemeName}
                 onChange={this.selectScheme}
               >
                 <Option value="CUSTOM">
@@ -143,7 +175,7 @@ class ColorSettings extends React.Component<Props> {
               <FormControlLabel
                 label="Reversed"
                 control={
-                  <Switch checked={this.state.current.reverse}
+                  <Switch checked={this.state.reverse}
                     onChange={this.changeReverse}
                     edge="end"
                   />
@@ -152,11 +184,34 @@ class ColorSettings extends React.Component<Props> {
             </Box>
 
             <Box m={2}>
+              <FormControlLabel
+                label="Match Iterations"
+                control={
+                  <Switch checked={!this.state.showCount}
+                    onChange={this.checkCount}
+                    edge="end"
+                  />
+                }
+              />
+            </Box>
+
+            <Box m={2} style={this.state.showCount ? {} : {display: 'none'}}>
+              <NumberInput
+                label="Count"
+                value={this.state.countInput}
+                onChange={this.changeCount}
+                min={2}
+                step={1}
+                emptyValue={2}
+              />
+            </Box>
+
+            <Box m={2}>
               <FormControl fullWidth>
                 <InputLabel shrink>Skew</InputLabel>
                 <Slider
                   color="secondary"
-                  value={this.state.current.skew}
+                  value={this.state.skew}
                   onChange={this.changeSkew}
                   min={-5}
                   max={5}
@@ -168,9 +223,9 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
-                scheme={this.props.schemeList[this.state.current.schemeName]}
-                reverse={this.state.current.reverse}
-                skew={this.state.current.skew}
+                scheme={this.props.schemeList[this.state.schemeName]}
+                reverse={this.state.reverse}
+                skew={this.state.skew}
                 width={100}
                 height={10}
               />
@@ -179,7 +234,7 @@ class ColorSettings extends React.Component<Props> {
             <Box m={1}>
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
-                scheme={this.props.schemeList[this.state.current.schemeName]}
+                scheme={this.props.schemeList[this.state.schemeName]}
                 reverse={this.props.current.reverse}
                 skew={this.props.current.skew}
                 width={100}

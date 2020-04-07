@@ -11,7 +11,7 @@ export const OPTS = ({
 });
 
 interface Fractal extends Pick<FractalState,'algorithm'|'color'> {
-  view: FractalViewState
+  view: FractalViewState | ViewState
 }
 
 
@@ -28,7 +28,7 @@ function drawImage(fractal: Fractal): ImageData | undefined {
     } else {
       view = fixView(fractal.view);
     }
-    const colors = colorMap(fractal.color)(range);
+    const colors = colorMap(fractal.color)(fractal.color.count === 'iter' ? range : [0, fractal.color.count-1]);
     return makeImage({
       pixel,
       colors,

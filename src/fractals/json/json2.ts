@@ -52,6 +52,7 @@ export function jsonToState2(data: V2): Partial<AppState> | undefined {
       scheme: scheme && scheme.length ? scheme : COLORSCHEMES.Rainbow,
       skew: data.col[1],
       reverse: data.col[2] ? true : false,
+      count: 'iter',
     };
   }
   if (data.view) {
@@ -61,6 +62,7 @@ export function jsonToState2(data: V2): Partial<AppState> | undefined {
       w: data.view[2],
       h: data.view[3],
       ppu: data.view[4],
+      t: [1,0,0,-1],
     };
   }
   return result;

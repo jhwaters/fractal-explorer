@@ -11,6 +11,7 @@ const initialState: ColorState = {
   scheme: COLORSCHEMES[colorSchemeName],
   reverse: false,
   skew: 0,
+  count: 'iter',
 }
 
 export default function(state: ColorState=initialState, action: ColorAction) {

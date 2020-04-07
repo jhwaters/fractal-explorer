@@ -1,4 +1,3 @@
-import { ViewState } from '../../store/fractal/view/types';
 
 export type ColorRGBA = [number,number,number,number] & Uint8ClampedArray; // [r, g, b, a], 0-255
 
@@ -42,7 +41,7 @@ export function isViewRect(v: View): v is ViewRect {
   return 'xdom' in v;
 }
 
-export type FractalViewState = ViewState | (View & WithTransform)
+export type FractalViewState = View & WithTransform
 
 
 export interface Fractal {
