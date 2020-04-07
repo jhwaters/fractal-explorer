@@ -2,7 +2,7 @@ import FractalDrawer from './FractalDrawer';
 import { ALLFRACTALS } from './algorithm';
 import { Algorithm } from './types';
 import { colorScale, COLORSCHEMES } from './color';
-import drawImage from './drawer/image';
+import drawImage from './drawer/drawer';
 
 
 function fractal<T>({method, params}: Algorithm<T>) {
