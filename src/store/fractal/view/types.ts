@@ -5,6 +5,7 @@ export interface ViewState {
   h: number
   ppu: number // units per pixel
   pixelCount: number
+  t?: [number,number,number,number] // transform matrix [a, b, c, d]
 }
 
 export const UPDATE_VIEW = 'VIEW_UPDATE';

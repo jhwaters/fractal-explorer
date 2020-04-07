@@ -18,21 +18,33 @@ function colorScale(color: Color): (domain: [number,number]) => (n: number) => s
   }
 }
 
-function colorMap(color: Color): (domain: [number,number]) => {[k: number]: string} {
+type ColorRGBA = [number, number, number, number] & Uint8ClampedArray
+
+function colorMap(color: Color): (domain: [number,number]) => ColorRGBA[] {
   // discrete version
   const cs = colorScale(color);
+  const ctx = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
   return (domain: [number, number]) => {
-    const scale = cs(domain);
     if (domain[0] === 0) {
-      const result: string[] = [];
-      for (let i = domain[0]; i <= domain[1]; i++) {
-        result.push(scale(i))
+      const scale = cs(domain);
+      const result: ColorRGBA[] = [];
+      for (let i = 0; i <= domain[1]; i++) {
+        ctx.fillStyle = scale(i);
+        ctx.fillRect(0,0,1,1);
+        const rgba = ctx.getImageData(0,0,1,1).data as ColorRGBA;
+        result.push(rgba)
       }
       return result;
     } else {
-      const result: {[k: number]: string} = {};
-      for (let i = domain[0]; i <= domain[1]; i++) {
-        result[i] = scale(i);
+      const d0 = domain[0]
+      const dd = domain[1] - d0;
+      const scale = cs([0, dd]);
+      const result: ColorRGBA[] = [];
+      for (let i = 0; i <= dd; i++) {
+        ctx.fillStyle = scale(i % (dd+1));
+        ctx.fillRect(0,0,1,1);
+        const rgba = ctx.getImageData(0,0,1,1).data as ColorRGBA;
+        result.push(rgba);
       }
       return result;
     }

@@ -9,7 +9,8 @@ import Box from '@material-ui/core/Box';
 import { withStyles } from '@material-ui/core/styles';
 import ControlPanel from '../Controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
-import FractalDrawer, { linearScale, scaleDown, DrawerView } from '../../fractals/FractalDrawer';
+import { linearScale, scaleFactor } from '../../fractals/drawer/view';
+import createImageData from '../../fractals/drawer/drawer';
 import { stateToJson, JsonState } from '../../fractals/json';
 import { Icon, NumberInput } from '../../components';
 import { captureSize } from '../../defaults';
@@ -48,8 +49,6 @@ class Capture extends React.Component<Props> {
     h: number,
   }
   cropPixels: Area
-  drawer: FractalDrawer
-  data: JsonState
   shouldRedraw: boolean
 
   constructor(props: Props) {
@@ -61,9 +60,6 @@ class Capture extends React.Component<Props> {
       image: null,
     }
     this.cropPixels = {x: 0, y: 0, width: captureSize.w, height: captureSize.h}
-    this.drawer = new FractalDrawer();
-    this.drawer.fullResolution = true;
-    this.data = stateToJson(props.fractal);
     this.shouldRedraw = false;
   }
 
@@ -114,54 +110,59 @@ class Capture extends React.Component<Props> {
     }
   }
 
-  determineView(): DrawerView {
-    const {cx, cy, w, h, ppu} = {...this.props.fractal.view, ...scaleDown(this.props.fractal.view)};
+  determineView() {
+    let {cx, cy, w, h, ppu, pixelCount, t} = this.props.fractal.view;
+    const f = scaleFactor(w, h, pixelCount)
     const rx = w / ppu / 2;
     const ry = h / ppu / 2;
-    const xscale = linearScale([0, w], [cx - rx, cx + rx]);
-    const yscale = linearScale([h, 0], [cy - ry, cy + ry]);
+    const xscale = linearScale([0, f*w], [cx - rx, cx + rx]);
+    const yscale = linearScale([0, f*h], [cy - ry, cy + ry]);
 
     const {x, y, width, height} = this.cropPixels;
 
     return {
-      x: [xscale(x), xscale(x+width)] as [number,number],
-      y: [yscale(y), yscale(y+height)] as [number,number],
+      xdom: [xscale(x), xscale(x+width)] as [number,number],
+      ydom: [yscale(y), yscale(y+height)] as [number,number],
       w: this.state.w,
       h: this.state.h,
+      t
     }
   }
 
-  setData(view: any) {
+  getData(view: any) {
     const newview = {
-      cx: (view.x[0] + view.x[1]) / 2,
-      cy: (view.y[0] + view.y[1]) / 2,
-      w: view.w,
-      h: view.h,
-      ppu: Math.round(view.w / (view.x[1] - view.x[0]))
+      cx: (view.xdom[0] + view.xdom[1]) / 2,
+      cy: (view.ydom[0] + view.ydom[1]) / 2,
+      ppu: Math.round(view.w / (view.xdom[1] - view.xdom[0])),
     };
 
-    this.data = stateToJson({
+    return stateToJson({
       ...this.props.fractal,
       view: {...this.props.fractal.view, ...newview},
     })
   }
 
-
-  saveImage() {
-    this.drawer.toURL(url => {
-      const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16)
-      this.props.addToGallery(url, this.data, title);
-    })
-  }
-
   capture = () => {
+    const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())/1000).toString(16);
     const view = this.determineView();
-    this.drawer.draw({
+    const data = this.getData(view)
+    const image = createImageData({
       ...this.props.fractal,
       view,
     })
-    this.setData(view);
-    this.saveImage();
+    if (image) {
+      const cvs = document.createElement('canvas')
+      const ctx = cvs.getContext('2d')!
+      cvs.width = image.width;
+      cvs.height = image.height;
+      ctx.putImageData(image, 0, 0);
+      cvs.toBlob(blob => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          this.props.addToGallery(url, data, title)
+        }
+      })
+    }
     this.props.finishCapture();
   }
 

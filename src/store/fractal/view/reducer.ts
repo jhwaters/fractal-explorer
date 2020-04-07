@@ -14,6 +14,7 @@ const initialState: ViewState = {
   cy: 0,
   ppu: 256,
   pixelCount,
+  t: [1, 0, 0, -1],
 }
 
 export function recenterPPU({w, h}: {w: number, h: number}) {
@@ -25,7 +26,7 @@ export default function(state: ViewState={...initialState, ppu: recenterPPU(init
     case UPDATE_VIEW:
       return {...state, ...action.payload}
     case RECENTER:
-      return {...state, cx: 0, cy: 0, ppu: recenterPPU(state)}
+      return {...state, cx: 0, cy: 0, t: [1,0,0,-1], ppu: recenterPPU(state)} as ViewState
     case ZOOM_IN:
       return {...state, ppu: state.ppu * action.payload}
     case ZOOM_OUT:

@@ -4,9 +4,10 @@ import { State as AppState, Dispatch } from '../../store/types';
 import { FractalState, DrawState } from '../../store/fractal/types';
 import { setCenter, redraw, finish } from '../../store/actions';
 import { StretchMode, Nav } from '../../store/ui/types';
-import { FractalDrawer } from '../../fractals';
+import createImageData from '../../fractals/drawer/drawer';
 import Box from '@material-ui/core/Box';
 import styles from './Canvas.module.css';
+import { invert, apply } from '../../fractals/drawer/transform';
 
 
 type Props = {
@@ -18,13 +19,12 @@ type Props = {
 }
 
 class Canvas extends React.Component<Props> {
-  drawer: FractalDrawer
+  fullResolution: boolean
   canvasRef: React.RefObject<HTMLCanvasElement>
 
   constructor(props: Props) {
     super(props);
-    this.drawer = new FractalDrawer();
-    this.drawer.fullResolution = false;
+    this.fullResolution = false;
     this.canvasRef = React.createRef();
   }
 
@@ -33,9 +33,12 @@ class Canvas extends React.Component<Props> {
   }
 
   draw() {
-    this.drawer.draw(this.props.fractal);
-    this.drawer.putOnCanvas(this.canvas)
-    this.props.finishDrawing()
+    const image = createImageData(this.props.fractal);
+    if (image) {
+      this.canvas.width = image.width;
+      this.canvas.height = image.height;
+      this.canvas.getContext('2d')?.putImageData(image, 0, 0);
+    }
   }
 
   componentDidMount() {
@@ -57,7 +60,7 @@ class Canvas extends React.Component<Props> {
   centerOnClick = (evt: any) => {
     if (this.props.setCenter) {
       if (this.canvas) {
-        const {h, w, ppu, cx, cy} = this.props.fractal.view;
+        const {h, w, ppu, cx, cy, t} = this.props.fractal.view;
         let {width, height} = this.canvas.getBoundingClientRect();
         let {offsetX, offsetY} = evt.nativeEvent;
 
@@ -77,8 +80,14 @@ class Canvas extends React.Component<Props> {
 
         const pixel_x = Math.round((offsetX / width) * w);
         const pixel_y = Math.round((offsetY / height) * h);
-        const dx = (pixel_x - (w / 2)) / ppu;
-        const dy = (pixel_y - (h / 2)) / ppu;
+        let dx = (pixel_x - (w / 2)) / ppu;
+        let dy = (pixel_y - (h / 2)) / ppu;
+        if (t) {
+          const inv = invert(t);
+          if (inv) {
+            [dx, dy] = apply(inv, [dx, dy]);
+          }
+        }
         this.props.setCenter(cx + dx, cy - dy);
       }
     }
