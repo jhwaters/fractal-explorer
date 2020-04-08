@@ -4,6 +4,7 @@ import {
   complex,
   abs2,
   add,
+  mult,
   multReal,
   powN,
 } from './complex';
@@ -92,13 +93,16 @@ export function lookback(f: (z: Complex, zprev: Complex) => Complex, z0: Complex
 }
 
 
-export function phoenix(p=-0.5, k: number=2, c?: [number,number]) {
+export function phoenix(p: number | Complex=-0.5, k: number=2, c?: Complex) {
   const po = powN(k)
+  const multiplier =
+    typeof p === 'number'
+    ? (zz: Complex) => multReal(zz, p)
+    : (zz: Complex) => mult(zz, p);
   if (c) {
-    const cc = complex(c[0], c[1])
-    return (z: Complex, zp: Complex) => add(add(po(z), cc), multReal(zp, p));
+    return (z: Complex, zp: Complex) => add(add(po(z), c), multiplier(zp));
   } else {
-    return (z: Complex, zp: Complex) => add(po(z), multReal(zp, p));
+    return (z: Complex, zp: Complex) => add(po(z), multiplier(zp));
   }
   /*
   let zp = complex(0,0)
