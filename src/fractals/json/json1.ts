@@ -1,5 +1,5 @@
 import { ALLFRACTALS, COLORSCHEMES } from '../'
-import { Json, AppState } from '.';
+import { Json, AppState, AppUpdate } from '.';
 
 export interface V1 extends Json {
   v: '1',
@@ -44,32 +44,43 @@ export function stateToJson1(state: AppState): V1 {
   })
 }
 
-export function jsonToState1(data: V1): AppState | undefined {
-  const method = ALLFRACTALS[data.alg.m];
-  const scheme = COLORSCHEMES[data.col.sc];
-  if (method) {
-    return ({
-      algorithm: {
-        methodName: data.alg.m,
-        method: method,
-        params: data.alg.p,
-      },
-      color: {
-        schemeName: scheme ? data.col.sc : 'Rainbow',
-        scheme: scheme ? scheme : COLORSCHEMES.Rainbow,
-        skew: data.col.sk,
-        reverse: data.col.rv,
-        count: 'iter',
-      },
-      view: {
-        cx: data.view.cx,
-        cy: data.view.cy,
-        w: data.view.w,
-        h: data.view.h,
-        ppu: data.view.pp,
-      }
-    })
+export function jsonToState1(data: Partial<V1>): AppUpdate | undefined {
+  const {alg, col, view} = data;
+  if (!alg && !col && !view) {
+    return;
   }
+  const result: AppUpdate = {};
+  if (alg) {
+    const method = ALLFRACTALS[alg.m];
+    if (method) {
+      result.algorithm = {
+        methodName: alg.m,
+        method: method,
+        params: alg.p ? alg.p : method.newParams(),
+      }
+    }
+  }
+  if (col) {
+    const scheme = COLORSCHEMES[col.sc];
+    result.color = {
+      schemeName: scheme ? col.sc : 'Rainbow',
+      scheme: scheme ? scheme : COLORSCHEMES.Rainbow,
+      skew: col.sk,
+      reverse: col.rv,
+      count: 0,
+    }
+  }
+  if (view) {
+    result.view = {
+      cx: view.cx,
+      cy: view.cy,
+      w: view.w,
+      h: view.h,
+      ppu: view.pp,
+      t: [1,0,0,-1],
+    }
+  }
+  return result;
 }
 
 export function jsonToUrl1(data: V1): string {

@@ -52,7 +52,7 @@ export function jsonToState2(data: V2): Partial<AppState> | undefined {
       scheme: scheme && scheme.length ? scheme : COLORSCHEMES.Rainbow,
       skew: data.col[1],
       reverse: data.col[2] ? true : false,
-      count: 'iter',
+      count: 0,
     };
   }
   if (data.view) {
