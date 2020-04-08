@@ -23,6 +23,7 @@ import {
 } from './mandelbrot';
 import {
   Phoenix,
+  PhoenixJulia,
   PhoenixBurningShip,
 } from './phoenix';
 import {
@@ -36,6 +37,7 @@ export const ALLFRACTALS: {[k: string]: FractalInterface<any>} = ({
   Jl1: Julia,
   Jl2: Julia2Term,
   JlExp: JuliaExp,
+  JlPh: PhoenixJulia,
   JlSinh: JuliaSinh,
   Mg1: Magnet1,
   Mg2: Magnet2,
