@@ -61,19 +61,21 @@ interface P {
   m2: number
   m3: number
   k: number
-  p: number
+  p: [number, number]
   c: [number, number]
 }
 
 export const Test1 = mix.escape<P>({
   label: 'Test',
 
-  newParams: () => ({p: 0.5, k: 2, m1: 2, m2: 2, m3: 2, c: [0.001, 0]}),
+  newParams: () => ({p: [0.5,0], k: 2, m1: 2, m2: 2, m3: 2, c: [0.001, 0]}),
 
   f: ({p, k, m1, m2, m3, c}) => {
+    const pp = complex(p[0], p[1])
+    const cc = complex(c[0], c[1])
     const bs = burningship(k)
     const bx = mandelbox(m1, m2, m3)
-    const px = phoenix(p, 1, c)
+    const px = phoenix(pp, 1, cc)
     const f = (z: Complex, zp: Complex) => bx(px(bs(z), zp))
     return (_: Complex) => lookback(f)
   },
@@ -85,7 +87,7 @@ export const Test1 = mix.escape<P>({
   controls: [
     ctrl.complex('c'),
     ctrl.number('k', {step: 0.5}),
-    ctrl.number('p', {step: 0.5}),
+    ctrl.complex('p'),
     ctrl.number('m1', {step: 0.1}),
     ctrl.number('m2', {step: 0.5}),
     ctrl.number('m3', {step: 0.1}),
