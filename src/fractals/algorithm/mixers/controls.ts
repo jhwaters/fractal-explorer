@@ -21,7 +21,7 @@ export function number(param: string, {step=1, ...rest}: {
 }
 
 
-export function complex(param: string, {stepRadius=0.02, stepAngle=0.05, ...rest}: {
+export function complex(param: string, {stepRadius=0.02, stepAngle=Math.PI/60, ...rest}: {
   label?: string
   stepRadius?: number
   stepAngle?: number
