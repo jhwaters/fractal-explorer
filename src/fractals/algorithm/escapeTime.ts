@@ -2,8 +2,8 @@ import { Complex } from '../math/types';
 import { abs2 } from '../math/complex';
 
 
-export default function(bound: number, iterations: number) {
-  const b2 = bound * bound;
+export default function(bail: number, iterations: number) {
+  const b2 = bail * bail;
   return (
     f: (n: Complex) => Complex,
     z0: Complex = {re: 0, im: 0}, 

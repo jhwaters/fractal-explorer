@@ -75,8 +75,8 @@ const Julia = julia({
     JuliaControls.k,
     {
       type: ControlType.Number,
-      label: 'bound',
-      param: 'bd',
+      label: 'bail',
+      param: 'bail',
       step: 5,
       min: 0,
     }
@@ -147,8 +147,8 @@ const JuliaExp = julia<JuliaParams>({
     JuliaControls.k,
     {
       type: ControlType.Number,
-      label: 'bound',
-      param: 'bd',
+      label: 'bail',
+      param: 'bail',
       min: 0,
       step: 1,
     },
@@ -175,8 +175,8 @@ const JuliaSinh = julia<JuliaParams>({
     JuliaControls.k,
     {
       type: ControlType.Number,
-      label: 'bound',
-      param: 'bd',
+      label: 'bail',
+      param: 'bail',
       min: 0,
       step: 1,
     },

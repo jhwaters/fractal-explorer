@@ -23,7 +23,7 @@ function juliaCalc<T>(
 ) {
   return (p: T & EscapeParams) => {
     const func = f(p)
-    const esc = escapeTime(p.bd, p.iter)
+    const esc = escapeTime(p.bail, p.iter)
     return (x: number, y: number) => {
       return esc(func, complex(x, y))
     };
@@ -45,7 +45,7 @@ export default function julia<T>({f, label, latexF, ...props}: {
     describe: (params: T & EscapeParams) => describeEscapeFunction(
       latexF(params),
       'x+yi',
-      params.bd,
+      params.bail,
       params.iter,
     ),
     newParams: newParams(props.newParams),

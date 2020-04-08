@@ -69,7 +69,7 @@ const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
 
   z0: 0,
 
-  describe: ({box1, box2, box3, k, bd, iter}) => [
+  describe: ({box1, box2, box3, k, bail, iter}) => [
     'This follows the same algorithm as the Mandelbox fractal, but first applies the function ',
     {
       math: `z \\mapsto \\left(|Re(z)|-|Im(z)|\\right)^{${num(k)}} \\div ${num(box3)}`,
@@ -77,7 +77,7 @@ const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
     }
   ],
 
-  newParams: () => ({box1: 1, box2: 2, box3: 2.2, k: 2, bd: 50}),
+  newParams: () => ({box1: 1, box2: 2, box3: 2.2, k: 2, bail: 50}),
 
   controls: [
     {
@@ -87,7 +87,7 @@ const BurningShipMandelbox = mix.escape<BurningShipBoxParams>({
     },
     ...['box1', 'box2', 'box3'].map(p => ctrl.number(p, {step:0.1})),
     ctrl.number('k', {step: 0.1, min: 0}),
-    ctrl.number('bd', {step: 5, min: 0}),
+    ctrl.number('bail', {step: 5, min: 0}),
   ],
 });
 

@@ -87,8 +87,8 @@ export const Mandelbox = mix.escape({
 
   newParams: () => ({box1: 1, box2: 2, box3: 2.2}),
 
-  describe: ({box1, box2, box3, bd, iter}: MandelboxParams & EscapeParams) => {
-    return describeMandelbox(box1, box2, box3, bd, iter);
+  describe: ({box1, box2, box3, bail, iter}: MandelboxParams & EscapeParams) => {
+    return describeMandelbox(box1, box2, box3, bail, iter);
   },
 
   controls: [
@@ -96,7 +96,7 @@ export const Mandelbox = mix.escape({
     ...MandelboxControls,
     {
       type: ControlType.Number,
-      param: 'bd',
+      param: 'bail',
       label: 'bound',
       step: 10,
       min: 0,
@@ -129,7 +129,7 @@ export const Mandelcorner = mix.escape<MandelboxParams>({
     ...MandelboxControls,
     {
       type: ControlType.Number,
-      param: 'bd',
+      param: 'bail',
       label: 'bound',
       step: 1,
     }

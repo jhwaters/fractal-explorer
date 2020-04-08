@@ -13,12 +13,12 @@ import baseFractalInterface from './base';
 
 
 export interface EscapeParams extends Params {
-  bd: number
+  bail: number
   iter: number
 }
 
 const DefaultEscapeParams: EscapeParams ={
-  bd: 10,
+  bail: 10,
   iter: 20,
 }
 
@@ -34,7 +34,7 @@ function calculate<T>(
     return (p: T & EscapeParams) => {
       const func = f(p)
       return (x: number, y: number) => {
-        return escapeTime(p.bd, p.iter)(func(complex(x, y)))
+        return escapeTime(p.bail, p.iter)(func(complex(x, y)))
       };
     };
   }
@@ -42,7 +42,7 @@ function calculate<T>(
     return (p: T & EscapeParams) => {
       const func = f(p)
       return (x: number, y: number) => {
-        return escapeTime(p.bd, p.iter)(func(complex(x, y)), complex(x, y))
+        return escapeTime(p.bail, p.iter)(func(complex(x, y)), complex(x, y))
       };
     };
   }
@@ -50,7 +50,7 @@ function calculate<T>(
     const func = f(p)
     const zz = z0(p)
     return (x: number, y: number) => {
-      return escapeTime(p.bd, p.iter)(func(complex(x, y)), zz(complex(x, y)))
+      return escapeTime(p.bail, p.iter)(func(complex(x, y)), zz(complex(x, y)))
     };
   };
 }
@@ -62,7 +62,7 @@ function describe<T>(
   return (p: T & EscapeParams) => describeEscapeFunction(
     f(p),
     z0 === 0 ? '0' : z0 === 'c' ? 'x+yi' : z0(p),
-    p.bd,
+    p.bail,
     p.iter,
   );
 }
@@ -119,7 +119,7 @@ export default function escape<T>(props: EscapeProps<T>): FractalInterface<T & E
 export function describeEscapeFunction(
   f: string, 
   z0: string, 
-  bd: number, 
+  bail: number, 
   iter: number,
 ): StringOrMath[] {
 
@@ -136,7 +136,7 @@ export function describeEscapeFunction(
     "The color of the pixel located at ", {math: "(x, y)"},
     " corresponds to ", {math: "k"}, ", where ", {math: "z_k"},
     " is the first term of the above sequence such that ",
-    {math: `|z_k| > ${num(bd)}`},
+    {math: `|z_k| > ${num(bail)}`},
     ". If this does not occur in the first ", {math: num(iter)},
     " terms of the sequence, then ", {math: "k = " + num(iter)}, '.',
   ]
