@@ -9,61 +9,75 @@ import { burningship, phoenix, lookback } from '../math/fractals';
 
 
 interface PhoenixParams {
-  p: number
+  p: [number,number]
   k: number
-  c: [number,number]
 }
 
 const Phoenix = mix.escape<PhoenixParams>({
-  label: "Phoenix",
+  label: 'Phoenix',
 
-  newParams: () => ({p: -0.5, k: 2, c: [0.5667,0], iter: 40}),
+  newParams: () => ({p: [-0.5, 0], k: 2}),
 
-  f: ({p, k, c}: PhoenixParams) => {
-    return (_:Complex) => lookback(phoenix(p, k, c));
+  f: ({p, k}) => {
+    const pp = complex(p[0], p[1])
+    return (c: Complex) => lookback(phoenix(pp, k, c))
+  },
+
+  z0: 0,
+
+  latexZ0: 0,
+
+  latexF: ({p, k}) => `z_{n}^{${fmt.num(k)}}+x+yi${fmt.complex(p,{sign:true})}z_{n-1}`,
+
+  controls: [
+    mix.control.complex('p'),
+    mix.control.number('k', {step: 0.5}),
+  ]
+})
+
+
+interface PhoenixJuliaParams extends PhoenixParams {
+  c: [number,number]
+}
+
+const PhoenixJulia = mix.escape<PhoenixJuliaParams>({
+  label: "Julia: Phoenix",
+
+  newParams: () => ({p: [-0.5,0], k: 2, c: [0.5667,0], iter: 40}),
+
+  f: ({p, k, c}) => {
+    const pp = complex(p[0], p[1])
+    const cc = complex(c[0], c[1])
+    return (_:Complex) => lookback(phoenix(pp, k, cc));
   },
 
   z0: () => (c: Complex) => complex(c.im, c.re),
 
   latexZ0: () => 'y+xi',
 
-  latexF: ({p, k, c}: PhoenixParams) => {
-    return `z_{n}^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.num(p,{sign:true})}z_{n-1}`
+  latexF: ({p, k, c}) => {
+    return `z_{n}^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.complex(p,{sign:true})}z_{n-1}`
   },
 
   controls: [
-    {
-      type: ControlType.Complex,
-      param: 'c',
-      label: 'c',
-      stepRadius: 0.02,
-      stepAngle: 0.05,
-    },
-    {
-      type: ControlType.Number,
-      param: 'p',
-      label: 'p',
-      step: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'k',
-      label: 'k',
-      step: 0.5,
-    },
+    mix.control.complex('c'),
+    mix.control.complex('p'),
+    mix.control.number('k', {step: 0.5}),
   ]
 })
 
 
 
-const PhoenixBurningShip = mix.escape<PhoenixParams>({
+const PhoenixBurningShip = mix.escape<PhoenixJuliaParams>({
   label: "Phoenix/Burning Ship",
 
-  newParams: () => ({p: -0.5, k: 2, c: [0.6,0]}),
+  newParams: () => ({p: [-0.5,0], k: 2, c: [0.6,0]}),
 
-  f: ({p, k, c}: PhoenixParams) => {
+  f: ({p, k, c}: PhoenixJuliaParams) => {
+    const pp = complex(p[0], p[1])
+    const cc = complex(c[0], c[1])
     const bs = burningship(k)
-    const px = phoenix(p, 1, c);
+    const px = phoenix(pp, 1, cc);
     const f = (z: Complex, zp: Complex) => px(bs(z), zp)
     return (_: Complex) => lookback(f);
   },
@@ -72,35 +86,20 @@ const PhoenixBurningShip = mix.escape<PhoenixParams>({
 
   latexZ0: () => 'y+xi',
 
-  latexF: ({p, k, c}: PhoenixParams) => {
-    return `\\left(|Re(z_{n})|+|Im(z_{n})|\\right)^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.num(p,{sign:true})}z_{n-1}`
+  latexF: ({p, k, c}: PhoenixJuliaParams) => {
+    return `\\left(|Re(z_{n})|+|Im(z_{n})|\\right)^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.complex(p,{sign:true})}z_{n-1}`
   },
 
   controls: [
-    {
-      type: ControlType.Complex,
-      param: 'c',
-      label: 'c',
-      stepRadius: 0.02,
-      stepAngle: Math.PI / 60,
-    },
-    {
-      type: ControlType.Number,
-      param: 'p',
-      label: 'p',
-      step: 0.1,
-    },
-    {
-      type: ControlType.Number,
-      param: 'k',
-      label: 'k',
-      step: 0.5,
-    },
+    mix.control.complex('c'),
+    mix.control.complex('p'),
+    mix.control.number('k', {step: 0.5}),
   ]
 })
 
 
 export {
   Phoenix,
+  PhoenixJulia,
   PhoenixBurningShip,
 }
