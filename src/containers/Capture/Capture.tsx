@@ -134,15 +134,17 @@ class Capture extends React.Component<Props> {
   }
 
   getData(view: any) {
-    const newview = {
-      cx: (view.xdom[0] + view.xdom[1]) / 2,
-      cy: (view.ydom[0] + view.ydom[1]) / 2,
-      ppu: Math.round(view.w / (view.xdom[1] - view.xdom[0])),
-    };
-
+    const ppu = Math.round(view.w / (view.xdom[1] - view.xdom[0]))
     return stateToJson({
       ...this.props.fractal,
-      view: {...this.props.fractal.view, ...newview},
+      view: {
+        cx: view.cx,
+        cy: view.cy,
+        w: view.w,
+        h: view.h,
+        ppu: ppu,
+        t: view.t,
+      },
     })
   }
 
