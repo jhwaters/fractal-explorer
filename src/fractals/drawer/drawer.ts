@@ -28,7 +28,7 @@ function drawImage(fractal: Fractal): ImageData | undefined {
     } else {
       view = fixView(fractal.view);
     }
-    const colors = colorMap(fractal.color)(fractal.color.count === 'iter' ? range : [0, fractal.color.count-1]);
+    const colors = colorMap(fractal.color)(fractal.color.count ? [0, fractal.color.count] : range);
     return makeImage({
       pixel,
       colors,
