@@ -2,8 +2,6 @@ import {
   View,
   ViewRect,
   isViewRect,
-  Transform,
-  Vector,
 } from './types';
 
 export function linearScale(domain: [number, number], range: [number,number]) {
@@ -48,6 +46,7 @@ export function fixView(view: View, pixelCount?: number): ViewRect {
     const rx = w / 2 / ppu;
     const ry = h / 2 / ppu;
     return {
+      cx, cy,
       w, h,
       xdom: [cx-rx, cx+rx],
       ydom: [cy-ry, cy+ry],
