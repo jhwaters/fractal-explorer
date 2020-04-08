@@ -47,7 +47,7 @@ export const Exponential = mix.escape<ExpoParams>({
     },
     {
       type: ControlType.Number,
-      label: 'bound',
+      label: 'bail',
       param: 'bail',
       min: 0,
       step: 1,

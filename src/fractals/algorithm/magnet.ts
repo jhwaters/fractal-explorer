@@ -48,7 +48,7 @@ const Magnet1 = mix.escape({
     {
       type: ControlType.Number,
       param: 'bail',
-      label: 'bound',
+      label: 'bail',
       step: 5,
       min: 0,
     },
@@ -94,7 +94,7 @@ const Magnet2 = mix.escape({
     {
       type: ControlType.Number,
       param: 'bail',
-      label: 'bound',
+      label: 'bail',
       step: 5,
       min: 0,
     },
