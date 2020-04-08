@@ -33,7 +33,7 @@ export const rotateDeg = (deg: number): Transform => {
   const si = Math.sin(rad);
   return ({
     type: TRANSFORM,
-    payload: [co, -si, si, co],
+    payload: [co, si, -si, co],
   })
 };
 
