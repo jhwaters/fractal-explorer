@@ -13,8 +13,7 @@ interface V3_ extends Json {
   ap: {[k: string]: any}
   cp: NTuple<number,3>
   vc: NTuple<number,2>
-  vs: NTuple<number,2>
-  vz: number,
+  vs: NTuple<number,3>
   vt: NTuple<number,4>
 }
 
@@ -38,8 +37,7 @@ export function stateToJson3(state: AppState): V3 {
       cs: color.schemeName,
       cp: [color.count, color.reverse ? 1 : 0, color.skew],
       vc: [view.cx, view.cy],
-      vs: [view.w, view.h],
-      vz: view.ppu,
+      vs: [view.w, view.h, view.ppu],
       vt: view.t,
     }
   } else {
@@ -50,8 +48,7 @@ export function stateToJson3(state: AppState): V3 {
       cl: color.scheme as string[],
       cp: [color.count, color.reverse ? 1 : 0, color.skew],
       vc: [view.cx, view.cy],
-      vs: [view.w, view.h],
-      vz: view.ppu,
+      vs: [view.w, view.h, view.ppu],
       vt: view.t,
     }
   }
@@ -82,7 +79,7 @@ export function jsonToState3(data: Partial<V3>): AppUpdate {
       result.color.skew = data.cp[2];
     }
   }
-  if (data.vc || data.vs || data.vz || data.vt) {
+  if (data.vc || data.vs || data.vt) {
     result.view = {};
     if (data.vc) {
       result.view.cx = data.vc[0];
@@ -91,9 +88,7 @@ export function jsonToState3(data: Partial<V3>): AppUpdate {
     if (data.vs) {
       result.view.w = data.vs[0];
       result.view.h = data.vs[1];
-    }
-    if (data.vz) {
-      result.view.ppu = data.vz;
+      result.view.ppu = data.vs[2];
     }
     if (data.vt) {
       result.view.t = data.vt as [number,number,number,number];
@@ -105,7 +100,7 @@ export function jsonToState3(data: Partial<V3>): AppUpdate {
 
 
 export function fromNumArr(arr: number[]) {
-  return arr.join('_');
+  return arr.map(n => n.toString().replace('e+', 'e')).join('_');
 }
 
 export function toNumArr<L extends number>(str: string, len: L) {
@@ -133,9 +128,6 @@ export function jsonToUrl3(data: Partial<V3>): string {
   }
   if (data.vs) {
     u.append('vs', fromNumArr(data.vs));
-  }
-  if (data.vz) {
-    u.append('vz', data.vz.toString());
   }
   if (data.vt) {
     u.append('vt', fromNumArr(data.vt));
@@ -166,12 +158,9 @@ export function urlToJson3(u: URLSearchParams): X {
 
   const vs = u.get('vs');
   if (vs) {
-    const x = toNumArr(vs, 2);
+    const x = toNumArr(vs, 3);
     if (x) data.vs = x;
   }
-
-  const vz = u.get('vz');
-  if (vz) data.vz = +vz;
 
   const vt = u.get('vt');
   if (vt) {
