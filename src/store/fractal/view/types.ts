@@ -5,13 +5,14 @@ export interface ViewState {
   h: number
   ppu: number // units per pixel
   pixelCount: number
-  t?: [number,number,number,number] // transform matrix [a, b, c, d]
+  t: [number,number,number,number] // transform matrix [a, b, c, d]
 }
 
 export const UPDATE_VIEW = 'VIEW_UPDATE';
 export const ZOOM_IN = 'VIEW_ZOOM_IN';
 export const ZOOM_OUT = 'VIEW_ZOOM_OUT';
 export const RECENTER = 'VIEW_RECENTER';
+export const TRANSFORM = 'VIEW_TRANSFORM';
 
 export type UpdateView = {
   type: typeof UPDATE_VIEW,
@@ -20,6 +21,11 @@ export type UpdateView = {
 
 export type Recenter = {
   type: typeof RECENTER,
+}
+
+export type Transform = {
+  type: typeof TRANSFORM,
+  payload: [number, number, number, number]
 }
 
 export type ZoomIn = {
@@ -32,4 +38,4 @@ export type ZoomOut = {
   payload: number,
 }
 
-export type ViewAction = UpdateView | ZoomIn | ZoomOut | Recenter;
+export type ViewAction = UpdateView | ZoomIn | ZoomOut | Recenter | Transform;

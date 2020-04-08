@@ -7,10 +7,10 @@ import { transformed, invert } from './transform';
 
 
 export default function(fractal: Fractal): ImageData {
-  const {w, h, xdom, ydom} = fixView(fractal.view);
+  const {cx, cy, w, h, xdom, ydom} = fixView(fractal.view);
   const xscale = linearScale([0, w], xdom);
   const yscale = linearScale([0, h], ydom);
-  const calc = transformed(fractal.pixel, fractal.transform ? invert(fractal.transform) : undefined);
+  const calc = transformed(fractal.pixel, fractal.transform ? invert(fractal.transform) : undefined, cx, cy);
   const image = new ImageData(w, h);
   for (let r = 0; r < h; r++) {
     const y = yscale(r);

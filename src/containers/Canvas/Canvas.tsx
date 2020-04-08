@@ -88,7 +88,7 @@ class Canvas extends React.Component<Props> {
             [dx, dy] = apply(inv, [dx, dy]);
           }
         }
-        this.props.setCenter(cx + dx, cy - dy);
+        this.props.setCenter(cx + dx, cy + dy);
       }
     }
   }

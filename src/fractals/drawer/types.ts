@@ -16,13 +16,13 @@ export type Transform = [number, number, number, number];
  */
 
 interface VW {
+  cx: number // center x coordinate
+  cy: number // center y coordinate
   w: number // pixels
   h: number // pixels
 }
 
-export interface ViewCenter extends VW {
-  cx: number // center x coordinate
-  cy: number // center y coordinate
+export interface ViewPPU extends VW {
   ppu: number // pixels per unit
 }
 
@@ -31,7 +31,7 @@ export interface ViewRect extends VW {
   ydom: [number, number] // y domain
 }
 
-export type View = ViewCenter | ViewRect;
+export type View = ViewPPU | ViewRect;
 
 export interface WithTransform {
   t?: Transform

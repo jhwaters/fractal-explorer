@@ -119,10 +119,14 @@ class Capture extends React.Component<Props> {
     const yscale = linearScale([0, f*h], [cy - ry, cy + ry]);
 
     const {x, y, width, height} = this.cropPixels;
+    const xdom = [xscale(x), xscale(x+width)] as [number,number];
+    const ydom = [yscale(y), yscale(y+height)] as [number,number];
 
     return {
-      xdom: [xscale(x), xscale(x+width)] as [number,number],
-      ydom: [yscale(y), yscale(y+height)] as [number,number],
+      cx: (xdom[0] + xdom[1]) / 2,
+      cy: (ydom[0] + ydom[1]) / 2,
+      xdom,
+      ydom,
       w: this.state.w,
       h: this.state.h,
       t

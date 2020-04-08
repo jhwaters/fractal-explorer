@@ -10,6 +10,7 @@ export {
   zoomOut,
   redraw,
   recolor,
+  rotateDeg,
   capture,
   finish,
   uploadData,

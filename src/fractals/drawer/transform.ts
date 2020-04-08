@@ -35,12 +35,17 @@ export function multiply(t1: Transform, t2: Transform): Transform {
   ]
 }
 
-export function transformed(f: (x: number, y: number) => number, t?: Transform): (x: number, y: number) => number {
+export function transformed(
+  f: (x: number, y: number) => number, 
+  t: Transform | undefined, 
+  cx: number=0, 
+  cy: number=0,
+): (x: number, y: number) => number {
   if (t) {
     const [a, b, c, d] = t;
     return (x: number, y: number) => f(
-      x*a + y*c,
-      x*b + y*d,
+      (x-cx)*a + (y-cy)*c + cx,
+      (x-cx)*b + (y-cy)*d + cy,
     );
   }
   return f;

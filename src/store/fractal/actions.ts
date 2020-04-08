@@ -20,6 +20,7 @@ export {
 export {
   updateView,
   recenter,
+  rotateDeg,
   setCenter,
   zoomIn,
   zoomOut,

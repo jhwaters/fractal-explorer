@@ -3,10 +3,12 @@ import {
   ViewAction,
   UPDATE_VIEW,
   RECENTER,
+  TRANSFORM,
   ZOOM_IN,
   ZOOM_OUT,
 } from './types';
 import { pixelCount, canvasSize } from '../../../defaults';
+import { multiply } from '../../../fractals/drawer/transform';
 
 const initialState: ViewState = {
   ...canvasSize,
@@ -24,13 +26,15 @@ export function recenterPPU({w, h}: {w: number, h: number}) {
 export default function(state: ViewState={...initialState, ppu: recenterPPU(initialState)}, action: ViewAction) {
   switch(action.type) {
     case UPDATE_VIEW:
-      return {...state, ...action.payload}
+      return {...state, ...action.payload};
     case RECENTER:
       return {...state, cx: 0, cy: 0, t: [1,0,0,-1], ppu: recenterPPU(state)} as ViewState
+    case TRANSFORM:
+      return {...state, t: multiply(action.payload, state.t)};
     case ZOOM_IN:
-      return {...state, ppu: state.ppu * action.payload}
+      return {...state, ppu: state.ppu * action.payload};
     case ZOOM_OUT:
-      return {...state, ppu: Math.round(state.ppu / action.payload)}
+      return {...state, ppu: Math.round(state.ppu / action.payload)};
     default:
       return state;
   }

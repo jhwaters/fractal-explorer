@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { State } from '../../store/types'; 
 import { Nav } from '../../store/ui/types';
 import Zoom from './Zoom';
+import Rotator from './Rotator';
 import ParamControls from './ParamControls';
 import Iterator from './Iterator';
 import ControlPanel from './ControlPanel';
@@ -21,7 +22,8 @@ class Controls extends React.Component<Props> {
         </ControlPanel>
         <ControlPanel visible={this.props.nav === Nav.Explore}>
           <Iterator fontSize="large"/>
-          <Zoom factor={2} fontSize="large" label="Zoom"/>
+          <Zoom factor={2} fontSize="large"/>
+          <Rotator fontSize="large"/>
         </ControlPanel>
       </>
     )
