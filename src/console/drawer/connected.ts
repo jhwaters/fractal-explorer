@@ -8,7 +8,7 @@ import { JsonState } from '../../fractals/json';
 import { ALLFRACTALS } from '../../fractals'; 
 import { FractalCommands, Params } from './types'
 import Abstract from './abstract';
-import { animator } from './animation';
+import { promiseRangeGen } from './util';
 
 class Connected extends Abstract implements FractalCommands {
   protected store: typeof reduxStore
@@ -29,26 +29,27 @@ class Connected extends Abstract implements FractalCommands {
     return this;
   }
 
-  animate(start: number, stop: number, frames: number=0, {
-    incl=true,
-    ms=0,
-  }: {
-    incl?: boolean,
-    ms?: number,
+  animate([start, stop]: [number, number], {delay=0}: {
+    delay?: number
   }={}) {
-    if (frames === 0) {
-      frames = stop - start + 1;
-    }
-    return (param: (n: number) => Params) => {
+    return (f: (n: number) => {
+      params?: {[k: string]: any},
+      view?: Partial<ViewState>,
+      color?: Partial<ColorState>,
+    }) => {
       const autodraw = this.autodraw;
       this.autodraw = true;
-      return animator(start, stop, frames, incl)((n: number) => {
-        this.updateParams(param(n))
-      }, ms).then(() => {
+      promiseRangeGen(start, stop)((i: number) => {
+        const {params, view, color} = f(i);
+        if (params) this.updateParams(params);
+        if (view) this.updateView(view);
+        if (color) this.updateColor(color);
+        this.redraw();
+      }, delay).then(() => {
         this.autodraw = autodraw;
-        return this;
-      });
-    }
+        return;
+      })
+    };
   }
 
   dispatch(action: Action) {
@@ -111,13 +112,13 @@ class Connected extends Abstract implements FractalCommands {
 
   // Color
 
-  _updateColor(color: Partial<ColorState>) {
+  updateColor(color: Partial<ColorState>) {
     this.dispatch(reduxAction.updateColor(color));
   }
 
   // View
 
-  _updateView(view: Partial<ViewState>) {
+  updateView(view: Partial<ViewState>) {
     this.dispatch(reduxAction.updateView(view));
   }
 
@@ -132,6 +133,7 @@ class Connected extends Abstract implements FractalCommands {
   zoom(factor: number) {
     this.dispatch(reduxAction.zoomIn(factor));
   }
+
 }
 
 export default Connected

@@ -1,30 +1,22 @@
 import {
   Connected,
   Disconnected,
+  Animator,
 } from './drawer';
-import { magic } from './magic';
-import FractalDrawer from '../fractals/FractalDrawer';
-
+import { OPTS } from '../fractals/drawer/drawer';
 
 export default {
   controller: Connected.new(true),
 
   hidden: () => Disconnected.new(),
+
+  animator: (frames: number | [number, number]) => new Animator(frames),
   
   get logDrawTime() {
-    return FractalDrawer.logDrawTime;
+    return OPTS.logDrawTime;
   },
 
   set logDrawTime(x: boolean) {
-    FractalDrawer.logDrawTime = x;
-  },
-
-  magic: function(...args: any[]) {
-    if (args.length) {
-      if ('getParam' in args[0] && 'setParam' in args[0] && 'rotateParam' in args[0]) {
-        return magic(...args);
-      }
-    }
-    return magic(this.controller, ...args);
+    OPTS.logDrawTime = x;
   },
 }

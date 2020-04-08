@@ -7,9 +7,10 @@ import { ColorState } from '../../store/fractal/color/types';
 import { ViewState } from '../../store/fractal/view/types';
 import { ALLFRACTALS } from '../../fractals'; 
 import { FractalCommands, Params } from './types'
-import { FractalDrawer } from '../../fractals'
+import { drawImage } from '../../fractals'
 import Abstract from './abstract';
-import { animator } from './animation';
+import { rangeGen } from './util';
+import { download } from './download';
 import Zipper from './zip';
 
 interface Fractal extends Omit<FractalState,'drawState'|'view'> {
@@ -19,22 +20,41 @@ interface Fractal extends Omit<FractalState,'drawState'|'view'> {
     w: number
     h: number
     ppu: number
+    t: [number,number,number,number]
   }
 }
 
 class Disconnected extends Abstract implements FractalCommands {
   fractal: Fractal
-  drawer: FractalDrawer
   zipper: Zipper
 
   constructor(fractalState: Fractal) {
     super();
     this.fractal = fractalState;
-    this.drawer = new FractalDrawer();
     this.zipper = new Zipper();
   }
 
-  private static parseState(fractal: Fractal | FractalState) {
+  animate([start, stop]: [number, number]) {
+    const zip = this.zipper;
+    return (f: (n: number) => {
+      filename?: string,
+      params?: {[k: string]: any},
+      view?: Partial<ViewState>,
+      color?: Partial<ColorState>,
+    }) => new Promise(resolve => {
+      for (const i of rangeGen(start, stop)) {
+        const {filename='img' + String(i).padStart(4, '0') + '.png', params, view, color} = f(i);
+        if (params) this.updateParams(params);
+        if (view) this.updateView(view);
+        if (color) this.updateColor(color);
+        zip.file(filename, this.toBlob());
+        console.log('frame', i)
+      }
+      resolve(this);
+    })
+  }
+
+  private static parseState(fractal: Fractal) {
     return {
       algorithm: {...fractal.algorithm},
       color: {...fractal.color},
@@ -42,12 +62,52 @@ class Disconnected extends Abstract implements FractalCommands {
     }
   }
 
+  toBlob(): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const image = this.imageData();
+      if (image) {
+        const cvs = document.createElement('canvas')!
+        const ctx = cvs.getContext('2d')!
+        cvs.width = image.width;
+        cvs.height = image.height;
+        ctx.putImageData(image,0,0);
+        cvs.toBlob(blob => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject();
+          }
+        });
+      } else {
+        reject();
+      }
+    });
+  }
+
+  toURL(): Promise<string> {
+    return this.toBlob().then(blob => URL.createObjectURL(blob));
+  }
+
+  downloadImage(name: string='fractal.png') {
+    this.toURL().then(url => {
+      download(url, name);
+    })
+  }
+
+  download(name: string='fractal.zip') {
+    this.zipper.download(name);
+  }
+
+  clear() {
+    this.zipper = new Zipper();
+  }
+
   static fromState(fractal: Fractal | FractalState) {
     return new Disconnected(Disconnected.parseState(fractal));
   }
 
   static new() {
-    return new Disconnected(reduxStore.getState().fractal);
+    return Disconnected.fromState(reduxStore.getState().fractal);
   }
 
   json() {
@@ -56,10 +116,6 @@ class Disconnected extends Abstract implements FractalCommands {
 
   url() {
     return jsonToUrl(this.json())
-  }
-
-  clear() {
-    this.zipper = new Zipper();
   }
 
   loadJson(data: JsonState) {
@@ -72,49 +128,15 @@ class Disconnected extends Abstract implements FractalCommands {
     return this;
   }
 
-  animate(start: number, stop: number, frames: number=0, {
-    incl=true,
-    ms=0,
-  }: {
-    incl?: boolean,
-    ms?: number,
-  }={}) {
-    if (frames === 0) {
-      frames = stop - start;
-    }
-    return (param: (n: number) => Params) => {
-      return animator(start, stop, frames, incl)((n: number) => {
-        this.updateParams(param(n));
-        this.redraw();
-        this.drawer.toBlob(blob => {
-          if (blob) {
-            this.zipper.addFile(blob)
-          }
-        });
-      }, ms).then(() => this);
-    }
-  }
-
-  download(filename: string) {
-    this.drawer.toURL(url => {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.append(a);
-      a.click();
-      setTimeout(() => {
-        a.remove();
-        URL.revokeObjectURL(url);
-      }, 100);
-    })
-  }
-
   saveToGallery() {
-    this.redraw();
-    this.drawer.toURL(url => {
+    this.toURL().then(url => {
       const title = 'fract' + Math.floor((Date.now() - new Date(2020,0,25).getTime())).toString(16)
       reduxStore.dispatch(addToGallery(url, stateToJson(this.getFractal()), title));
     })
+  }
+
+  imageData(): ImageData | undefined {
+    return drawImage(this.getFractal())
   }
 
   getFractal(): Omit<FractalState,'drawState'> {
@@ -138,10 +160,6 @@ class Disconnected extends Abstract implements FractalCommands {
       ...this.fractal.view,
       pixelCount: this.fractal.view.w * this.fractal.view.h,
     }
-  }
-
-  redraw() {
-    this.drawer.draw(this.getFractal())
   }
 
   getMethod() {
@@ -177,7 +195,7 @@ class Disconnected extends Abstract implements FractalCommands {
 
   // Color
 
-  _updateColor(color: Partial<ColorState>) {
+  updateColor(color: Partial<ColorState>) {
     this.fractal.color = {...this.fractal.color, ...color};
   }
 
@@ -185,7 +203,7 @@ class Disconnected extends Abstract implements FractalCommands {
 
   // View
 
-  _updateView(view: Partial<ViewState>) {
+  updateView(view: Partial<ViewState>) {
     this.fractal.view = {...this.fractal.view, ...view};
   }
 

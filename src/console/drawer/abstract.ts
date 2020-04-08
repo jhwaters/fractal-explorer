@@ -3,51 +3,25 @@ import { JsonState } from '../../fractals/json';
 import { ColorState } from '../../store/fractal/color/types';
 import { ViewState } from '../../store/fractal/view/types';
 import { COLORSCHEMES } from '../../fractals';
+import { multiply } from '../../fractals/drawer/transform';
 
 abstract class Base implements FractalCommands {
   abstract updateParams(p: Params): void
   abstract setParam(k: string, v: any): void
   abstract getParams(): Params
-  abstract redraw(): void
   abstract setMethod(methodName: string): void
   abstract getMethod(): string
   abstract loadJson(data: JsonState): void
   abstract recenter(): void
   abstract zoom(factor: number): void
   abstract setCenter(x: number, y: number): void
-  abstract _updateColor(color: Partial<ColorState>): void
-  abstract _updateView(view: Partial<ViewState>): void
-  abstract animate(start: number, stop: number, frames?: number, opts?: {
-    incl?: boolean,
-    ms?: number,
-  }): (f: (n: number) => Params) => any
+  abstract getView(): ViewState
+  abstract updateColor(color: Partial<ColorState>): void
+  abstract updateView(view: Partial<ViewState>): void
 
-  rotateParam(k: string, {
-    frames=30, 
-    center=[0,0],
-    angle=Math.PI*2,
-    incl=true,
-    ms=0
-  }: {
-    frames?: number,
-    center?: [number,number],
-    angle?: number,
-    incl?: boolean,
-    ms?: number,
-  }={}) {
-    const [x0, y0]: [number, number] = this.getParam(k);
-    const [cx, cy] = center;
-    const dx = x0 - cx;
-    const dy = y0 - cy;
-    const a0 = Math.atan2(dy, dx);
-    const r0 = Math.sqrt(dx*dx + dy*dy);
-    function setAngle(rad: number) {
-      const a1 = a0 + rad;
-      const x1 = cx + r0 * Math.cos(a1);
-      const y1 = cy + r0 * Math.sin(a1);
-      return {[k]: [x1, y1]}
-    }
-    return this.animate(0, angle, frames, {incl, ms})(setAngle)
+  transform(t: [number,number,number,number]) {
+    const t0 = this.getView().t;
+    this.updateView({t: multiply(t0, t)})
   }
 
   getParam(k: string) {
@@ -57,7 +31,7 @@ abstract class Base implements FractalCommands {
   setColorScheme(schemeName: string, opts?: {skew?: number, reverse?: boolean}) {
     const scheme = COLORSCHEMES[schemeName];
     if (scheme) {
-      this._updateColor({
+      this.updateColor({
         scheme,
         schemeName,
         ...opts,

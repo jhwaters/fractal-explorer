@@ -5,9 +5,7 @@ import { ViewState } from '../../store/fractal/view/types';
 
 export type Params = {[k: string]: any}
 
-export interface FractalCommands {
-  redraw(): void
-  
+export interface FractalCommands {  
   loadJson(data: JsonState): void
 
   // Algorithm
@@ -19,10 +17,10 @@ export interface FractalCommands {
   setParam(k: string, v: any): void
   
   // Color
-  _updateColor(color: Partial<ColorState>): void
+  updateColor(color: Partial<ColorState>): void
 
   // View
-  _updateView(view: Partial<ViewState>): void
+  updateView(view: Partial<ViewState>): void
   recenter(): void
   setCenter(x: number, y: number): void
   zoom(factor: number): void
