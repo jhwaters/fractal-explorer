@@ -9,7 +9,7 @@ export interface ColorState {
   scheme: ColorScheme
   reverse: boolean
   skew: number
-  count: 'iter' | number
+  count: number
 }
 
 export type UpdateColor = {

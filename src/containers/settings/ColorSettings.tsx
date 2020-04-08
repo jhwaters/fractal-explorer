@@ -134,7 +134,7 @@ class ColorSettings extends React.Component<Props> {
       scheme: this.props.schemeList[this.state.schemeName],
       reverse: this.state.reverse,
       skew: this.state.skew,
-      count: this.state.count,
+      count: this.state.count === 'iter' ? 0 : this.state.count,
     });
     if (this.props.onClose) {
       this.props.onClose()
@@ -277,7 +277,10 @@ class ColorSettings extends React.Component<Props> {
 
 export default connect(
   (state: AppState) => ({
-    current: {...state.fractal.color},
+    current: {
+      ...state.fractal.color,
+      count: state.fractal.color.count === 0 ? 'iter' : state.fractal.color.count
+    } as Colors,
     schemeList: state.ui.colorSchemeList,
   }),
   (dispatch) => ({
