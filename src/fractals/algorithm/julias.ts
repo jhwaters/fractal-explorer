@@ -1,5 +1,5 @@
 import { Complex, ControlType, ControlProps } from './types';
-import julia from './mixers/julia';
+import {controls, julia} from './mixers';
 import {
   complex,
   add,
@@ -15,74 +15,11 @@ import { R as Math } from '../math';
 import * as fmt from '../formatting'
 
 
-function randomC() {
-  let angle = Math.PI -2 * Math.asin(Math.pow(Math.random(), 0.9));
-  if (Math.random() < 0.5) angle = 2*Math.PI-angle;
-  const radius = 0.3 + Math.sin(angle / 2) * 0.6 * (Math.random() * 0.4 + 0.8);
-  return [
-    Math.round(radius * Math.cos(angle) * 1000) / 1000,
-    Math.round(radius * Math.sin(angle) * 1000) / 1000,
-  ] as [number, number]
-}
-
 
 interface JuliaParams {
   k: number
   c: [number, number]
 }
-
-
-const JuliaControls: {[k: string]: ControlProps} = ({
-  k: {
-    type: ControlType.Number,
-    label: 'exponent (k)',
-    param: 'k',
-    step: 0.5,
-  },
-  c: {
-    type: ControlType.Complex,
-    label: 'c',
-    param: 'c',
-    stepRadius: 0.02,
-    stepAngle: 0.05,
-  },
-  randomC: {
-    type: ControlType.Call,
-    icon: 'Random',
-    //label: 'random',
-    onCall: () => ({c: randomC()}),
-  },
-})
-
-interface JQuad extends JuliaParams {}
-
-const Julia = julia({
-  label: {math: 'z^k+c'},
-
-  f: ({k,c}: JQuad) => {
-    const cc = complex(c[0], c[1])
-    const p = powN(k)
-    return (z: Complex) => add(p(z), cc);    
-  },
-
-  latexF: ({k,c}: JQuad) => `z^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}`,
-
-  newParams: () => ({k: 2, c: randomC()}),
-
-  controls: [
-    JuliaControls.randomC,
-    JuliaControls.c,
-    JuliaControls.k,
-    {
-      type: ControlType.Number,
-      label: 'bail',
-      param: 'bail',
-      step: 5,
-      min: 0,
-    }
-  ],
-
-});
 
 
 export type JPoly = {
@@ -93,16 +30,16 @@ export type JPoly = {
   c: [number,number],
 }
 
-const Julia2Term = julia({
+const Julia2Term = julia<JPoly>({
   label: {math: 'az^m+bz^n+c'},
 
-  f: ({a, b, c, m, n}: JPoly) => {
+  f: ({a, b, c, m, n}) => {
     const poly = polynomial({[m]: a, [n]: b});
     const cc = complex(c[0], c[1]);
     return (z: Complex) => add(poly(z), cc);
   },
 
-  latexF: ({a, b, c, m, n}: JPoly) => {
+  latexF: ({a, b, c, m, n}) => {
     return (
       `${fmt.num(a)}z^{${fmt.num(m)}}`
       + `${fmt.num(b,{sign:true})}z^{${fmt.num(n)}}`
@@ -117,13 +54,8 @@ const Julia2Term = julia({
   }),
 
   controls: [
-    ...['a', 'm', 'b', 'n'].map(p => ({
-      type: ControlType.Number,
-      param: p,
-      label: p,
-      step: p === 'a' || p === 'b' ? 1 : 0.1,
-    }) as ControlProps),
-    JuliaControls.c,
+    controls.complex('c'),
+    ...['a', 'm', 'b', 'n'].map(p => controls.number(p, {step: p === 'a' || p === 'b' ? 1 : 0.1})),
   ],
 })
 
@@ -142,16 +74,10 @@ const JuliaExp = julia<JuliaParams>({
   },
 
   controls: [
-    JuliaControls.randomC,
-    JuliaControls.c,
-    JuliaControls.k,
-    {
-      type: ControlType.Number,
-      label: 'bail',
-      param: 'bail',
-      min: 0,
-      step: 1,
-    },
+    controls.randomC('c'),
+    controls.complex('c'),
+    controls.number('k', {step: 0.5}),
+    controls.number('bail', {min: 0, step: 1}),
   ]
 })
 
@@ -170,16 +96,10 @@ const JuliaSinh = julia<JuliaParams>({
   },
 
   controls: [
-    JuliaControls.randomC,
-    JuliaControls.c,
-    JuliaControls.k,
-    {
-      type: ControlType.Number,
-      label: 'bail',
-      param: 'bail',
-      min: 0,
-      step: 1,
-    },
+    controls.randomC('c'),
+    controls.complex('c'),
+    controls.number('k', {step: 0.5}),
+    controls.number('bail', {min: 0, step: 1}),
   ]
 })
 
@@ -198,16 +118,17 @@ const JuliaBurningShip = julia<JuliaParams>({
   latexF: ({k,c}: JuliaParams) => `(|Re(z)|+|Im(z)|)^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}`,
 
   controls: [
-    JuliaControls.randomC,
-    JuliaControls.c,
-    JuliaControls.k,
+    controls.randomC('c'),
+    controls.complex('c'),
+    controls.number('k', {step: 0.5}),
   ]
 
 });
 
+JuliaBurningShip.label = 'Burning Ship Julia'
+
 
 export {
-  Julia,
   Julia2Term,
   JuliaBurningShip,
   JuliaExp,

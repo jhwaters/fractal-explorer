@@ -17,7 +17,7 @@ export interface EscapeParams extends Params {
   iter: number
 }
 
-const DefaultEscapeParams: EscapeParams ={
+export const DefaultEscapeParams: EscapeParams ={
   bail: 10,
   iter: 20,
 }

@@ -41,7 +41,7 @@ interface PhoenixJuliaParams extends PhoenixParams {
 }
 
 const PhoenixJulia = mix.escape<PhoenixJuliaParams>({
-  label: "Julia: Phoenix",
+  label: "Phoenix Julia",
 
   newParams: () => ({p: [-0.5,0], k: 2, c: [0.5667,0], iter: 40}),
 
@@ -68,8 +68,8 @@ const PhoenixJulia = mix.escape<PhoenixJuliaParams>({
 
 
 
-const PhoenixBurningShip = mix.escape<PhoenixJuliaParams>({
-  label: "Phoenix/Burning Ship",
+const PhoenixJuliaBurningShip = mix.escape<PhoenixJuliaParams>({
+  label: "Phoenix Julia/Burning Ship",
 
   newParams: () => ({p: [-0.5,0], k: 2, c: [0.6,0]}),
 
@@ -101,5 +101,5 @@ const PhoenixBurningShip = mix.escape<PhoenixJuliaParams>({
 export {
   Phoenix,
   PhoenixJulia,
-  PhoenixBurningShip,
+  PhoenixJuliaBurningShip,
 }

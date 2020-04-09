@@ -94,3 +94,25 @@ export const Test1 = mix.escape<P>({
 
   ]
 })
+
+
+/*
+const Accident = {
+  calc: ({c,iter,bail}) => {
+    const [cx,cy] = c;
+    const b2 = bail*bail;
+    return (x: number, y: number) => {
+      let i = 0;
+      let x2 = x*x, y2 = y*y;
+      while (x2+y2 < b2 && i < iter) {
+        y = 2 * x + y + cy;
+        x = x2 - y2 + cx;
+        x2 = x*x;
+        y2 = y*y;
+        i += 1;
+      }
+      return i;
+    }
+  }
+}
+*/
