@@ -21,11 +21,10 @@ function absabs(z: Complex) {
   return {re: Math.abs(z.re), im: Math.abs(z.im)};
 }
 
-const BurningShip = mix.escape({
+const BurningShip = mix.escape<BurningShipParams>({
   label: 'Burning Ship',
-  latexF: (p: BurningShipParams) => `\\left(|Re(z)|+|Im(z)|\\right)^{${num(p.k)}}+x-yi`,
-  f: (p: BurningShipParams) => {
-    const k = p.k;
+  latexF: ({k}) => `\\left(|Re(z)|+|Im(z)|\\right)^{${num(k)}}+x-yi`,
+  f: ({k}) => {
     if (isInt(k)) {
       return (c: Complex) => {
         const cc = {re: c.re, im: -c.im}
