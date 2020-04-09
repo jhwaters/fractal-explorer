@@ -29,9 +29,11 @@ import {
 import {
   Test1
 } from './testing';
+import { FastBurningShip } from './fast';
 
 export const ALLFRACTALS: {[k: string]: FractalInterface<any>} = ({
   Bs: BurningShip,
+  BsF: FastBurningShip,
   BsMbx: BurningShipMandelbox,
   JlBs: JuliaBurningShip,
   Jl1: Julia,
