@@ -1,16 +1,12 @@
-import { FractalInterface, Complex, ControlType, ControlProps } from './types';
+import { FractalInterface, ControlType, ControlProps } from './types';
 import { DefaultEscapeParams, describeEscapeFunction } from './mixers/escape';
 import * as mix from './mixers';
-import { add, complex } from '../math/complex';
 import { R as Math } from '../math';
-import { mandelbox, burningship } from '../math/fractals';
 import * as fmt from '../formatting';
-import * as ctrl from './mixers/controls';
 
 function randomParams() {
   return {box3: Math.round(Math.random() * 20)/10 + 2}
 }
-
 
 const mandelboxFlatex = (v: number) => (
   '\\left\\{\\begin{aligned}'
