@@ -21,9 +21,9 @@ class Controls extends React.Component<Props> {
           <ParamControls/>
         </ControlPanel>
         <ControlPanel visible={this.props.nav === Nav.Explore}>
-          <Iterator fontSize="large"/>
-          <Zoom factor={2} fontSize="large"/>
-          <Rotator fontSize="large"/>
+          <Iterator />
+          <Zoom factor={2} />
+          <Rotator />
         </ControlPanel>
       </>
     )
