@@ -123,7 +123,7 @@ class Animator {
     }
   }
 
-  apply(x: Connected | Disconnected, opts: {[k: string]: any}={}) {
+  apply = (x: Connected | Disconnected, opts: {[k: string]: any}={}) => {
     const {frames, ...rest} = opts
     const domain = frames ? (
       typeof frames === 'number' ? [frames, frames] :
