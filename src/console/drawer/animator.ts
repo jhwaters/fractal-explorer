@@ -1,47 +1,70 @@
-import {
-  scaleLinear,
-  scalePow,
-  scaleLog,
-} from 'd3';
 import Connected from './connected'
 import Disconnected from './disconnected';
+import createScale, { ScaleSpec, MappedSpec, Scale, PolarSpec } from './scales';
 
-/*
-export function scaleLinear(domain: [number, number], range: [number,number]) {
-  const m = (range[1] - range[0]) / (domain[1] - domain[0])
-  const b = range[0] - m*domain[0]
-  return (n: number) => m * n + b;
+
+type ParamType = number | [number,number] | [number,number,number,number]
+
+interface NoDomScale {
+  scale?: 'linear' | 'log' | 'pow' | 'zoom'
+  range: [number, number]
+  exponent?: number
+  base?: number
 }
 
-export function scalePow(domain: [number, number], range: [number, number], exponent: number) {
-
-}
-*/
-
-function scaleZoom(domain: [number, number], range: [number, number], exponent: number=1) {
-  const f = range[1] / range[0]
-  const r0 = range[0]
-  const s = scalePow().domain(domain).range([0,1]).exponent(exponent)
-  return (n: number) => r0 * Math.pow(f, s(n));
+interface NoDomMapped<T> extends NoDomScale {
+  map: (n: number) => T
 }
 
+type RangeOnly = [number, number]
 
-function scalePolar(
-  angle: (n: number) => number, 
-  radius: (n: number) => number
-): (n: number) => [number,number] {
-  return (n: number) => {
-    const r = radius(n);
-    const a = angle(n);
-    return [r*Math.cos(a), r*Math.sin(a)];
-  }
+interface MyPolar {
+  angle?: number | RangeOnly | NoDomScale | NoDomMapped<number>
+  radius?: number | RangeOnly | NoDomScale | NoDomMapped<number>
 }
 
+type MySpec<T> = RangeOnly | NoDomScale | NoDomMapped<T> | MyPolar
+
+function isRangeOnly<T>(spec: MySpec<T>): spec is RangeOnly {
+  return Array.isArray(spec);
+}
+
+function fixRangeOnly(spec: RangeOnly, domain: [number, number]): ScaleSpec {
+  return {scale: 'linear', domain, range: spec};
+}
+
+function addDomain(spec: NoDomScale, domain: [number, number]): ScaleSpec;
+function addDomain<T>(spec: NoDomMapped<T>, domain: [number, number]): MappedSpec<T>;
+function addDomain<T>(spec: NoDomScale | NoDomMapped<T>, domain: [number, number]) {
+  return {domain, ...spec};
+}
+
+function fixPolar(spec: MyPolar, domain: [number, number], init: [number, number]): PolarSpec {
+  const [x, y] = init;
+  return {
+    angle:
+      spec.angle === undefined ? Math.atan2(y, x) : 
+      typeof spec.angle === 'number' ? spec.angle :
+      isRangeOnly(spec.angle) ? fixRangeOnly(spec.angle, domain) :
+      addDomain(spec.angle, domain),
+    radius:
+      spec.radius === undefined ? Math.sqrt(x*x + y*y) : 
+      typeof spec.radius === 'number' ? spec.radius : 
+      isRangeOnly(spec.radius) ? fixRangeOnly(spec.radius, domain) :
+      addDomain(spec.radius, domain),
+  };
+}
+
+function isPolar<T>(spec: MySpec<T>): spec is MyPolar {
+  return !isRangeOnly(spec) && !('range' in spec);
+}
+
+type Target = Connected | Disconnected;
 
 class Animator {
   domain: [number, number]
-  params: {[k: string]: (n: number) => number | [number, number]}
-  view: {[k: string]: (n: number) => number}
+  params: {[k: string]: MySpec<ParamType>}
+  view: {[k: string]: MySpec<ParamType>}
 
   constructor(frames: number | [number, number]) {
     this.domain = typeof frames === 'number' ? [1, frames] : frames;
@@ -49,91 +72,75 @@ class Animator {
     this.view = {}
   }
 
-  scale(
-    type: 'linear' | 'pow' | 'log' | 'zoom',
-    range: [number,number],
-    opts: {
-      round?: 'floor' | 'ceil' | 'closest',
-      exponent?: number,
-      base?: number,
-      domain?: [number,number]
-    }={}
-  ): (n: number) => number {
-    if (opts.round) {
-      const rounder = 
-        opts.round === 'floor' ? Math.floor :
-        opts.round === 'ceil' ? Math.ceil :
-        Math.round;
-      const f = this.scale(type, range, {...opts, round: undefined})
-      return (n: number) => rounder(f(n));
-    }
-    const domain = opts.domain ? opts.domain : this.domain;
-    switch (type) {
-      case 'linear': return scaleLinear().domain(domain).range(range);
-      case 'log': 
-        if (opts.base) return scaleLog().domain(domain).range(range).base(opts.base);
-        return scaleLog().domain(domain).range(range);
-      case 'pow':
-        if (opts.exponent) return scalePow().domain(domain).range(range).exponent(opts.exponent);
-        return scalePow().domain(domain).range(range);
-      case 'zoom':
-        return scaleZoom(domain, range, opts.exponent);
-      default:
-        return scaleLinear().domain(domain).range(range);
-    }
-  }
-
-  scalePolar({angle, radius}: {angle: (n: number) => number, radius: (n: number) => number}) {
-    return scalePolar(angle, radius);
-  }
-
-  scaleLinear(range: [number, number]) {
-    return scaleLinear().domain(this.domain).range(range);
-  }
-
-  scalePow(range: [number, number], exponent: number=2) {
-    return scalePow().domain(this.domain).range(range).exponent(exponent);
-  }
-
-  scaleLog(range: [number, number], base=10) {
-    return scaleLog().domain(this.domain).range(range).base(base)
-  }
-
-  scaleZoom(range: [number, number], exponent=1) {
-    return scaleZoom(this.domain, range, exponent);
-  }
-
-  animate({params, view}: {
-    params?: {[k: string]: (n: number) => number | [number,number]},
-    view?: {[k: string]: (n: number) => number},
-  }) {
-    this.params = Object.assign(this.params, params)
-    this.view = Object.assign(this.view, view)
-    return this.apply;
-  }
-
-  f = () => {
-    return (n: number) => {
-      const params: {[k: string]: number | [number,number]} = {}
-      const view: {[k: string]: number} = {}
-      for (const k in this.params) {
-        params[k] = this.params[k](n)
+  makeScales(target: Target) {
+    const currentParams = target.getParams();
+    const currentView = target.getView() as {[k: string]: any};
+    const params: {[k: string]: Scale<ParamType>} = {}
+    const view: {[k: string]: Scale<ParamType>} = {}
+    
+    for (const [k, spec] of Object.entries(this.params)) {
+      if (isPolar(spec)) {
+        const init = currentParams[k];
+        if (Array.isArray(init) && typeof init[0] === 'number' && typeof init[1] == 'number') {
+          params[k] = createScale(fixPolar(spec, this.domain, init as [number,number]))
+        }
       }
-      for (const k in this.view) {
-        view[k] = this.view[k](n);
+      else if (isRangeOnly(spec)) {
+        params[k] = createScale(fixRangeOnly(spec, this.domain))
+      }
+      else {
+        params[k] = createScale(addDomain(spec, this.domain));
+      }
+    }
+    for (const [k, spec] of Object.entries(this.view)) {
+      if (isPolar(spec)) {
+        const init = currentView[k];
+        if (Array.isArray(init) && typeof init[0] === 'number' && typeof init[1] == 'number') {
+          view[k] = createScale(fixPolar(spec, this.domain, init as [number,number]))
+        }
+      }
+      else if (isRangeOnly(spec)) {
+        view[k] = createScale(fixRangeOnly(spec, this.domain))
+      }
+      else {
+        view[k] = createScale(addDomain(spec, this.domain));
+      }
+    }
+    return {params, view};
+  }
+
+  f = (target: Target) => {
+    const scales = this.makeScales(target);
+    return (i: number) => {
+      const params: {[k: string]: ParamType} = {};
+      const view: {[k: string]: ParamType} = {};
+      for (const [k, scale] of Object.entries(scales.params)) {
+        params[k] = scale(i);
+      }
+      for (const [k, scale] of Object.entries(scales.view)) {
+        view[k] = scale(i)
       }
       return {params, view};
     }
   }
+  
+  animate({params, view}: {
+    params?: {[k: string]: MySpec<ParamType>},
+    view?: {[k: string]: MySpec<ParamType>},
+  }) {
+    this.params = Object.assign(this.params, params)
+    this.view = Object.assign(this.view, view)
+    return this;
+  }
 
-  apply = (x: Connected | Disconnected, opts: {[k: string]: any}={}) => {
+  apply = (target: Target, opts: {[k: string]: any}={}) => {
     const {frames, ...rest} = opts
     const domain = frames ? (
       typeof frames === 'number' ? [frames, frames] :
       frames.length === 1 ? [frames[0], frames[0]] :
       frames
     ) : this.domain;
-    return x.animate(domain, rest)(this.f())
+    return target.animate(domain, rest)(this.f(target))
   }
 
 }

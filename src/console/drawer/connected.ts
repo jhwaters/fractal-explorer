@@ -39,7 +39,7 @@ class Connected extends Abstract implements FractalCommands {
     }) => {
       const autodraw = this.autodraw;
       this.autodraw = false;
-      promiseRangeGen(start, stop)((i: number) => {
+      return promiseRangeGen(start, stop)((i: number) => {
         const {params, view, color} = f(i);
         if (params) this.updateParams(params);
         if (view) this.updateView(view);
