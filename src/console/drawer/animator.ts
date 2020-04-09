@@ -106,6 +106,7 @@ class Animator {
   }) {
     this.params = Object.assign(this.params, params)
     this.view = Object.assign(this.view, view)
+    return this.apply;
   }
 
   f = () => {
