@@ -30,8 +30,8 @@ const Phoenix = mix.escape<PhoenixParams>({
   latexF: ({p, k}) => `z_{n}^{${fmt.num(k)}}+x+yi${fmt.complex(p,{sign:true})}z_{n-1}`,
 
   controls: [
-    mix.control.complex('p'),
-    mix.control.number('k', {step: 0.5}),
+    mix.controls.complex('p'),
+    mix.controls.number('k', {step: 0.5}),
   ]
 })
 
@@ -60,9 +60,9 @@ const PhoenixJulia = mix.escape<PhoenixJuliaParams>({
   },
 
   controls: [
-    mix.control.complex('c'),
-    mix.control.complex('p'),
-    mix.control.number('k', {step: 0.5}),
+    mix.controls.complex('c'),
+    mix.controls.complex('p'),
+    mix.controls.number('k', {step: 0.5}),
   ]
 })
 
@@ -91,9 +91,9 @@ const PhoenixBurningShip = mix.escape<PhoenixJuliaParams>({
   },
 
   controls: [
-    mix.control.complex('c'),
-    mix.control.complex('p'),
-    mix.control.number('k', {step: 0.5}),
+    mix.controls.complex('c'),
+    mix.controls.complex('p'),
+    mix.controls.number('k', {step: 0.5}),
   ]
 })
 
