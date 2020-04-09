@@ -104,22 +104,4 @@ export function phoenix(p: number | Complex=-0.5, k: number=2, c?: Complex) {
   } else {
     return (z: Complex, zp: Complex) => add(po(z), multiplier(zp));
   }
-  /*
-  let zp = complex(0,0)
-  const po = powN(k)
-  if (c) {
-    const cc = complex(c[0], c[1])
-    return (z: Complex, zprev=zp) => {
-      const z1 = add(add(po(z), cc), multReal(zprev, p))
-      zp = z;
-      return z1;
-    }
-  } else {
-    return (z: Complex, zprev=zp) => {
-      const z1 = add(po(z), multReal(zprev, p))
-      zp = z;
-      return z1;
-    }
-  }
-  */
 }

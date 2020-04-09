@@ -26,7 +26,7 @@ const Phoenix = mix.escape<PhoenixParams>({
 
   latexZ0: 0,
 
-  latexF: ({p, k}) => `z_{n}^{${fmt.num(k)}}+x+yi${fmt.complex(p,{sign:true})}z_{n-1}`,
+  latexF: ({p, k}) => `z_{n}^{${fmt.num(k)}}+(${fmt.complex(p)})z_{n-1}+x+yi`,
 
   controls: [
     mix.controls.complex('p'),
@@ -55,7 +55,7 @@ const PhoenixJulia = mix.escape<PhoenixJuliaParams>({
   latexZ0: () => 'y+xi',
 
   latexF: ({p, k, c}) => {
-    return `z_{n}^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.complex(p,{sign:true})}z_{n-1}`
+    return `z_{n}^{${fmt.num(k)}}+(${fmt.complex(p)})z_{n-1}${fmt.complex(c,{sign:true})}`
   },
 
   controls: [
@@ -86,7 +86,7 @@ const PhoenixJuliaBurningShip = mix.escape<PhoenixJuliaParams>({
   latexZ0: () => 'y+xi',
 
   latexF: ({p, k, c}: PhoenixJuliaParams) => {
-    return `\\left(|Re(z_{n})|+|Im(z_{n})|\\right)^{${fmt.num(k)}}${fmt.complex(c,{sign:true})}${fmt.complex(p,{sign:true})}z_{n-1}`
+    return `\\left(|Re(z_{n})|+|Im(z_{n})|\\right)^{${fmt.num(k)}}+(${fmt.complex(p)})z_{n-1}${fmt.complex(c,{sign:true})}`
   },
 
   controls: [

@@ -12,6 +12,7 @@ import {
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Typography from '@material-ui/core/Typography';
 
 
 type Props = {
@@ -84,6 +85,11 @@ class AlgorithmSettings extends React.Component<Props> {
                 )
               })}
             </Select>
+          </Box>
+          <Box m={1}>
+            <Typography style={{maxWidth: '200px'}} variant="body2">
+              * Indicates method with optimized rendering.
+            </Typography>
           </Box>
           <Box m={1}>
             <ButtonGroup fullWidth color="primary" orientation="vertical">

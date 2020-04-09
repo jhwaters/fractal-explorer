@@ -14,8 +14,8 @@ import {
   Magnet2,
 } from './magnet';
 import {
-  Mandelbox,
-  Mandelcorner,
+  FastMandelbox,
+  FastMandelcorner,
 } from './mandelbox';
 import {
   MandelbrotJulia,
@@ -31,15 +31,27 @@ import {
 } from './testing';
 import {
   FastBurningShip,
+  FastBurningShipMandelbox,
   FastJuliaMandelbrot,
+  FastMandelbrot,
+  FastPhoenixJuliaBurningShip,
   FastPhoenixBurningShip,
   FastPhoenixJulia,
   FastPhoenix,
 } from './fast';
 
 export const ALLFRACTALS: {[k: string]: FractalInterface<any>} = ({
-  Bs: BurningShip,
   F_Bs: FastBurningShip,
+  F_BsMbx: FastBurningShipMandelbox,
+  Mbx: FastMandelbox,
+  F_Md: FastMandelbrot,
+  F_MdJl: FastJuliaMandelbrot,
+  MbxBs: FastMandelcorner,
+  F_Ph: FastPhoenix,
+  F_PhJl: FastPhoenixJulia,
+  F_PhBs: FastPhoenixBurningShip,
+  F_PhJlBs: FastPhoenixJuliaBurningShip,
+  Bs: BurningShip,
   BsJl: JuliaBurningShip,
   BsMbx: BurningShipMandelbox,
   Jl2: Julia2Term,
@@ -47,16 +59,10 @@ export const ALLFRACTALS: {[k: string]: FractalInterface<any>} = ({
   JlSinh: JuliaSinh,
   Mg1: Magnet1,
   Mg2: Magnet2,
-  Mbx: Mandelbox,
   Md: Mandelbrot,
   MdJl: MandelbrotJulia,
-  F_MdJl: FastJuliaMandelbrot,
-  MbxBs: Mandelcorner,
   Ph: Phoenix,
-  F_Ph: FastPhoenix,
   PhJl: PhoenixJulia,
-  F_PhJl: FastPhoenixJulia,
   PhJlBs: PhoenixJuliaBurningShip,
-  F_PhBs: FastPhoenixBurningShip,
   Test1,
 });

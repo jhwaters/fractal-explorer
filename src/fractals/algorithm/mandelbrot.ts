@@ -15,7 +15,7 @@ import * as fmt from '../formatting'
 export interface MandelbrotParams { k: number }
 
 export const Mandelbrot = mix.escape({
-  label: 'Mandelbrot',
+  label: ['Mandelbrot (', {math: 'z^k+c'},')'],
   latexF: (p: MandelbrotParams) => `z^{${fmt.num(p.k)}}+x+yi`,
   f: (p: MandelbrotParams) => {
     const k = p.k;
