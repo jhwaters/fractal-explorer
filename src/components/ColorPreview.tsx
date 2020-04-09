@@ -10,6 +10,7 @@ export interface ColorPreviewProps {
   height: number
   orientation: string
   scheme: ColorScheme
+  mirror: boolean
   reverse: boolean
   skew: number
   style?: React.CSSProperties
@@ -51,16 +52,16 @@ class ColorPreview extends React.Component<Props> {
     if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
-        const { scheme, reverse, skew, width, height, orientation } = this.props;
+        const { scheme, mirror, reverse, skew, width, height, orientation } = this.props;
         if (orientation === 'horizontal') {
-          const cm = colorScale({scheme, reverse, skew})([0,width]);
+          const cm = colorScale({scheme, reverse, skew, mirror})([0,width]);
           let i = width + 1;
           while (i--) {
             context.fillStyle = cm(i);
             context.fillRect(i, 0, 1, height);
           }
         } else {
-          const cm = colorScale({scheme, reverse, skew})([height,0]);
+          const cm = colorScale({scheme, mirror, reverse, skew})([height,0]);
           let i = height + 1;
           while (i--) {
             context.fillStyle = cm(i);

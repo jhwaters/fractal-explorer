@@ -2,6 +2,7 @@ import {
   interpolateLab,
   piecewise,
   scalePow,
+  scaleLinear,
 } from 'd3';
 import { Color } from './types';
 
@@ -12,6 +13,18 @@ function colorScale(color: Color): (domain: [number,number]) => (n: number) => s
     : color.scheme;
   const range = color.reverse ? [1, 0] : [0, 1];
   const exponent = 2**color.skew;
+  if (color.mirror) {
+    const scaleA = scaleLinear().domain([0,0.5]).range([0,1]);
+    const scaleB = scaleLinear().domain([0.5,1]).range([1,0]);
+    return (domain: [number,number]) => {
+      const scale1 = scalePow().domain(domain).range(range).exponent(exponent);
+      const scale2 = (n: number) => {
+        if (n < 0.5) return scaleA(n);
+        else return scaleB(n);
+      }
+      return (n: number) => interpolator(scale2(scale1(n)));  
+    }
+  }
   return (domain: [number,number]) => {
     const scale = scalePow().domain(domain).range(range).exponent(exponent);
     return (n: number) => interpolator(scale(n));  

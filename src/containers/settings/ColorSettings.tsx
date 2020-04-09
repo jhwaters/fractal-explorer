@@ -25,6 +25,7 @@ import Switch from '@material-ui/core/Switch';
 
 interface Colors {
   schemeName: string
+  mirror: boolean
   reverse: boolean
   skew: number
   count: 'iter' | number
@@ -45,6 +46,7 @@ type Evt = React.ChangeEvent<HTMLInputElement>
 class ColorSettings extends React.Component<Props> {
   state: {
     schemeName: string
+    mirror: boolean
     reverse: boolean
     skew: number
     count: 'iter' | number
@@ -58,12 +60,13 @@ class ColorSettings extends React.Component<Props> {
     super(props);
     this.state = {
       schemeName: props.current.schemeName,
+      mirror: props.current.mirror,
       reverse: props.current.reverse,
       skew: props.current.skew,
       count: props.current.count,
 
       showCount: props.current.count !== 'iter',
-      countInput: props.current.count === 'iter' ? 10 : props.current.count,
+      countInput: props.current.count === 'iter' ? 60 : props.current.count,
       customPopup: false,
     }
   }
@@ -76,6 +79,7 @@ class ColorSettings extends React.Component<Props> {
     this.setState({schemeName});
   }
 
+  changeMirror = (evt: Evt) => this.setState({mirror: evt.target.checked});
   changeReverse = (evt: Evt) => this.setState({reverse: evt.target.checked});
   changeSkew = (evt: any, skew: number | number[]) => {
     if (typeof skew === 'number') this.setState({skew});
@@ -86,11 +90,13 @@ class ColorSettings extends React.Component<Props> {
       this.setState({
         showCount: false,
         count: 'iter',
+        mirror: false,
       })
     } else {
       this.setState({
         showCount: true,
         count: this.state.countInput,
+        mirror: true
       })
     }
   }
@@ -115,6 +121,7 @@ class ColorSettings extends React.Component<Props> {
 
   hasChanged = () => {
     if (this.state.schemeName !== this.props.current.schemeName
+      || this.state.mirror !== this.props.current.mirror
       || this.state.reverse !== this.props.current.reverse
       || this.state.skew !== this.props.current.skew
       || this.state.count !== this.props.current.count) {
@@ -132,6 +139,7 @@ class ColorSettings extends React.Component<Props> {
     this.props.updateColor({
       schemeName: this.state.schemeName,
       scheme: this.props.schemeList[this.state.schemeName],
+      mirror: this.state.mirror,
       reverse: this.state.reverse,
       skew: this.state.skew,
       count: this.state.count === 'iter' ? 0 : this.state.count,
@@ -144,6 +152,7 @@ class ColorSettings extends React.Component<Props> {
   revert = () => {
     this.setState({
       schemeName: this.props.current.schemeName,
+      mirror: this.props.current.mirror,
       reverse: this.props.current.reverse,
       skew: this.props.current.skew,
       count: this.props.current.count,
@@ -171,6 +180,7 @@ class ColorSettings extends React.Component<Props> {
                 ))}
               </Select>
             </Box>
+
             <Box m={2}>
               <FormControlLabel
                 label="Reversed"
@@ -189,6 +199,18 @@ class ColorSettings extends React.Component<Props> {
                 control={
                   <Switch checked={!this.state.showCount}
                     onChange={this.checkCount}
+                    edge="end"
+                  />
+                }
+              />
+            </Box>
+
+            <Box m={2} style={this.state.showCount ? {} : {display: 'none'}}>
+              <FormControlLabel
+                label="Mirror"
+                control={
+                  <Switch checked={this.state.mirror}
+                    onChange={this.changeMirror}
                     edge="end"
                   />
                 }
@@ -224,6 +246,7 @@ class ColorSettings extends React.Component<Props> {
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
                 scheme={this.props.schemeList[this.state.schemeName]}
+                mirror={this.state.mirror}
                 reverse={this.state.reverse}
                 skew={this.state.skew}
                 width={100}
@@ -235,6 +258,7 @@ class ColorSettings extends React.Component<Props> {
               <ColorPreview 
                 style={{width: '100%', height: '4mm'}}
                 scheme={this.props.schemeList[this.state.schemeName]}
+                mirror={this.props.current.mirror}
                 reverse={this.props.current.reverse}
                 skew={this.props.current.skew}
                 width={100}

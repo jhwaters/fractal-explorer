@@ -7,6 +7,7 @@ export type ColorScheme = CS
 export interface ColorState {
   schemeName: string
   scheme: ColorScheme
+  mirror: boolean
   reverse: boolean
   skew: number
   count: number

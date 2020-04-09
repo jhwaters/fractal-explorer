@@ -9,6 +9,7 @@ import { colorSchemeName } from '../../../defaults';
 const initialState: ColorState = {
   schemeName: colorSchemeName,
   scheme: COLORSCHEMES[colorSchemeName],
+  mirror: false,
   reverse: false,
   skew: 0,
   count: 0,

@@ -11,7 +11,7 @@ interface V3_ extends Json {
   v: '3'
   am: string
   ap: {[k: string]: any}
-  cp: NTuple<number,3>
+  cp: NTuple<number,4>
   vc: NTuple<number,2>
   vs: NTuple<number,3>
   vt: NTuple<number,4>
@@ -35,7 +35,7 @@ export function stateToJson3(state: AppState): V3 {
       am: algorithm.methodName,
       ap: {...algorithm.params},
       cs: color.schemeName,
-      cp: [color.count, color.reverse ? 1 : 0, color.skew],
+      cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
       vc: [view.cx, view.cy],
       vs: [view.w, view.h, view.ppu],
       vt: view.t,
@@ -46,7 +46,7 @@ export function stateToJson3(state: AppState): V3 {
       am: algorithm.methodName,
       ap: {...algorithm.params},
       cl: color.scheme as string[],
-      cp: [color.count, color.reverse ? 1 : 0, color.skew],
+      cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
       vc: [view.cx, view.cy],
       vs: [view.w, view.h, view.ppu],
       vt: view.t,
@@ -75,8 +75,9 @@ export function jsonToState3(data: Partial<V3>): AppUpdate {
     }
     if (data.cp) {
       result.color.count = data.cp[0];
-      result.color.reverse = data.cp[1] ? true : false;
-      result.color.skew = data.cp[2];
+      result.color.mirror = data.cp[1] ? true : false;
+      result.color.reverse = data.cp[2] ? true : false;
+      result.color.skew = data.cp[3];
     }
   }
   if (data.vc || data.vs || data.vt) {
@@ -146,7 +147,7 @@ export function urlToJson3(u: URLSearchParams): X {
   
   const cp = u.get('cp');
   if (cp) {
-    const x = toNumArr(cp, 3);
+    const x = toNumArr(cp, 4);
     if (x) data.cp = x;
   }
   

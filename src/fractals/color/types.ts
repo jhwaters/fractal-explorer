@@ -4,4 +4,5 @@ export interface Color {
   scheme: ColorScheme
   reverse: boolean
   skew: number
+  mirror: boolean
 }

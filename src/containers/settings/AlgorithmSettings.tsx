@@ -88,7 +88,7 @@ class AlgorithmSettings extends React.Component<Props> {
           </Box>
           <Box m={1}>
             <Typography style={{maxWidth: '200px'}} variant="body2">
-              * Indicates method with optimized rendering.
+              * Indicates method with improved rendering speed.
             </Typography>
           </Box>
           <Box m={1}>

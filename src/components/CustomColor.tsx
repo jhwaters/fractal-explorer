@@ -118,6 +118,7 @@ class CustomColor extends React.Component<Props> {
           <ColorPreview
             style={{width: '100%', height: '4mm'}}
             scheme={this.state.colors}
+            mirror={false}
             reverse={false}
             skew={0}
             width={100}
