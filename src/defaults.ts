@@ -1,6 +1,6 @@
 import { COLORSCHEMES, ALLFRACTALS } from './fractals'
 
-export const methodName = 'Jl1'
+export const methodName = 'F_MdJl'
 export const colorSchemeName = 'Rainbow'
 export const pixelCount = 90000
 export const captureSize = {

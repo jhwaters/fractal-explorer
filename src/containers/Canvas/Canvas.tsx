@@ -48,7 +48,7 @@ class Canvas extends React.Component<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate() {
     if (this.props.fractal.drawState === DrawState.Draw) {
       this.draw()
     }
@@ -128,7 +128,7 @@ class Canvas extends React.Component<Props> {
 export default connect(
   (state: AppState) => ({
     visible: (state.ui.nav === Nav.Params || state.ui.nav === Nav.Explore),
-    fractal: state.fractal,
+    fractal: {...state.fractal},
     stretch: state.ui.canvasStretch,
   }),
   (dispatch: Dispatch) => ({
