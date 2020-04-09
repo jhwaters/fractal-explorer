@@ -39,6 +39,7 @@ class Canvas extends React.Component<Props> {
       this.canvas.height = image.height;
       this.canvas.getContext('2d')?.putImageData(image, 0, 0);
     }
+    this.props.finishDrawing();
   }
 
   componentDidMount() {
@@ -47,7 +48,7 @@ class Canvas extends React.Component<Props> {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: Props) {
     if (this.props.fractal.drawState === DrawState.Draw) {
       this.draw()
     }
