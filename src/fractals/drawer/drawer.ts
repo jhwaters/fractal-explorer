@@ -45,6 +45,7 @@ export default function(fractal: Fractal): ImageData | undefined {
     const t1 = performance.now();
     console.log('draw time:', t1 - t0);
     return image;
+  } else {
+    return drawImage(fractal);
   }
-  return drawImage(fractal);
 }
