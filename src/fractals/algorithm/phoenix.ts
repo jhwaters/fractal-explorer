@@ -1,11 +1,10 @@
-import { Complex, ControlType } from './types';
+import { Complex } from './types';
 import * as mix from './mixers';
 import {
   complex,
 } from '../math/complex';
 import * as fmt from '../formatting'
 import { burningship, phoenix, lookback } from '../math/fractals';
-
 
 
 interface PhoenixParams {

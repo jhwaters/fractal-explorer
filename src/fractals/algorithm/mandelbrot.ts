@@ -1,4 +1,4 @@
-import { Complex, ControlType } from './types';
+import { Complex } from './types';
 import * as mix from './mixers';
 import {
   add,

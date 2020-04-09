@@ -1,4 +1,4 @@
-import { Complex, ControlType, ControlProps } from './types';
+import { Complex } from './types';
 import {controls, julia} from './mixers';
 import {
   complex,
@@ -7,20 +7,16 @@ import {
   exp,
   sqrt,
   sinh,
-  powN,
 } from '../math/complex';
 import { burningship } from '../math/fractals';
 import polynomial from '../math/polynomial';
-import { R as Math } from '../math';
 import * as fmt from '../formatting'
-
 
 
 interface JuliaParams {
   k: number
   c: [number, number]
 }
-
 
 export type JPoly = {
   a: number,
@@ -58,7 +54,6 @@ const Julia2Term = julia<JPoly>({
     ...['a', 'm', 'b', 'n'].map(p => controls.number(p, {step: p === 'a' || p === 'b' ? 1 : 0.1})),
   ],
 })
-
 
 
 const JuliaExp = julia<JuliaParams>({
