@@ -26,7 +26,10 @@ function scaleZoom(domain: [number, number], range: [number, number], exponent: 
 }
 
 
-function scalePolar(angle: (n: number) => number, radius: (n: number) => number) {
+function scalePolar(
+  angle: (n: number) => number, 
+  radius: (n: number) => number
+): (n: number) => [number,number] {
   return (n: number) => {
     const r = radius(n);
     const a = angle(n);
