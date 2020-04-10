@@ -1,7 +1,7 @@
 {
   "name": "fractal-explorer",
   "homepage": "https://jhwaters.github.io/fractal-explorer",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.2",
