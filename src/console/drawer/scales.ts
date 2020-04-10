@@ -39,7 +39,7 @@ function baseScale(spec: ScaleSpec): Scale<number> {
     return scalePow().domain(spec.domain).range(spec.range).exponent(spec.exponent || 2);
   }
   if (spec.scale === 'zoom') {
-    return scaleZoom(spec.domain, spec.range, spec.exponent || 2);
+    return scaleZoom(spec.domain, spec.range, spec.exponent || 1);
   }
   return scaleLinear().domain(spec.domain).range(spec.range);
 }

@@ -1,14 +1,18 @@
 import {
   Connected,
+  THE_CONNECTED,
   Disconnected,
   Animator,
 } from './drawer';
 import { OPTS } from '../fractals/drawer/drawer';
 
-export default {
-  controller: Connected.new(true),
+const fractalex = {
+  controller: (autodraw=true) => {
+    THE_CONNECTED.autodraw = autodraw;
+    return THE_CONNECTED;
+  },
 
-  hidden: () => Disconnected.new(),
+  disconnected: () => Disconnected.new(),
 
   animator: (frames: number | [number, number]) => new Animator(frames),
   
@@ -20,20 +24,48 @@ export default {
     OPTS.logDrawTime = x;
   },
 
+  animateZoom({frames=60, delay=0, rotate=0, target='screen'}: {
+    frames?: number, 
+    delay?: number,
+    rotate?: number | [number,number], 
+    target?: 'screen' | 'download' | Connected | Disconnected
+  }={}) {
+    const anim = new Animator(frames);
+    const {w, h, ppu} = THE_CONNECTED.getView();
+    const {iter} = THE_CONNECTED.getParams();
+    const startPPU = Math.round(Math.min(w, h)/5);
+    anim.view.ppu = {
+      scale: 'zoom',
+      range: [startPPU, ppu],
+    }
+    anim.params.iter = [20, iter]
+    if (rotate) {
+      anim.view.t = {
+        range: typeof rotate === 'number' ? [-rotate, 0] : rotate,
+        map: (deg: number) => {
+          const {a, b, c, d} = new DOMMatrix([1,0,0,-1,0,0]).rotateSelf(deg);
+          return [a, b, c, d] as [number,number,number,number];
+        }
+      }
+    }
+    return anim.run(target, {delay});
+  },
+
   magic: ({
-    hidden=false,
     frames=30,
     delay=0,
+    target='screen',
   }: {
-    hidden?: boolean
     frames?: number | [number, number]
     delay?: number
+    target?: 'screen' | 'download' | Connected | Disconnected
   }={}) => {
-    const alex = hidden ? Disconnected.new() : Connected.new(true);
     const anim = new Animator(frames);
-    const {c, p} = alex.getParams();
+    const {c, p} = THE_CONNECTED.getParams();
     const randomInt = (n: number) => Math.floor(Math.random() * n)
+    let shouldAnimate = false;
     if (c !== undefined) {
+      shouldAnimate = true;
       const [x, y] = c;
       const ang = Math.atan2(y, x);
       const rad = Math.sqrt(x*x + y*y);
@@ -62,6 +94,7 @@ export default {
       }
     }
     if (p !== undefined) {
+      shouldAnimate = true;
       const [x, y] = p;
       const ang = Math.atan2(y, x);
       const rad = Math.sqrt(x*x + y*y);
@@ -89,7 +122,11 @@ export default {
         }
       }
     }
-    return anim.apply(alex, {delay})
+    if (shouldAnimate) {
+      return anim.run(target, {delay});
+    } else {
+      console.log("This fractal cannot be magically animated. Choose a fractal with 'c' or 'p' parameters.")
+    }
   },
 
 }

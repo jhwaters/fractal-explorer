@@ -1,6 +1,7 @@
-import Connected from './connected'
+import Connected, { THE_CONNECTED } from './connected'
 import Disconnected from './disconnected';
 import createScale, { ScaleSpec, MappedSpec, Scale, PolarSpec } from './scales';
+import { JsonState } from '../../fractals/json';
 
 
 type ParamType = number | [number,number] | [number,number,number,number]
@@ -65,11 +66,41 @@ class Animator {
   domain: [number, number]
   params: {[k: string]: MySpec<ParamType>}
   view: {[k: string]: MySpec<ParamType>}
+  json?: JsonState
+  init: {
+    method?: string
+    params?: {[k: string]: any}
+    view?: {[k: string]: any}
+    color?: {[k: string]: any}
+  }
 
   constructor(frames: number | [number, number]) {
     this.domain = typeof frames === 'number' ? [1, frames] : frames;
     this.params = {}
     this.view = {}
+    this.init = {}
+  }
+
+  loadJson(data: JsonState) {
+    this.json = data;
+  }
+
+  update(init: {
+    method?: string
+    params?: {[k: string]: any}
+    view?: {[k: string]: any}
+    color?: {[k: string]: any}
+  }) {
+    this.init = init;
+    return this;
+  }
+
+  initialize(target: Target) {
+    if (this.json) target.loadJson(this.json);
+    if (this.init.method) target.setMethod(this.init.method);
+    if (this.init.params) target.updateParams(this.init.params);
+    if (this.init.view) target.updateView(this.init.view);
+    if (this.init.color) target.updateColor(this.init.color);
   }
 
   makeScales(target: Target) {
@@ -133,14 +164,27 @@ class Animator {
     return this;
   }
 
-  apply = (target: Target, opts: {[k: string]: any}={}) => {
+  run = (target: Target | 'screen' | 'download', opts: {[k: string]: any}={}) => {
     const {frames, ...rest} = opts
     const domain = frames ? (
       typeof frames === 'number' ? [frames, frames] :
       frames.length === 1 ? [frames[0], frames[0]] :
       frames
     ) : this.domain;
-    return target.animate(domain, rest)(this.f(target))
+    if (target === 'screen') {
+      this.initialize(THE_CONNECTED);
+      THE_CONNECTED.autodraw = true;
+      return THE_CONNECTED.animate(domain, rest)(this.f(THE_CONNECTED));
+    }
+    else if (target === 'download') {
+      const t = Disconnected.new();
+      this.initialize(t);
+      return t.animate(domain, rest)(this.f(t)).then(() => t.download());
+    }
+    else {
+      this.initialize(target);
+      return target.animate(domain, rest)(this.f(target))
+    }
   }
 
 }

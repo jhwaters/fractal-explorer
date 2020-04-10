@@ -14,7 +14,6 @@ export interface FractalCommands {
   getParams(): Params
   getParam(k: string): any
   updateParams(p: Params): void
-  setParam(k: string, v: any): void
   
   // Color
   updateColor(color: Partial<ColorState>): void

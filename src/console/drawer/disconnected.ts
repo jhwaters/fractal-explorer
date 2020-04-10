@@ -34,7 +34,7 @@ class Disconnected extends Abstract implements FractalCommands {
     this.zipper = new Zipper();
   }
 
-  animate([start, stop]: [number, number]) {
+  animate([start, stop]: [number, number], opts?: any) {
     const zip = this.zipper;
     return (f: (n: number) => {
       filename?: string,
@@ -185,11 +185,7 @@ class Disconnected extends Abstract implements FractalCommands {
   }
 
   updateParams(p: Params) {
-    this.fractal.algorithm.params = {...this.fractal.algorithm.params, ...p}
-  }
-
-  setParam(k: string, v: any) {
-    this.fractal.algorithm.params[k] = v;
+    this.fractal.algorithm.params = {...this.fractal.algorithm.params, ...this.fixPolarParams(p)}
   }
 
 

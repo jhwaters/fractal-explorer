@@ -12,7 +12,7 @@ import { promiseRangeGen } from './util';
 
 class Connected extends Abstract implements FractalCommands {
   protected store: typeof reduxStore
-  protected autodraw: boolean
+  autodraw: boolean
 
   constructor(store: typeof reduxStore=reduxStore, autodraw: boolean=false) {
     super();
@@ -103,11 +103,7 @@ class Connected extends Abstract implements FractalCommands {
   }
 
   updateParams(p: Params) {
-    this.dispatch(reduxAction.updateParams(p));
-  }
-
-  setParam(k: string, v: any) {
-    this.dispatch(reduxAction.updateParams({[k]: v}));
+    this.dispatch(reduxAction.updateParams(this.fixPolarParams(p)));
   }
 
   // Color
@@ -136,4 +132,8 @@ class Connected extends Abstract implements FractalCommands {
 
 }
 
+const THE_CONNECTED = Connected.new(true);
+
 export default Connected
+
+export { THE_CONNECTED }

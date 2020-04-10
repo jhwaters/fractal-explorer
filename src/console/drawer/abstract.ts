@@ -7,7 +7,6 @@ import { multiply } from '../../fractals/drawer/transform';
 
 abstract class Base implements FractalCommands {
   abstract updateParams(p: Params): void
-  abstract setParam(k: string, v: any): void
   abstract getParams(): Params
   abstract setMethod(methodName: string): void
   abstract getMethod(): string
@@ -39,6 +38,18 @@ abstract class Base implements FractalCommands {
     } else {
       console.error('unknown schemeName:', schemeName)
     }
+  }
+
+  fixPolarParams(p: Params) {
+    return Object.fromEntries(Object.entries(p).map(([k, v]: [string, any]) => {
+      if (v.angle && v.radius) {
+        const x = v.radius * Math.cos(v.angle)
+        const y = v.radius * Math.sin(v.angle)
+        return [k, [x, y]]
+      } else {
+        return [k, v];
+      }
+    }))
   }
 
 }
