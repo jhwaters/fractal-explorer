@@ -130,3 +130,5 @@ const fractalex = {
   },
 
 }
+
+export default fractalex;
