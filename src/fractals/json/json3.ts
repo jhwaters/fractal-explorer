@@ -11,7 +11,7 @@ interface V3_ extends Json {
   v: '3'
   am: string
   ap: {[k: string]: any}
-  cp: NTuple<number,4>
+  cp: NTuple<number,4> | {n: number, mi: boolean, rv: boolean, sk: number}
   vc: NTuple<number,2>
   vs: NTuple<number,3>
   vt: NTuple<number,4>
@@ -35,7 +35,8 @@ export function stateToJson3(state: AppState): V3 {
       am: algorithm.methodName,
       ap: {...algorithm.params},
       cs: color.schemeName,
-      cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
+      //cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
+      cp: {n: color.count, mi: color.mirror, rv: color.reverse, sk: color.skew},
       vc: [view.cx, view.cy],
       vs: [view.w, view.h, view.ppu],
       vt: view.t,
@@ -46,7 +47,8 @@ export function stateToJson3(state: AppState): V3 {
       am: algorithm.methodName,
       ap: {...algorithm.params},
       cl: color.scheme as string[],
-      cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
+      //cp: [color.count, color.mirror ? 1 : 0, color.reverse ? 1 : 0, color.skew],
+      cp: {n: color.count, mi: color.mirror, rv: color.reverse, sk: color.skew},
       vc: [view.cx, view.cy],
       vs: [view.w, view.h, view.ppu],
       vt: view.t,
@@ -74,10 +76,17 @@ export function jsonToState3(data: Partial<V3>): AppUpdate {
       result.color.scheme = COLORSCHEMES[data.cs];
     }
     if (data.cp) {
-      result.color.count = data.cp[0];
-      result.color.mirror = data.cp[1] ? true : false;
-      result.color.reverse = data.cp[2] ? true : false;
-      result.color.skew = data.cp[3];
+      if (Array.isArray(data.cp)) {
+        result.color.count = data.cp[0];
+        result.color.mirror = data.cp[1] ? true : false;
+        result.color.reverse = data.cp[2] ? true : false;
+        result.color.skew = data.cp[3];
+      } else {
+        result.color.count = data.cp.n;
+        result.color.mirror = data.cp.mi;
+        result.color.reverse = data.cp.rv;
+        result.color.skew = data.cp.sk;
+      }
     }
   }
   if (data.vc || data.vs || data.vt) {
@@ -122,7 +131,11 @@ export function jsonToUrl3(data: Partial<V3>): string {
     u.append('cs', data.cs);
   }
   if (data.cp) {
-    u.append('cp', fromNumArr(data.cp));
+    if (Array.isArray(data.cp)) {
+      u.append('cp', fromNumArr(data.cp));
+    } else {
+      u.append('cp', fromNumArr([data.cp.n, data.cp.mi ? 1 : 0, data.cp.rv ? 1 : 0, data.cp.sk]))
+    }
   }
   if (data.vc) {
     u.append('vc', fromNumArr(data.vc));
@@ -148,7 +161,7 @@ export function urlToJson3(u: URLSearchParams): X {
   const cp = u.get('cp');
   if (cp) {
     const x = toNumArr(cp, 4);
-    if (x) data.cp = x;
+    if (x) data.cp = {n: x[0], mi: x[1] === 1, rv: x[2] === 1, sk: x[3]};
   }
   
   const vc = u.get('vc');
