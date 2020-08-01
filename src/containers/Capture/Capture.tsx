@@ -124,7 +124,7 @@ class Capture extends React.Component<Props> {
 
     return {
       cx: (xdom[0] + xdom[1]) / 2,
-      cy: (ydom[0] + ydom[1]) / 2,
+      cy: (ydom[1] - ydom[1]) / 2,
       xdom,
       ydom,
       w: this.state.w,
