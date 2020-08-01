@@ -7,7 +7,7 @@ import { Nav } from '../../store/ui/types';
 import Cropper from 'react-easy-crop';
 import Box from '@material-ui/core/Box';
 import { withStyles } from '@material-ui/core/styles';
-import ControlPanel from '../Controls/ControlPanel';
+import ControlPanel from '../controls/ControlPanel';
 import IconButton from '@material-ui/core/IconButton';
 import { linearScale, scaleFactor } from '../../fractals/drawer/view';
 import createImageData from '../../fractals/drawer/drawer';

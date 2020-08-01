@@ -1,9 +1,9 @@
 import React from 'react'
-import Canvas from './Canvas';
-import Capture from './Capture';
-import Controls from './Controls';
+import Canvas from './canvas';
+import Capture from './capture';
+import Controls from './controls';
 import Box from '@material-ui/core/Box';
-import Gallery from './Gallery';
+import Gallery from './gallery';
 import { makeStyles } from '@material-ui/core/styles';
 
 

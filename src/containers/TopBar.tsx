@@ -7,8 +7,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import { Icon } from '../components'
-import InfoButton from './Controls/InfoButton';
-import RecenterButton from './Controls/Recenter';
+import InfoButton from './controls/InfoButton';
+import RecenterButton from './controls/Recenter';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 

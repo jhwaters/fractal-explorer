@@ -1,6 +1,6 @@
 import React from 'react';
 import BottomBar from './Bottombar';
-import Settings from './Settings';
+import Settings from './settings';
 import Display from './Display';
 import TopBar from './TopBar';
 import Info from './Info';
