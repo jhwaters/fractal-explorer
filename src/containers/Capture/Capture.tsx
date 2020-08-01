@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { State, Dispatch } from '../../store/types';
 import { FractalState, DrawState } from '../../store/fractal/types';
 import { capture, finish, addToGallery, startWaiting } from '../../store/actions';
+import { apply, multiply, invert } from '../../fractals/drawer/transform';
 import { Nav } from '../../store/ui/types';
 import Cropper from 'react-easy-crop';
 import Box from '@material-ui/core/Box';
@@ -113,6 +114,37 @@ class Capture extends React.Component<Props> {
   determineView() {
     let {cx, cy, w, h, ppu, pixelCount, t} = this.props.fractal.view;
     const f = scaleFactor(w, h, pixelCount)
+
+    const cx_px = w * f / 2;
+    const cy_px = h * f / 2;
+
+    const {x, y, width, height} = this.cropPixels;
+
+    const ppuf = ppu * f;
+
+    let dx = (x + width/2 - cx_px) / ppuf;
+    let dy = (y + height/2 - cy_px) / ppuf;
+    
+    const inv = multiply([1,0,0,-1], t);
+    if (inv) {
+      [dx, dy] = apply(inv, [dx, dy]);
+    }
+
+    const newPPU = Math.max(
+      this.state.w / (width / ppuf),
+      this.state.h / (height / ppuf),
+    );
+
+    return {
+      cx: cx+dx,
+      cy: cy-dy,
+      ppu: newPPU,
+      w: this.state.w,
+      h: this.state.h,
+      t
+    }
+
+    /*
     const rx = w / ppu / 2;
     const ry = h / ppu / 2;
     const xscale = linearScale([0, f*w], [cx - rx, cx + rx]);
@@ -131,12 +163,15 @@ class Capture extends React.Component<Props> {
       h: this.state.h,
       t
     }
+    */
   }
 
   getData(view: any) {
-    const ppu = Math.round(view.w / (view.xdom[1] - view.xdom[0]))
+    //const ppu = Math.round(view.w / (view.xdom[1] - view.xdom[0]))
     return stateToJson({
       ...this.props.fractal,
+      view,
+      /*
       view: {
         cx: view.cx,
         cy: view.cy,
@@ -145,6 +180,7 @@ class Capture extends React.Component<Props> {
         ppu: ppu,
         t: view.t,
       },
+      */
     })
   }
 
