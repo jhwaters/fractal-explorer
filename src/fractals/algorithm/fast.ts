@@ -12,7 +12,7 @@ export const FastBurningShip: FractalInterface<{iter: number, bail: number}> = {
     controls.number('iter', {min: 1, step: 2}),
   ],
   describe: ({iter, bail}) => describeEscapeFunction(
-    '\\(|Re(z)|+|Im(z)|\\right)^2+x-yi', 
+    '\\left(|Re(z)|+|Im(z)|\\right)^2+x-yi', 
     '0', 
     bail, 
     iter,
